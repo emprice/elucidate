@@ -45,5 +45,8 @@
   },
   "sideEffects": [
     "**/*.css"
-  ]
+  ],
+  "dependencies": {
+    "@babel/core": "^7.22.8"
+  }
 }
