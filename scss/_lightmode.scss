@@ -1,0 +1,77 @@
+@use "sass:map";
+@use "sass:color";
+
+@use "common" as *;
+@use "nordtheme" as nord;
+
+$-body-background: $white;
+$-body-font-color: $black;
+
+$-palette-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
+$-palette-secondary: color.scale(map.get(nord.$frost, "dark"), $lightness: -40%);
+$-palette-success: map.get(nord.$aurora, "green");
+$-palette-warning: map.get(nord.$aurora, "orange");
+$-palette-alert: map.get(nord.$aurora, "red");
+
+$-muted-label-color: $dark-gray;
+
+$-slider-background: $light-gray;
+$-slider-fill-background: $medium-gray;
+$-slider-handle-background: $-palette-primary;
+
+$-switch-background: $medium-gray;
+$-switch-paddle-background: $white;
+
+$-titlebar-background: $dark-gray;
+$-titlebar-color: $white;
+
+$-offcanvas-background: color.scale($-body-background, $lightness: -10%);
+
+$-button-color: $-body-background;
+$-button-background-primary: $-palette-primary;
+$-button-background-secondary: $-palette-secondary;
+
+$-titlebar-button-color: $-body-font-color;
+$-titlebar-button-background-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
+$-titlebar-button-background-secondary: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
+
+$-token-typename-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
+$-token-classname-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-propertyname-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+
+$theme: (
+  "palette-primary": $-palette-primary,
+  "palette-secondary": $-palette-secondary,
+
+  "palette-success": $-palette-success,
+  "palette-warning": $-palette-warning,
+  "palette-alert": $-palette-alert,
+
+  "body-background": $-body-background,
+  "body-font-color": $-body-font-color,
+  "muted-label-color": $-muted-label-color,
+
+  "slider-background": $-slider-background,
+  "slider-fill-background": $-slider-fill-background,
+  "slider-handle-background": $-slider-handle-background,
+
+  "switch-background": $-switch-background,
+  "switch-paddle-background": $-switch-paddle-background,
+  "titlebar-background": $-titlebar-background,
+  "titlebar-color": $-titlebar-color,
+  "offcanvas-background": $-offcanvas-background,
+
+  "button-color": $-button-color,
+  "button-background-primary": $-button-background-primary,
+  "button-background-secondary": $-button-background-secondary,
+
+  "titlebar-button-color": $-titlebar-button-color,
+  "titlebar-button-background-primary": $-titlebar-button-background-primary,
+  "titlebar-button-background-secondary": $-titlebar-button-background-secondary,
+
+  "token-typename-color": $-token-typename-color,
+  "token-classname-color": $-token-classname-color,
+  "token-propertyname-color": $-token-propertyname-color,
+);
+
+// vim: set ft=scss:

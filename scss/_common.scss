@@ -1,0 +1,24 @@
+@use "sass:map";
+@use "sass:color";
+
+@use "nordtheme" as nord;
+
+@import 'fdn/scss/util/unit';
+
+$light-gray: color.mix(map.get(nord.$snow-storm, "light"),
+  map.get(nord.$polar-night, "dark"), $weight: 80%);
+$medium-gray: color.mix(map.get(nord.$snow-storm, "light"),
+  map.get(nord.$polar-night, "dark"), $weight: 40%);
+$dark-gray: color.mix(map.get(nord.$snow-storm, "light"),
+  map.get(nord.$polar-night, "dark"), $weight: 20%);
+
+$black: color.scale(map.get(nord.$polar-night, "darkest"), $lightness: -10%);
+$white: color.scale(map.get(nord.$snow-storm, "lightest"), $lightness: +35%);
+
+$global-font-size: 100%;
+$global-width: rem-calc(1400);
+$global-lineheight: 1.5;
+$body-font-family: #{'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif};
+$font-family-monospace: #{'Source Code Pro', monospace};
+
+// vim: set ft=scss:

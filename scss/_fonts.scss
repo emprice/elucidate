@@ -1,0 +1,76 @@
+@import '../ttf/foundation-icons/foundation-icons.css';
+
+@mixin custom-font-definitions {
+
+  @font-face {
+      font-family: 'Source Code Pro';
+      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Regular.ttf');
+      font-weight: 400;
+      font-style: normal;
+  }
+
+  @font-face {
+      font-family: 'Source Code Pro';
+      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Italic.ttf');
+      font-weight: 400;
+      font-style: italic;
+  }
+
+  @font-face {
+      font-family: 'Source Code Pro';
+      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Bold.ttf');
+      font-weight: 700;
+      font-style: normal;
+  }
+
+  @font-face {
+      font-family: 'Source Code Pro';
+      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-BoldItalic.ttf');
+      font-weight: 700;
+      font-style: italic;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../ttf/Rubik/static/Rubik-Regular.ttf');
+      font-weight: 400;
+      font-style: normal;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../ttf/Rubik/static/Rubik-Italic.ttf');
+      font-weight: 400;
+      font-style: italic;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../ttf/Rubik/static/Rubik-Bold.ttf');
+      font-weight: 700;
+      font-style: normal;
+  }
+
+  @font-face {
+      font-family: 'Rubik';
+      src: url('../ttf/Rubik/static/Rubik-BoldItalic.ttf');
+      font-weight: 700;
+      font-style: italic;
+  }
+}
+
+@mixin font-display {
+  font-family: #{Rubik, sans-serif};
+  font-weight: bold;
+  font-variant: all-small-caps;
+}
+
+@mixin font-sans-serif {
+  font-family: #{Rubik, sans-serif};
+}
+
+@mixin font-monospace {
+  font-family: #{'Source Code Pro', monospace};
+}
+
+// vim: set ft=scss:
