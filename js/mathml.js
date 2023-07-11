@@ -9,6 +9,7 @@ import { syntaxHighlighting } from '@codemirror/language';
 import * as $ from 'jquery';
 
 import { Slider, OffCanvas } from 'fdn/js/foundation';
+import { initDarkModeToggle } from './utils';
 
 import { mathjax } from 'mjx/mathjax';
 import { SerializedMmlVisitor } from 'mjx/core/MmlTree/SerializedMmlVisitor';
@@ -29,38 +30,23 @@ function renderSingleMml(math, visitor, doc) {
 
 function initControls() {
 
-  $( document ).foundation();
-
   $( '#fontSizeControl' ).on('moved.zf.slider', function(e) {
     const elem = $( e.currentTarget ).find('input').first();
     const newsize = elem.val().toString() + 'rem';
     $( ':root' ).css('--base-font-size', newsize);
   });
 
-  $( '#darkModeSwitch' ).prop('checked', false);
-  $( '#darkModeSwitch' ).on('change', function() {
-    const isDark = $( this ).prop('checked');
-    $( 'html' ).attr('data-theme', (isDark) ? 'dark' : 'light');
-  });
-
-  // https://stackoverflow.com/a/57795495/1552418
-  if (window.matchMedia) {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      $( '#darkModeSwitch' ).prop('checked', true);
-      $( 'html' ).attr('data-theme', 'dark');
-    } else {
-      $( '#darkModeSwitch' ).prop('checked', false);
-      $( 'html' ).attr('data-theme', 'light');
-    }
-
-    $( '#darkModeSwitch' ).trigger('change');
-  }
+  initDarkModeToggle();
 }
 
-export function launch(inputElement, outputElement, renderElement) {
+function initCodemirror() {
 
-  initControls();
+  const inputElement  = document.getElementById("editor");
+  const outputElement = document.getElementById("output");
+  const renderElement = document.getElementById("render");
 
+  // simple theme settings for a full-height editor with a caret that matches
+  // the current foreground color
   const fixedSizeTheme = EditorView.theme({
     '&': {
       'height': '100%',
@@ -73,6 +59,7 @@ export function launch(inputElement, outputElement, renderElement) {
     },
   });
 
+  // input state starts with a dummy example input
   let inputState = EditorState.create({
     doc: '$$ a^2 + b^2 = c^2 $$',
     extensions: [
@@ -83,6 +70,13 @@ export function launch(inputElement, outputElement, renderElement) {
     ]
   });
 
+  // attach a view of the input state to the document
+  let inputView = new EditorView({
+    state: inputState,
+    parent: inputElement,
+  });
+
+  // output state is not editable and has html syntax highlighting
   let outputState = EditorState.create({
     doc: '',
     extensions: [
@@ -95,16 +89,28 @@ export function launch(inputElement, outputElement, renderElement) {
     ]
   });
 
-  let inputView = new EditorView({
-    state: inputState,
-    parent: inputElement,
-  });
-
+  // attach a view of the output state to the document
   let outputView = new EditorView({
     state: outputState,
     parent: outputElement,
   });
 
+  return {
+    elements: {
+      input: inputElement,
+      output: outputElement,
+      render: renderElement,
+    },
+    views: {
+      input: inputView,
+      output: outputView,
+    },
+  };
+}
+
+function initMathJax() {
+
+  // mathjax one-time setup for tex input to mathml output
   const adaptor = new HTMLAdaptor(window);
   RegisterHTMLHandler(adaptor);
 
@@ -126,36 +132,54 @@ export function launch(inputElement, outputElement, renderElement) {
     processRefs: false,
   });
 
+  return {
+    visitor,
+    inputJax
+  };
+}
+
+function addRenderListener(cm, mjx) {
+
   $( '#renderButton' ).on('click', (e) => {
 
-    const buffer = inputView.state.sliceDoc();
-    const pseudo = document.createElement('p');
+    // create a dummy element with just the input content combined into
+    // a single string; codemirror input is split across several html
+    // elements for display, but mathjax works on the concatenated version
+    const buffer = cm.views.input.state.sliceDoc();
+    const pseudo = document.createElement('span');
     pseudo.innerHTML = buffer;
 
+    // build the mathjax document
     const mjxdoc = mathjax.document(pseudo, {
-      InputJax: inputJax,
+      InputJax: mjx.inputJax,
       renderActions: {
         assistiveMml: [],
         typeset: [
           150,
           (doc) => {
             for (let math of doc.math) {
-              renderSingleMml(math, visitor, document);
+              renderSingleMml(math, mjx.visitor, document);
             }
           },
           (math, doc) => {
-            renderSingleMml(math, visitor, document);
+            renderSingleMml(math, mjx.visitor, document);
           }
         ],
       },
     });
 
+    // render the document (this just converts the tex to mathml,
+    // it doesn't appear on the page yet)
     mjxdoc.render();
-    renderElement.replaceChildren();
 
+    // clear the render pane of any previous content
+    cm.elements.render.replaceChildren();
+
+    // loop through any math and add the mathml and new elements
+    // to their respective panes
     for (let math of mjxdoc.math) {
-      const len = outputView.state.doc.length;
-      const transaction = outputView.state.update({
+      const len = cm.views.output.state.doc.length;
+      const transaction = cm.views.output.state.update({
         changes: [
           {
             from: 0,
@@ -168,20 +192,42 @@ export function launch(inputElement, outputElement, renderElement) {
         ],
       });
 
-      outputView.dispatch(transaction);
-      renderElement.appendChild(math.typesetRoot);
+      cm.views.output.dispatch(transaction);
+      cm.elements.render.appendChild(math.typesetRoot);
     }
 
+    // make sure the button goes back to its unfocused state,
+    // indicating the render is complete
     e.target.blur();
   });
+}
+
+function addCopyListener(cm) {
 
   $( '#copyButton' ).on('click', (e) => {
 
-    const buffer = outputView.state.sliceDoc();
-    navigator.clipboard.writeText(buffer).then(() => {;
+    // put all the output text onto the user's clipboard
+    const buffer = cm.views.output.state.sliceDoc();
+    navigator.clipboard.writeText(buffer).then(() => {
       e.target.blur();
     });
   });
 }
+
+export default (function() {
+
+  $( document ).ready(() => {
+
+    // run only when document is fully loaded
+    initControls();
+    const cm = initCodemirror();
+    const mjx = initMathJax();
+    addRenderListener(cm, mjx);
+    addCopyListener(cm);
+
+    // putting this last may help with the "fouc" problem
+    $( document ).foundation();
+  });
+})();
 
 // vim: set ft=javascript:

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "npx webpack --color"
+    "build": "make -C lib && npx webpack --color"
   },
   "author": {
     "name": "Ellen M. Price",
@@ -24,8 +24,10 @@
     "@types/jquery": "^3.5.16",
     "@types/node": "^20.3.3",
     "babel-loader": "^9.1.2",
+    "buffer": "^6.0.3",
     "css-loader": "^6.8.1",
     "ejs-loader": "^0.5.0",
+    "exports-loader": "^4.0.0",
     "file-loader": "^6.2.0",
     "foundation-sites": "^6.7.5",
     "highlight.js": "^11.8.0",

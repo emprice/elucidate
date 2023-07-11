@@ -1,0 +1,5 @@
+*.css linguist-vendored
+*.ttf linguist-vendored
+*.svg linguist-vendored
+*.eot linguist-vendored
+*.woff linguist-vendored

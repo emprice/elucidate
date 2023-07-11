@@ -1,0 +1,59 @@
+@use "sass:map";
+
+@import 'theming';
+@import 'switch';
+@import 'slider';
+
+#app {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow: hidden;
+
+  @include breakpoint(medium up) {
+    img {
+      @include xy-cell($size: 12, $vertical: false);
+
+      display: block;
+      margin: 2rem 1rem;
+      flex: 0 1 auto;
+      min-height: 100px;
+    }
+
+    #controlsWrapper {
+      @include xy-cell($size: 12, $vertical: false);
+      flex: 0 1 auto;
+    }
+  }
+
+  @include breakpoint(small only) {
+    img {
+      @include xy-cell($size: 12, $vertical: false);
+
+      display: block;
+      margin: 2rem 1rem;
+      flex: 1 0 auto;
+      min-height: 100px;
+      width: auto;
+    }
+
+    #controlsWrapper {
+      @include xy-cell($size: 12, $vertical: false);
+      flex: 0 1 auto;
+    }
+  }
+
+  #controlsWrapper label {
+    flex: 0 0 auto;
+    height: 3rem;
+    font-size: xx-large;
+    @include font-display;
+  }
+
+  #lightnessThumb {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+  }
+}
+
+// vim: set ft=scss:

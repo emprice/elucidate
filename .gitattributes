@@ -1,3 +1,5 @@
+js/*.bin.js filter=lfs diff=lfs merge=lfs -text linguist-generated
+js/*.bin.wasm filter=lfs diff=lfs merge=lfs -text linguist-generated
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.woff filter=lfs diff=lfs merge=lfs -text
 *.eot filter=lfs diff=lfs merge=lfs -text

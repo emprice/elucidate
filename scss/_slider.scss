@@ -1,0 +1,35 @@
+@use "sass:map";
+
+.slider {
+  @include slider-container;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      background-color: map.get($theme, "slider-background");
+    }
+  }
+
+  margin: 0.5rem 0 0.5rem 0;
+}
+
+.slider-handle {
+  @include slider-handle;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      background-color: map.get($theme, "slider-handle-background");
+    }
+  }
+}
+
+.slider-fill {
+  @include slider-fill;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      background-color: map.get($theme, "slider-fill-background");
+    }
+  }
+}
+
+// vim: set ft=scss:

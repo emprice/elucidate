@@ -1,0 +1,164 @@
+@use "sass:map";
+
+@import 'theming';
+@import 'switch';
+@import 'slider';
+
+:root {
+  --base-font-size: 1rem;
+}
+
+@include breakpoint(medium) {
+  // these sizes are based on Foundation's default values but are
+  // converted from rem to percent so that they become relative to
+  // the parent container, assuming 1rem = 16px, a reasonable default
+
+  h1 {
+    font-size: 300%;
+  }
+
+  h2 {
+    font-size: 250%;
+  }
+
+  h3 {
+    font-size: 193.75%;
+  }
+
+  h4 {
+    font-size: 156.25%;
+  }
+
+  h5 {
+    font-size: 125%;
+  }
+
+  h6 {
+    font-size: 100%;
+  }
+}
+
+#app {
+
+  @include breakpoint(medium up) {
+    #editorWrapper {
+      @include xy-cell($size: 12, $vertical: false);
+    }
+
+    #renderWrapper, #outputWrapper {
+      @include xy-cell($size: 6, $vertical: false);
+    }
+
+    #outputWrapper #innerOutputWrapper {
+      height: calc(xy-cell-size-css($size: 6) - 3rem);
+    }
+
+    #editorWrapper, #renderWrapper, #outputWrapper {
+      @include xy-cell-base($size: grow);
+      @include xy-cell-gutters($gutters: 1rem, $gutter-type: margin,
+        $gutter-position: (top, bottom));
+      height: calc(50vh - 1rem);
+    }
+  }
+
+  @include breakpoint(small only) {
+    #editorWrapper {
+      @include xy-cell($size: 5, $vertical: true);
+      @include xy-cell-base($size: grow);
+    }
+
+    #renderWrapper {
+      @include xy-cell($size: 2, $vertical: true);
+      @include xy-cell-base($size: grow);
+      @include flex-order(0);
+    }
+
+    #outputWrapper {
+      @include xy-cell($size: 5, $vertical: true);
+      @include xy-cell-base($size: grow);
+      @include flex-order(1);
+
+      #innerOutputWrapper {
+        height: calc(xy-cell-size-css($size: 5) - 3rem);
+      }
+    }
+  }
+
+  #outputWrapper {
+
+    #innerOutputWrapper {
+      position: relative;
+      flex: 1 0 auto;
+
+      #output {
+        height: 100%;
+        font-size: 75%;
+      }
+
+      #copyButton {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 1rem;
+      }
+    }
+  }
+
+  #editorWrapper, #outputWrapper, #renderWrapper {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      flex: 0 0 auto;
+      height: 3rem;
+
+      font-size: xx-large;
+      @include font-display;
+    }
+  }
+
+  #editor, #output, #render {
+    flex: 1 0 auto;
+  }
+
+  #editor, #output {
+    border: 1px solid;
+  }
+
+  #render {
+    font-size: 200%;
+    overflow: scroll;
+  }
+
+  font-size: var(--base-font-size);
+}
+
+.cm-editor {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & .tok-typeName {
+      color: map.get($theme, "token-typename-color");
+    }
+
+    [data-theme="#{$name}"] & .tok-className {
+      color: map.get($theme, "token-classname-color");
+    }
+
+    [data-theme="#{$name}"] & .tok-propertyName {
+      color: map.get($theme, "token-propertyname-color");
+    }
+
+    [data-theme="#{$name}"] & {
+      border-color: map.get($theme, "body-font-color");
+    }
+  }
+
+  .tok-typeName, .tok-className, .tok-propertyName {
+    font-weight: bold;
+  }
+
+  .cm-scroller {
+    @include font-monospace;
+  }
+}
+
+// vim: set ft=scss:

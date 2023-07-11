@@ -1,0 +1,211 @@
+@use "sass:map";
+
+@use "nordtheme" as nord;
+@use "lightmode" as light;
+@use "darkmode" as dark;
+
+@import 'common';
+@import 'fonts';
+
+$themes: (
+  "light": light.$theme,
+  "dark": dark.$theme,
+);
+
+$titlebar-inner-height: 4rem;
+$titlebar-padding: 0.5rem;
+
+@import 'fdn/scss/foundation';
+
+@include foundation-global-styles;
+@include foundation-typography;
+@include foundation-xy-grid-classes;
+@include foundation-visibility-classes;
+@include foundation-title-bar;
+@include foundation-off-canvas;
+
+@include custom-font-definitions;
+
+body {
+  @include font-sans-serif;
+}
+
+@each $name, $theme in $themes {
+  [data-theme="#{$name}"] body {
+    color: map.get($theme, "body-font-color");
+    background-color: map.get($theme, "body-background");
+  }
+}
+
+#title {
+  @include breakpoint(small only) {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        color: map.get($theme, "titlebar-color");
+        background-color: map.get($theme, "titlebar-background");
+      }
+    }
+
+    display: flex;
+
+    & .title-bar-left {
+      flex: 0 1 100%;
+    }
+
+    & .title-bar-right {
+      flex: 1 0 auto;
+    }
+
+    & .title-bar-left, & .title-bar-right {
+      margin: auto;
+
+      button {
+        margin: auto;
+      }
+    }
+
+    height: $titlebar-inner-height;
+    padding: $titlebar-padding;
+  }
+
+  button {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] &.primary {
+        color: map.get($theme, "titlebar-button-color");
+        background-color: map.get($theme, "titlebar-button-background-primary");
+      }
+
+      [data-theme="#{$name}"] &.secondary {
+        color: map.get($theme, "titlebar-button-color");
+        background-color: map.get($theme, "titlebar-button-background-secondary");
+      }
+    }
+
+    max-height: $titlebar-inner-height;
+  }
+}
+
+#title .title-bar-title, #menu .menu-title {
+  @include font-display;
+  font-size: x-large;
+  line-height: 1;
+}
+
+#pageWrapperOuter {
+  @include breakpoint(medium up) {
+    @include xy-grid-container;
+  }
+
+  @include breakpoint(small only) {
+    @include off-canvas-wrapper;
+    height: calc(100vh - $titlebar-inner-height);
+  }
+}
+
+#pageWrapperInner {
+  @include breakpoint(medium up) {
+    @include xy-grid;
+  }
+}
+
+#menuWrapper {
+  @include breakpoint(medium up) {
+    @include in-canvas;
+    @include xy-cell($size: 2);
+
+    margin: 0;
+  }
+
+  @include breakpoint(small only) {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        @include off-canvas-base($fixed: false,
+          $background: map.get($theme, "offcanvas-background"));
+      }
+    }
+
+    @include off-canvas-basics;
+    @include off-canvas-base;
+    @include off-canvas-position($position: left);
+  }
+}
+
+#menu {
+  @include menu-base;
+  @include menu-expand;
+  @include menu-direction($dir: vertical);
+
+  padding: 1rem;
+
+  li {
+    margin: 0.5rem 0 0.5rem 0;
+  }
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      li label {
+        color: map.get($theme, "muted-label-color");
+      }
+    }
+  }
+
+  li label {
+    font-size: 0.9rem;
+    line-height: 1;
+    @include font-display;
+  }
+
+  li button, li .button {
+    margin: 1rem 0;
+    padding: 0.5rem;
+  }
+}
+
+#app {
+  @include breakpoint(medium up) {
+    @include xy-cell($size: 10, $vertical: false);
+    @include xy-cell-base($size: grow);
+    @include xy-grid($direction: horizontal, $wrap: true);
+
+    margin: 0;
+    height: 100vh;
+  }
+
+  @include breakpoint(small only) {
+    @include off-canvas-content;
+    @include xy-grid($direction: vertical, $wrap: false);
+
+    padding: 0 0.5rem;
+    height: calc(100vh - $titlebar-inner-height);
+  }
+}
+
+button {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] &.primary {
+      @include button($background: map.get($theme, "button-background-primary"),
+        $background-hover: auto, $color: map.get($theme, "button-color"),
+        $style: solid);
+
+      padding: 0.5rem;
+      font-size: 1rem;
+      @include font-display;
+    }
+
+    [data-theme="#{$name}"] &.secondary {
+      @include button($background: map.get($theme, "button-background-secondary"),
+        $background-hover: auto, $color: map.get($theme, "button-color"),
+        $style: solid);
+
+      padding: 0.5rem;
+      font-size: 1rem;
+      @include font-display;
+    }
+  }
+
+  span.icon {
+    padding-right: 0.5em;
+  }
+}
+
+// vim: set ft=scss:
