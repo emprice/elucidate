@@ -24,8 +24,6 @@ $titlebar-padding: 0.5rem;
 @include foundation-title-bar;
 @include foundation-off-canvas;
 
-@include custom-font-definitions;
-
 body {
   @include font-sans-serif;
 }
@@ -97,7 +95,6 @@ body {
   }
 
   @include breakpoint(small only) {
-    @include off-canvas-wrapper;
     height: calc(100vh - $titlebar-inner-height);
   }
 }
@@ -128,6 +125,8 @@ body {
     @include off-canvas-base;
     @include off-canvas-position($position: left);
   }
+
+  min-width: 150px;
 }
 
 #menu {
@@ -150,9 +149,9 @@ body {
   }
 
   li label {
+    @include font-display;
     font-size: 0.9rem;
     line-height: 1;
-    @include font-display;
   }
 
   li button, li .button {
@@ -180,32 +179,48 @@ body {
   }
 }
 
+#body {
+  @include breakpoint(medium up) {
+    @include xy-cell($size: 10, $vertical: false);
+    @include xy-cell-base($size: auto);
+    margin: 1rem;
+  }
+
+  @include breakpoint(small only) {
+    @include off-canvas-content;
+    padding: 1rem;
+  }
+
+  font-size: 110%;
+}
+
 button {
+  @include font-display;
+  padding: 0.5rem;
+  font-size: 1rem;
+
   @each $name, $theme in $themes {
     [data-theme="#{$name}"] &.primary {
       @include button($background: map.get($theme, "button-background-primary"),
         $background-hover: auto, $color: map.get($theme, "button-color"),
         $style: solid);
-
-      padding: 0.5rem;
-      font-size: 1rem;
-      @include font-display;
     }
 
     [data-theme="#{$name}"] &.secondary {
       @include button($background: map.get($theme, "button-background-secondary"),
         $background-hover: auto, $color: map.get($theme, "button-color"),
         $style: solid);
-
-      padding: 0.5rem;
-      font-size: 1rem;
-      @include font-display;
     }
   }
 
   span.icon {
     padding-right: 0.5em;
   }
+}
+
+h1, .h1 {
+  @include font-display;
+  font-size: 175%;
 }
 
 // vim: set ft=scss:

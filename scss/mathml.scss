@@ -109,11 +109,10 @@
     flex-direction: column;
 
     label {
+      @include font-display;
       flex: 0 0 auto;
       height: 3rem;
-
       font-size: xx-large;
-      @include font-display;
     }
   }
 

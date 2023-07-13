@@ -1,13 +1,15 @@
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssoWebpackPlugin = require('csso-webpack-plugin').default;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const apps = [
   {
     name: 'mathml',
     title: 'LaTeX to MathML tool',
-    template: 'ejs/mathml.ejs',
+    template: './ejs/mathml.ejs',
     stylesheets: [
       './scss/mathml.scss',
     ],
@@ -15,12 +17,28 @@ const apps = [
   {
     name: 'colormap',
     title: 'Colormap designer tool',
-    template: 'ejs/colormap.ejs',
+    template: './ejs/colormap.ejs',
     stylesheets: [
       './scss/colormap.scss',
     ],
     otherImports: [
       './js/tristimulus.bin.wasm',
+    ],
+  },
+  {
+    name: 'tutorial/basic',
+    title: 'HTML tutorial',
+    template: './ejs/tutorial.ejs',
+    script: './js/tutorial.js',
+    libraryName: 'tutorial',
+    stylesheets: [
+      './scss/tutorial.scss',
+    ],
+    partials: [
+      {
+        name: 'body',
+        filename: path.resolve(__dirname, './ejs/partials/basic.html'),
+      },
     ],
   },
 ];
@@ -35,11 +53,11 @@ const entryPoints = apps.reduce((acc, cur) => {
         (cur.script || `./js/${cur.name}.js`),
       ],
       library: {
-        name: cur.name,
+        name: (cur.libraryName || cur.name),
         type: 'var',
       },
     },
-  }
+  };
 }, {});
 
 console.log(entryPoints);
@@ -49,6 +67,7 @@ const htmlPlugins = apps.map((obj) => {
     filename: `${obj.name}.html`,
     template: obj.template,
     inject: false,
+    publicPath: '/',
     chunks: [
       obj.name,
       'defaultVendors',
@@ -56,6 +75,12 @@ const htmlPlugins = apps.map((obj) => {
     templateParameters: {
       entryName: obj.name,
       pageTitle: obj.title,
+      partials: (obj.partials || []).reduce((acc, cur) => {
+        return {
+          ...acc,
+          [cur.name]: fs.readFileSync(cur.filename),
+        };
+      }, {}),
     }
   });
 });
@@ -71,8 +96,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts-[name][ext]',
+        }
       },
       {
         test: /compute\.js$/,
@@ -89,7 +117,7 @@ module.exports = {
         test: /\.wasm$/,
         type: 'asset/resource',
         generator: {
-          filename: '[name].wasm',
+          filename: 'assets/[name].wasm',
         }
       },
       {
@@ -144,7 +172,7 @@ module.exports = {
       cacheGroups: {
         defaultVendors: {
           filename(pathData) {
-            return `${pathData.chunk.name}~bundle.js`;
+            return `assets/${pathData.chunk.name}~bundle.js`;
           },
           name(module, chunks, cacheGroupKey) {
             const moduleFileName = module
@@ -160,22 +188,27 @@ module.exports = {
         },
         common: {
           filename(pathData) {
-            return `${pathData.chunk.name}.js`;
+            return `assets/${pathData.chunk.name}.js`;
           },
           name(module, chunks, cacheGroupKey) {
-            const allChunksNames = chunks.map((item) => item.name).join('~');
+            const allChunksNames = chunks.map((item) => {
+              return item.name.split('/')[0];
+            }).join('~');
             return `common-${allChunksNames}`;
           },
           test(module) {
             return module.type === 'javascript/auto';
           },
+          minChunks: 2,
         },
         styles: {
           filename(pathData) {
-            return `${pathData.chunk.name}.css`;
+            return `assets/${pathData.chunk.name}.css`;
           },
           name(module, chunks, cacheGroupKey) {
-            const allChunksNames = chunks.map((item) => item.name).join('~');
+            const allChunksNames = chunks.map((item) => {
+              return item.name.split('/')[0];
+            }).join('~');
             return `styles-${allChunksNames}`;
           },
           test(module) {
@@ -204,12 +237,17 @@ module.exports = {
   },
   plugins: [
     new webpack.ProgressPlugin(),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'assets/[name].css',
+    }),
+    new CssoWebpackPlugin(),
     ...htmlPlugins,
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js',
+    filename: (pathData) => {
+      return `assets/${pathData.chunk.name.split('/')[0]}.bundle.js`;
+    },
     clean: true,
   }
 };

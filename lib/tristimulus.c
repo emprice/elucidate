@@ -7,9 +7,9 @@
 #include "gsl/gsl_matrix.h"
 #include "gsl/gsl_blas.h"
 
-#define XN      (95.0489)
-#define YN      (100.)
-#define ZN      (108.8840)
+#define XN      (0.950489)
+#define YN      (1.)
+#define ZN      (1.088840)
 
 #define CMAX    (100.)
 #define CMIN    (0.)
@@ -64,6 +64,35 @@ double clamp(double t)
 }
 
 EMSCRIPTEN_KEEPALIVE
+void xyzToRgb(double L, double u, double v,
+    double *xyz, double *rgb, unsigned char *hex)
+{
+    double C, h, a, b;
+
+    gsl_matrix_const_view view1 = gsl_matrix_const_view_array(matrixInverseData, 3, 3);
+    gsl_vector_const_view view2 = gsl_vector_const_view_array(xyz, 3);
+    gsl_vector_view view3 = gsl_vector_view_array(rgb, 3);
+
+    h = (HMAX - HMIN) * u + HMIN;
+    C = (CMAX - CMIN) * v + CMIN;
+
+    a = C * cos(h);
+    b = C * sin(h);
+
+    xyz[0] = XN * finv((L + 16) / 116. + a / 500.);
+    xyz[1] = YN * finv((L + 16) / 116.);
+    xyz[2] = ZN * finv((L + 16) / 116. - b / 200.);
+
+    // https://en.wikipedia.org/wiki/CIE_1931_color_space#Construction_of_the_CIE_XYZ_color_space_from_the_Wright%E2%80%93Guild_data
+    gsl_blas_dgemv(CblasNoTrans, 1, &view1.matrix,
+        &view2.vector, 0, &view3.vector);
+
+    hex[0] = 0xff & lround(255 * clamp(rgb[0]));
+    hex[1] = 0xff & lround(255 * clamp(rgb[1]));
+    hex[2] = 0xff & lround(255 * clamp(rgb[2]));
+}
+
+EMSCRIPTEN_KEEPALIVE
 void xyzToRgbArray(double L, double *xyz, double *rgb,
     unsigned char *png, size_t nx, size_t nz)
 {
@@ -96,13 +125,9 @@ void xyzToRgbArray(double L, double *xyz, double *rgb,
             double b = C * sin(h);
 
             // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIELAB_to_CIEXYZ
-            double x = XN * finv((L + 16) / 116. + a / 500.);
-            double y = YN * finv((L + 16) / 116.);
-            double z = ZN * finv((L + 16) / 116. - b / 200.);
-
-            (*p1++) = x / 100.;
-            (*p1++) = y / 100.;
-            (*p1++) = z / 100.;
+            (*p1++) = XN * finv((L + 16) / 116. + a / 500.);
+            (*p1++) = YN * finv((L + 16) / 116.);
+            (*p1++) = ZN * finv((L + 16) / 116. - b / 200.);
         }
     }
 

@@ -1,0 +1,82 @@
+<h1>Basic HTML syntax</h1>
+<div class="callout warning">
+  <div><span class="md-warning"></span></div>
+  <p>For the purposes of illustration, this page alone contains some invalid
+     HTML tags, like <code class="language-html">&lt;foo&gt;&lt;/foo&gt;</code>,
+     and invalid LaTeX markup. For a list of all the valid HTML5 tags, consult
+     <a href="https://www.w3.org/TR/2012/WD-html-markup-20121025/elements.html">the official specification</a>.</p>
+</div>
+<p>If you are already familiar with LaTeX, you have probably encountered a few
+   ways of grouping text for specific formatting.</p>
+<pre><code class="language-latex">\begin{foo}
+  This text is in an environment. It always has a "begin" command and a
+  matching "end" command.
+\end{foo}
+
+\bar{This text is just wrapped in a command. This block ends at the
+closing curly brace.}
+
+\section{Baz is the best}
+The section command implicitly ends at the start of the next section,
+or perhaps the end of the document. It doesn't have any explicit
+marking that closes it.</code></pre>
+<p>HTML tends to be much more explicit, and the pattern for opening and closing
+   a block is almost always the same.</p>
+<pre><code class="language-html">&lt;foo&gt;This text is the content of this "foo" tag. It gets formatted according
+     to the styling of the "foo" element but may also have class- or
+     instance-specific styling.&lt;/foo&gt;
+&lt;bar&gt;You can nest practically anything.
+  &lt;baz&gt;Like this! This text is formatted according to global styling
+       for the "baz" element, then styling for any classes, then
+       any inline styles. Since it is nested in a "bar," the stylesheet
+       can also specify styles for all "baz" elements inside "bar"
+       elements.&lt;/baz&gt;
+  Back in the "bar" element but outside the "baz" element.
+  Remember to close your tags! HTML does not enforce any particular
+  whitespace conventions, but indenting can help you see how elements
+  are nested.&lt;/bar&gt;</code></pre>
+<p>If the initial tag is <code class="language-html">&lt;qux&gt;</code>, then
+   the closing tag will be <code class="language-html">&lt;/qux&gt;</code>.</p>
+<div class="callout tip">
+  <div><span class="md-tip"></span></div>
+  <p>The <code class="language-plaintext">/</code> character is a
+     <strong>forward slash</strong>. It is <strong>not</strong> a backslash.
+     Every time you incorrectly call it a backslash, a programmer somewhere on
+     Earth silently weeps for humanity.</p>
+</div>
+<p>Many start tags take additional options as key-value pairs inside the angle
+   brackets, and these are <em>never</em> repeated in the end tag. Not every key
+   is valid inside every HTML tag, but the standard is very clear about which
+   keys and values are valid for every tag.</p>
+<div class="callout note">
+  <div><span class="md-note"></span></div>
+  <p>There are a <em>very few</em> cases in HTML where a closing tag cannot be
+     given. In those cases, the tag by definition cannot have any contents, so
+     an explicit closing is unnecessary. These tags denote
+     <a href="https://www.w3.org/TR/2012/WD-html-markup-20121025/syntax.html#void-element">void elements</a>
+     and include:</p>
+  <pre><code class="language-html">&lt;area /&gt;, &lt;base /&gt;, &lt;br /&gt;, &lt;col /&gt;, &lt;command /&gt;, &lt;embed /&gt;, &lt;hr /&gt;, &lt;img /&gt;, &lt;input /&gt;,
+&lt;keygen /&gt;, &lt;link /&gt;, &lt;meta /&gt;, &lt;param /&gt;, &lt;source /&gt;, &lt;track /&gt;, &lt;wbr /&gt;</code></pre>
+  <p>None of these tags are likely to be relevant in everyday use by academics,
+     with the possible exceptions of <code class="language-html">&lt;br /&gt;</code>,
+     which indicates a manual linebreak, and <code class="language-html">&lt;img /&gt;</code>,
+     which embeds static images.</p>
+  <p>The <code class="language-html">&lt;p&gt;&lt;/p&gt;</code> tag is a better
+     option than <code class="language-html">&lt;br /&gt;</code> if the linebreak
+     simply indicates a new paragraph.</p>
+</div>
+<p>The angle brackets &lt; and &gt; are special punctuation in HTML and should
+   not be used in regular text; the parser will try to interpret whatever
+   follows as if it were a tag. HTML has a special syntax for entering those
+   characters as well as many others in a way that does not confuse the parser.</p>
+<pre><code class="language-html">&lt;p class="joke"&gt;Why is 6 afraid of 7? Because 7 &amp;lt; 8 &amp;lt; 9&lt;/p&gt;</code></pre>
+<p>Some common characters you might use include <code class="language-html">&amp;lt;</code>
+   (less than), <code class="language-html">&amp;gt;</code> (greater than),
+   <code class="language-html">&amp;ndash;</code> (en dash, like
+   <code class="language-latex">--</code>), <code class="language-html">&amp;mdash;</code>
+   (em dash, like <code class="language-latex">---</code>),
+   <code class="language-html">&amp;ldquo;</code> (left double quote, like
+   <code class="language-latex">``</code>), and <code class="language-html">&amp;rdquo;</code>
+   (right double quote, like <code class="language-latex">''</code>). Finally,
+   since the ampersand itself is a special character, you enter an ampersand in
+   text with a similar code, <code class="language-html">&amp;amp;</code>.</p>

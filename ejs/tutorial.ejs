@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= htmlWebpackPlugin.options.templateParameters.pageTitle %></title>
+  <!-- all stylesheets loaded here -->
+  <% for (const styleName of htmlWebpackPlugin.files.css) { %>
+  <link rel="stylesheet" href="<%= styleName %>" />
+  <% } %>
+</head>
+<body>
+  <div id="stickyContainer" data-sticky-container>
+    <div id="title" class="sticky title-bar show-for-small-only" data-sticky data-margin-top="0">
+      <div class="title-bar-left">
+        <span class="title-bar-title"><%= htmlWebpackPlugin.options.templateParameters.pageTitle %></span>
+      </div>
+      <div class="title-bar-right">
+        <button type="button" class="primary button" id="menuButton" data-toggle="menuWrapper">Menu</button>
+      </div>
+    </div>
+  </div>
+  <div id="pageWrapperOuter">
+    <div id="pageWrapperInner">
+      <div id="menuWrapper" class="off-canvas" data-off-canvas data-close-on-click="true" data-in-canvas-on="medium">
+        <ul id="menu">
+          <li class="hide-for-small-only"><span class="menu-title"><%= htmlWebpackPlugin.options.templateParameters.pageTitle %></span></li>
+          <li>
+            <label id="fontSizeLabel" for="fontSizeThumb">Font size multiplier</label>
+            <div id="fontSizeControl" class="slider" data-slider data-initial-start="1" data-start="0.5" data-end="3" data-step="0.25" role="presentation">
+              <span id="fontSizeThumb" name="fontSizeThumb" aria-labelledby="fontSizeLabel" class="slider-handle" data-slider-handle role="slider" tabindex="0"></span>
+              <span class="slider-fill" data-slider-fill role="presentation"></span>
+              <input type="hidden" id="fontSizeInput">
+            </div>
+          </li>
+          <li>
+            <label id="darkModeLabel" for="darkModeSwitch">Toggle dark mode</label>
+            <div class="switch" id="darkModeControl">
+              <input class="switch-input" id="darkModeSwitch" name="darkModeSwitch" aria-labelledby="darkModeLabel" type="checkbox">
+              <label class="switch-paddle" for="darkModeSwitch"></label>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div id="body" class="off-canvas-content" data-off-canvas-content>
+        <%= htmlWebpackPlugin.options.templateParameters.partials.body %>
+      </div>
+    </div>
+  </div>
+  <% for (const scriptName of htmlWebpackPlugin.files.js) { %>
+  <script src="<%= scriptName %>" type="text/javascript"></script>
+  <% } %>
+</body>
+</html>

@@ -42,6 +42,12 @@ function imageDataToUri(array) {
   return prefix + buffer.toString('base64');
 }
 
+function colorDataToHex(array) {
+
+  const buffer = Buffer.from(array);
+  return '#' + buffer.toString('hex');
+}
+
 export default (function() {
 
   $( document ).ready(() => {
@@ -58,18 +64,49 @@ export default (function() {
       const numExtraBytes = 68;
       const filteredDataSize = (4 * nx + 1) * ny;
 
-      // when the wasm is ready, compute!
+      // allocate memory accessible from both wasm and js
       const xyz = allocateDoubleArray(inst, 3 * nx * ny);
       const rgb = allocateDoubleArray(inst, 3 * nx * ny);
       const png = allocateCharArray(inst, filteredDataSize + numExtraBytes);
 
-      inst._xyzToRgbArray(75., xyz.ptr, rgb.ptr, png.ptr, nx, ny);
-      const dataUri = imageDataToUri(png.array);
-      $( '#test' ).attr('src', dataUri);
+      const xyz1 = allocateDoubleArray(inst, 3);
+      const rgb1 = allocateDoubleArray(inst, 3);
+      const hex1 = allocateCharArray(inst, 3);
 
-      freeArray(inst, xyz);
-      freeArray(inst, rgb);
-      freeArray(inst, png);
+      // when the wasm is ready, compute an initial image
+      inst._xyzToRgbArray(75, xyz.ptr, rgb.ptr, png.ptr, nx, ny);
+      const dataUri = imageDataToUri(png.array);
+      $( '#colors' ).attr('src', dataUri);
+      $( '#zoom' ).css({
+        backgroundColor: 'rgb(0 0 0 / 0%)'
+      });
+
+      $( '#colors' ).on('mousemove', (e) => {
+        const x = e.offsetX / $( '#colors' ).width();
+        const y = e.offsetY / $( '#colors' ).height();
+
+        inst._xyzToRgb(75, x, y, xyz1.ptr, rgb1.ptr, hex1.ptr);
+        const color = colorDataToHex(hex1.array);
+        $( '#zoom' ).css({
+          backgroundColor: color,
+        });
+      });
+
+      $( '#colors' ).on('mouseleave', () => {
+        $( '#zoom' ).css({
+          backgroundColor: 'rgb(0 0 0 / 0%)'
+        });
+      });
+
+      $( window ).on('unload', () => {
+        freeArray(inst, xyz);
+        freeArray(inst, rgb);
+        freeArray(inst, png);
+
+        freeArray(inst, xyz1);
+        freeArray(inst, rgb1);
+        freeArray(inst, hex1);
+      });
     });
 
     // putting this last may help with the "fouc" problem

@@ -11,15 +11,12 @@
 
   @include breakpoint(medium up) {
     img {
-      @include xy-cell($size: 12, $vertical: false);
-
       display: block;
-      margin: 2rem 1rem;
-      flex: 0 1 auto;
-      min-height: 100px;
+      width: 100%;
+      height: 100%;
     }
 
-    #controlsWrapper {
+    #controlsWrapper, #renderWrapper {
       @include xy-cell($size: 12, $vertical: false);
       flex: 0 1 auto;
     }
@@ -27,12 +24,13 @@
 
   @include breakpoint(small only) {
     img {
-      @include xy-cell($size: 12, $vertical: false);
-
       display: block;
-      margin: 2rem 1rem;
+      width: 100%;
+      height: 100%;
+    }
+
+    #renderWrapper {
       flex: 1 0 auto;
-      min-height: 100px;
       width: auto;
     }
 
@@ -42,11 +40,26 @@
     }
   }
 
+  #renderWrapper {
+    margin: 2rem 1rem;
+    min-height: 100px;
+    position: relative;
+  }
+
+  #zoom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+  }
+
   #controlsWrapper label {
+    @include font-display;
     flex: 0 0 auto;
     height: 3rem;
     font-size: xx-large;
-    @include font-display;
   }
 
   #lightnessThumb {

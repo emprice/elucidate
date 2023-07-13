@@ -1,0 +1,211 @@
+@use "sass:map";
+@use "sass:color";
+
+@import 'theming';
+@import 'switch';
+@import 'slider';
+
+@include foundation-sticky;
+
+$block-margin: 1rem;
+
+@include breakpoint(small only) {
+  #stickyContainer {
+    overflow: hidden;
+  }
+
+  #pageWrapperOuter {
+    overflow-y: scroll;
+  }
+}
+
+// all paragraphs
+p {
+  line-height: 1.5;
+}
+
+pre {
+  @include breakpoint(medium up) {
+    white-space: pre-wrap;
+  }
+
+  @include breakpoint(small only) {
+    white-space: pre-line;
+  }
+}
+
+// syntax highlighting
+code, code.hljs {
+  @include font-monospace;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & .hljs-keyword {
+      color: map.get($theme, "token-keyword-color");
+    }
+
+    [data-theme="#{$name}"] & .hljs-name {
+      color: map.get($theme, "token-name-color");
+    }
+
+    [data-theme="#{$name}"] & .hljs-symbol {
+      color: map.get($theme, "token-symbol-color");
+    }
+
+    [data-theme="#{$name}"] & .hljs-tag {
+      color: map.get($theme, "body-font-color");
+    }
+  }
+
+  .hljs-keyword {
+    font-weight: bold;
+  }
+}
+
+// highlighted inline code
+p code, p code.hljs {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "body-font-color");
+      background-color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-background"), $weight: 10%);
+      border: 1px solid color.mix(map.get($theme, "body-font-color"),
+        map.get($theme, "body-background"), $weight: 60%);
+      border-radius: 5px;
+    }
+  }
+
+  line-height: 1;
+  display: inline-block;
+  padding: 2px !important;
+}
+
+// highlighted code block
+pre code, pre code.hljs {
+  line-height: 1.2;
+  margin-bottom: $block-margin;
+  padding: 1rem !important;
+  display: block;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "body-font-color");
+      background-color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-background"), $weight: 5%);
+      border: 1px solid color.mix(map.get($theme, "body-font-color"),
+        map.get($theme, "body-background"), $weight: 50%);
+    }
+  }
+}
+
+$admonitions: (
+  "todo",
+  "caution",
+  "warning",
+  "danger",
+  "attention",
+  "hint",
+  "important",
+  "note",
+  "seealso",
+  "tip",
+);
+
+.callout {
+
+  padding: 1rem;
+  margin-bottom: $block-margin;
+
+  // paragraphs inside callouts
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  // callout title block
+  & > div {
+    @include font-display;
+    margin-bottom: 0.5rem;
+
+    span {
+      margin-right: 0.5em;
+      top: 0.15em;
+      position: relative;
+      display: inline-block;
+    }
+  }
+
+  @each $name, $theme in $themes {
+    @each $admonition in $admonitions {
+      [data-theme="#{$name}"] &.#{$admonition} {
+        background-color: map.get($theme, "palette-#{$admonition}");
+
+        // inline code nested inside admonitions get slightly different styling
+        p code, p code.hljs {
+          background-color: color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-background"), $weight: 10%);
+          border: 1px solid color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-background"), $weight: 60%);
+        }
+
+        // block code inside admonitions get different margins
+        pre code, pre code.hljs {
+          margin: 0.5rem 0;
+        }
+
+        a {
+          color: color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-font-color"), $weight: 20%);
+            text-decoration: underline dotted;
+        }
+
+        a:hover, a:active {
+          color: color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-font-color"), $weight: 10%);
+            text-decoration: underline solid;
+        }
+      }
+    }
+  }
+
+  &.todo > div::after {
+    content: "TODO";
+  }
+
+  &.caution > div::after {
+    content: "Caution";
+  }
+
+  &.warning > div::after {
+    content: "Warning";
+  }
+
+  &.danger > div::after {
+    content: "Danger";
+  }
+
+  &.attention > div::after {
+    content: "Attention";
+  }
+
+  &.hint > div::after {
+    content: "Hint";
+  }
+
+  &.important > div::after {
+    content: "Important";
+  }
+
+  &.note > div::after {
+    content: "Note";
+  }
+
+  &.seealso > div::after {
+    content: "See also";
+  }
+
+  &.tip > div::after {
+    content: "Tip";
+  }
+}
+
+// vim: set ft=scss:

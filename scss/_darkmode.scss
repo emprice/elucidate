@@ -9,9 +9,18 @@ $-body-font-color: $white;
 
 $-palette-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
 $-palette-secondary: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
-$-palette-success: map.get(nord.$aurora, "green");
-$-palette-warning: map.get(nord.$aurora, "orange");
-$-palette-alert: map.get(nord.$aurora, "red");
+
+// admonition coloring
+$-palette-todo: color.mix(map.get(nord.$aurora, "purple"), $-body-background, $weight: 30%);
+$-palette-caution: color.mix(map.get(nord.$aurora, "yellow"), $-body-background, $weight: 30%);
+$-palette-warning: color.mix(map.get(nord.$aurora, "orange"), $-body-background, $weight: 30%);
+$-palette-danger: color.mix(map.get(nord.$aurora, "red"), $-body-background, $weight: 30%);
+$-palette-attention: color.mix(map.get(nord.$aurora, "red"), $-body-background, $weight: 30%);
+$-palette-hint: color.mix(map.get(nord.$aurora, "green"), $-body-background, $weight: 30%);
+$-palette-important: color.mix(map.get(nord.$frost, "greenish"), $-body-background, $weight: 30%);
+$-palette-note: color.mix(map.get(nord.$frost, "light"), $-body-background, $weight: 30%);
+$-palette-seealso: color.mix(map.get(nord.$frost, "medium"), $-body-background, $weight: 30%);
+$-palette-tip: color.mix(map.get(nord.$aurora, "green"), $-body-background, $weight: 30%);
 
 $-muted-label-color: $light-gray;
 
@@ -36,16 +45,26 @@ $-titlebar-button-background-primary: color.scale(map.get(nord.$aurora, "purple"
 $-titlebar-button-background-secondary: color.scale(map.get(nord.$frost, "dark"), $lightness: -40%);
 
 $-token-typename-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
+$-token-name-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
 $-token-classname-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
 $-token-propertyname-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
+$-token-keyword-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
+$-token-symbol-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
 
 $theme: (
   "palette-primary": $-palette-primary,
   "palette-secondary": $-palette-secondary,
 
-  "palette-success": $-palette-success,
+  "palette-todo": $-palette-todo,
+  "palette-caution": $-palette-caution,
   "palette-warning": $-palette-warning,
-  "palette-alert": $-palette-alert,
+  "palette-danger": $-palette-danger,
+  "palette-attention": $-palette-attention,
+  "palette-hint": $-palette-hint,
+  "palette-important": $-palette-important,
+  "palette-note": $-palette-note,
+  "palette-seealso": $-palette-seealso,
+  "palette-tip": $-palette-tip,
 
   "body-background": $-body-background,
   "body-font-color": $-body-font-color,
@@ -70,8 +89,11 @@ $theme: (
   "titlebar-button-background-secondary": $-titlebar-button-background-secondary,
 
   "token-typename-color": $-token-typename-color,
+  "token-name-color": $-token-name-color,
   "token-classname-color": $-token-classname-color,
   "token-propertyname-color": $-token-propertyname-color,
+  "token-keyword-color": $-token-keyword-color,
+  "token-symbol-color": $-token-symbol-color,
 );
 
 // vim: set ft=scss:

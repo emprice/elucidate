@@ -1,62 +1,66 @@
 @import '../ttf/foundation-icons/foundation-icons.css';
 
-@mixin custom-font-definitions {
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
 
-  @font-face {
-      font-family: 'Source Code Pro';
-      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Regular.ttf');
-      font-weight: 400;
-      font-style: normal;
-  }
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Italic.ttf');
+    font-weight: 400;
+    font-style: italic;
+}
 
-  @font-face {
-      font-family: 'Source Code Pro';
-      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Italic.ttf');
-      font-weight: 400;
-      font-style: italic;
-  }
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Bold.ttf');
+    font-weight: 700;
+    font-style: normal;
+}
 
-  @font-face {
-      font-family: 'Source Code Pro';
-      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Bold.ttf');
-      font-weight: 700;
-      font-style: normal;
-  }
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url('../ttf/Source_Code_Pro/static/SourceCodePro-BoldItalic.ttf');
+    font-weight: 700;
+    font-style: italic;
+}
 
-  @font-face {
-      font-family: 'Source Code Pro';
-      src: url('../ttf/Source_Code_Pro/static/SourceCodePro-BoldItalic.ttf');
-      font-weight: 700;
-      font-style: italic;
-  }
+@font-face {
+    font-family: 'Rubik';
+    src: url('../ttf/Rubik/static/Rubik-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
 
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../ttf/Rubik/static/Rubik-Regular.ttf');
-      font-weight: 400;
-      font-style: normal;
-  }
+@font-face {
+    font-family: 'Rubik';
+    src: url('../ttf/Rubik/static/Rubik-Italic.ttf');
+    font-weight: 400;
+    font-style: italic;
+}
 
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../ttf/Rubik/static/Rubik-Italic.ttf');
-      font-weight: 400;
-      font-style: italic;
-  }
+@font-face {
+    font-family: 'Rubik';
+    src: url('../ttf/Rubik/static/Rubik-Bold.ttf');
+    font-weight: 700;
+    font-style: normal;
+}
 
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../ttf/Rubik/static/Rubik-Bold.ttf');
-      font-weight: 700;
-      font-style: normal;
-  }
+@font-face {
+    font-family: 'Rubik';
+    src: url('../ttf/Rubik/static/Rubik-BoldItalic.ttf');
+    font-weight: 700;
+    font-style: italic;
+}
 
-  @font-face {
-      font-family: 'Rubik';
-      src: url('../ttf/Rubik/static/Rubik-BoldItalic.ttf');
-      font-weight: 700;
-      font-style: italic;
-  }
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../ttf/material-icons/MaterialIcons-Regular.ttf') format('truetype');
 }
 
 @mixin font-display {
@@ -71,6 +75,38 @@
 
 @mixin font-monospace {
   font-family: #{'Source Code Pro', monospace};
+}
+
+.md {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  &-warning::before {
+    // warning
+    @extend .md;
+    content: "\e002";
+  }
+
+  &-tip::before {
+    // thumb up
+    @extend .md;
+    content: "\e8dc";
+  }
+
+  &-note::before {
+    // sticky note 2
+    @extend .md;
+    content: "\f1fc";
+  }
 }
 
 // vim: set ft=scss:
