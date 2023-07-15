@@ -6,6 +6,7 @@
 @import 'slider';
 
 @include foundation-sticky;
+@include foundation-table;
 
 $block-margin: 1rem;
 
@@ -19,9 +20,77 @@ $block-margin: 1rem;
   }
 }
 
-// all paragraphs
-p {
+@each $name, $theme in $themes {
+  [data-theme="#{$name}"] tbody,
+  [data-theme="#{$name}"] thead,
+  [data-theme="#{$name}"] tfoot {
+    background-color: map.get($theme, "body-background");
+  }
+
+  [data-theme="#{$name}"] tr:hover {
+    background-color: color.mix(map.get($theme, "body-font-color"),
+      map.get($theme, "body-background"), 2.5%);
+  }
+
+  [data-theme="#{$name}"] tr:nth-child(2n) {
+    background-color: color.mix(map.get($theme, "body-font-color"),
+      map.get($theme, "body-background"), 5%);
+  }
+
+  [data-theme="#{$name}"] tr:nth-child(2n):hover {
+    background-color: color.mix(map.get($theme, "body-font-color"),
+      map.get($theme, "body-background"), 7.5%);
+  }
+}
+
+td {
+  vertical-align: top;
+}
+
+th {
+  vertical-align: middle;
+}
+
+// headings
+.permalink {
+  display: inline-block;
+
+  &:hover::after {
+    content: '\00b6';
+  }
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & a {
+      color: map.get($theme, "body-font-color");
+      text-decoration: none;
+    }
+
+    [data-theme="#{$name}"] & a:hover,
+    [data-theme="#{$name}"] & a:active {
+      cursor: pointer;
+      text-decoration: none;
+    }
+  }
+}
+
+// all text containers
+p, li {
   line-height: 1.5;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & a {
+      color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-font-color"), $weight: 30%);
+        text-decoration: underline dotted;
+    }
+
+    [data-theme="#{$name}"] & a:hover,
+    [data-theme="#{$name}"] & a:active {
+      color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-font-color"), $weight: 20%);
+        text-decoration: underline solid;
+    }
+  }
 }
 
 pre {
@@ -40,29 +109,49 @@ code, code.hljs {
 
   @each $name, $theme in $themes {
     [data-theme="#{$name}"] & .hljs-keyword {
-      color: map.get($theme, "token-keyword-color");
+      color: map.get($theme, "token-keyword-color") !important;
     }
 
     [data-theme="#{$name}"] & .hljs-name {
-      color: map.get($theme, "token-name-color");
+      color: map.get($theme, "token-name-color") !important;
     }
 
     [data-theme="#{$name}"] & .hljs-symbol {
-      color: map.get($theme, "token-symbol-color");
+      color: map.get($theme, "token-symbol-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-meta {
+      color: map.get($theme, "token-meta-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-comment {
+      color: map.get($theme, "token-comment-color") !important;
     }
 
     [data-theme="#{$name}"] & .hljs-tag {
-      color: map.get($theme, "body-font-color");
+      color: map.get($theme, "body-font-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-attr {
+      color: map.get($theme, "token-attr-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-string {
+      color: map.get($theme, "token-string-color") !important;
     }
   }
 
   .hljs-keyword {
-    font-weight: bold;
+    font-weight: bold !important;
+  }
+
+  .hljs-comment {
+    font-style: italic !important;
   }
 }
 
 // highlighted inline code
-p code, p code.hljs {
+p code, p code.hljs, li code, li code.hljs {
   @each $name, $theme in $themes {
     [data-theme="#{$name}"] & {
       color: map.get($theme, "body-font-color");
@@ -155,13 +244,13 @@ $admonitions: (
         a {
           color: color.mix(map.get($theme, "palette-#{$admonition}"),
             map.get($theme, "body-font-color"), $weight: 20%);
-            text-decoration: underline dotted;
+          text-decoration: underline dotted;
         }
 
         a:hover, a:active {
           color: color.mix(map.get($theme, "palette-#{$admonition}"),
             map.get($theme, "body-font-color"), $weight: 10%);
-            text-decoration: underline solid;
+          text-decoration: underline solid;
         }
       }
     }

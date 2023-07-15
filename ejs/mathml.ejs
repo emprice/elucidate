@@ -67,13 +67,9 @@
       </div>
     </div>
   </div>
-  <!-- vendor scripts always loaded first -->
+  <!-- vendor scripts and page script -->
   <% for (const scriptName of htmlWebpackPlugin.files.js) { %>
-  <% if (scriptName != `${htmlWebpackPlugin.options.templateParameters.entryName}.bundle.js`) { %>
   <script src="<%= scriptName %>" type="text/javascript"></script>
   <% } %>
-  <% } %>
-  <!-- page script always loaded last -->
-  <script src="<%= htmlWebpackPlugin.options.templateParameters.entryName %>.bundle.js" type="text/javascript"></script>
 </body>
 </html>

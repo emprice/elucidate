@@ -4,44 +4,98 @@
 @import 'switch';
 @import 'slider';
 
+@include foundation-tooltip;
+@include foundation-dropdown;
+@include foundation-float-classes;
+
+button span.icon {
+  padding: 0;
+  margin-right: 0.5em;
+  top: 0.15em;
+  position: relative;
+  display: inline-block;
+}
+
+#interpolateButton span.icon,
+#grayscaleButton span.icon {
+  margin-right: 2px;
+}
+
+.grayscale {
+  filter: #{grayscale(100%)};
+}
+
+.tooltip.right {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "tooltip-color");
+      background-color: map.get($theme, "tooltip-background");
+    }
+
+    [data-theme="#{$name}"] &::before {
+      @include css-triangle($tooltip-pip-width,
+        map.get($theme, "tooltip-background"), left);
+    }
+  }
+}
+
+#menu {
+  li {
+    margin: 1rem 0;
+
+    button {
+      margin: 0 !important;
+    }
+  }
+}
+
 #app {
   flex-direction: column;
   flex-wrap: nowrap;
   overflow: hidden;
 
-  @include breakpoint(medium up) {
-    img {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+  #preview {
+    display: block;
+    height: 32px;
+    width: 100%;
+    visibility: hidden;
+    object-fit: fill;
+  }
 
-    #controlsWrapper, #renderWrapper {
+  #colors {
+    display: block;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    object-fit: fill;
+  }
+
+  #controlsWrapper, #renderWrapper, #previewWrapper {
+    margin-bottom: 1rem;
+  }
+
+  @include breakpoint(medium up) {
+    #controlsWrapper, #renderWrapper, #previewWrapper {
       @include xy-cell($size: 12, $vertical: false);
       flex: 0 1 auto;
     }
   }
 
   @include breakpoint(small only) {
-    img {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
     #renderWrapper {
       flex: 1 0 auto;
       width: auto;
     }
 
-    #controlsWrapper {
+    #controlsWrapper, #previewWrapper {
       @include xy-cell($size: 12, $vertical: false);
       flex: 0 1 auto;
     }
   }
 
   #renderWrapper {
-    margin: 2rem 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
     min-height: 100px;
     position: relative;
   }
@@ -55,17 +109,70 @@
     margin: 10px;
   }
 
-  #controlsWrapper label {
+  #controlsWrapper label, #previewWrapper label {
     @include font-display;
     flex: 0 0 auto;
     height: 3rem;
     font-size: xx-large;
   }
 
-  #lightnessThumb {
+  .slider-handle {
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 50%;
+  }
+
+  #breakpointsControl {
+    .slider-handle {
+      cursor: pointer;
+
+      @each $name, $theme in $themes {
+        [data-theme="#{$name}"] &.active {
+          outline: 5px solid map.get($theme, "titlebar-background");
+          outline-offset: 3px;
+        }
+      }
+    }
+
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & .dropdown-pane {
+        background-color: map.get($theme, "titlebar-background");
+        color: map.get($theme, "titlebar-color");
+      }
+    }
+
+    .dropdown-pane {
+      label {
+        font-size: medium;
+      }
+
+      .swatch {
+        height: 4rem;
+        width: 100%;
+        display: block;
+        margin: 0.5rem 0;
+      }
+
+      button {
+        @extend .float-right;
+
+        margin: 0;
+
+        @each $name, $theme in $themes {
+          [data-theme="#{$name}"] & {
+            color: map.get($theme, "titlebar-button-color");
+          }
+
+          [data-theme="#{$name}"] &.primary {
+            background-color: map.get($theme, "titlebar-button-background-primary");
+          }
+
+          [data-theme="#{$name}"] &.secondary {
+            background-color: map.get($theme, "titlebar-button-background-secondary");
+          }
+        }
+      }
+    }
   }
 }
 

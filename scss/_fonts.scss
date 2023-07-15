@@ -1,6 +1,34 @@
 @import '../ttf/foundation-icons/foundation-icons.css';
 
 @font-face {
+    font-family: 'Open Sans';
+    src: url('../ttf/Open_Sans/static/OpenSans-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../ttf/Open_Sans/static/OpenSans-Italic.ttf');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../ttf/Open_Sans/static/OpenSans-Bold.ttf');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../ttf/Open_Sans/static/OpenSans-BoldItalic.ttf');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
     font-family: 'Source Code Pro';
     src: url('../ttf/Source_Code_Pro/static/SourceCodePro-Regular.ttf');
     font-weight: 400;
@@ -70,7 +98,7 @@
 }
 
 @mixin font-sans-serif {
-  font-family: #{Rubik, sans-serif};
+  font-family: #{'Open Sans', sans-serif};
 }
 
 @mixin font-monospace {
@@ -106,6 +134,24 @@
     // sticky note 2
     @extend .md;
     content: "\f1fc";
+  }
+
+  &-delete::before {
+    // delete
+    @extend .md;
+    content: "\e872";
+  }
+
+  &-squiggle::before {
+    // gesture
+    @extend .md;
+    content: "\e155";
+  }
+
+  &-grayscale::before {
+    // contrast
+    @extend .md;
+    content: "\eb37";
   }
 }
 

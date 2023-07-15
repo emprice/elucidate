@@ -1,0 +1,112 @@
+<h1>LaTeX to HTML cheatsheet</h1>
+<h2 class="permalink" id="document-structure"><a href="#document-structure">Document structure</a></h2>
+<table>
+  <tr>
+    <th></th>
+    <th>LaTeX</th>
+    <th>HTML</th>
+  </tr>
+  <tr>
+    <th>Code comments</th>
+    <td>
+      <pre><code class="language-latex">% A super-helpful comment</code></pre>
+    </td>
+    <td>
+      <pre><code class="language-html">&lt;!-- A super-helpful comment --&gt;</code></pre>
+    </td>
+  </tr>
+  <tr>
+    <th>Metadata title</th>
+    <td>
+      <p>LaTeX embeds the title given in <code class="language-latex">\title{...}</code>
+        into the PDF metadata and usually also typesets it at the top of the
+        document. Specific document classes can customize that behavior.</p>
+    </td>
+    <td>
+      <pre><code class="language-html">&lt;title&gt;My excellent document title&lt;/title&gt;</code></pre>
+      <p>The <code class="langauge-html">&lt;title&gt;</code> tag does not
+        actually tell the renderer to print any text to the document, unlike
+        the <code class="language-latex">\title{...}</code> directive in
+        LaTeX. <code class="langauge-html">&lt;title&gt;</code> sets the
+        document title shown in, for example, a browser title bar or a
+        search engine link, but it is metadata and may only appear in the
+        HTML header.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Headings</th>
+    <td>
+<pre><code class="language-latex">\section{A primary heading}
+\subsection{A secondary heading}
+\subsubsection{A tertiary heading}</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;h1&gt;A primary heading&lt;/h1&gt;
+&lt;h2&gt;A secondary heading&lt;/h2&gt;
+&lt;h3&gt;A tertiary heading&lt;/h3&gt;</code></pre>
+      <p>HTML allows multiple <code class="language-html">&lt;h1&gt;</code>
+        headings on a single page. Using multiple <code class="language-html">&lt;h1&gt;</code>
+        tags versus a single <code class="language-html">&lt;h1&gt;</code> tag
+        and multiple <code class="language-html">&lt;h2&gt;</code> tags is a
+        matter of taste and the structure of the document at hand.</p>
+      <p>HTML supports heading hierarchy up to level six with
+        <code class="language-html">&lt;h6&gt;</code>.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Paragraphs</th>
+    <td>
+<pre><code class="language-latex">\par I'm starting a new paragraph! It
+doesn't really say anything, but, boy, is it shiny.</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;p&gt;I'm starting a new paragraph! It
+doesn't really say anything, but, boy, is it shiny.&lt;/p&gt;</code></pre>
+      <p>In HTML, consecutive paragraphs are usually displayed with some space
+        between the blocks of text, but this is controlled by the stylesheet and
+        can be customized. Separating blocks of text with
+        <code class="language-html">&lt;p&gt;</code> makes the structure of the
+        text explicit and helps you avoid writing a "wall of text."<p>
+    </td>
+  </tr>
+  <tr>
+    <th>Bulleted lists</th>
+    <td>
+<pre><code class="language-latex">\begin{itemize}
+  \item Item the first...
+  \item Item the second...
+\end{itemize}</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;ul&gt;
+  &lt;li&gt;Item the first...&lt;/li&gt;
+  &lt;li&gt;Item the second...&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+      <p>The tag <code class="language-html">&lt;ul&gt;</code> is an
+        abbreviation for "unordered list." Lists with bullets are unordered
+        since the item marker, a bullet, is not unique between items.
+        <code class="language-html">&lt;li&gt;</code> is used for every
+        item (abbreviation of "list item") in both ordered and unordered
+        lists.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Numbered lists</th>
+    <td>
+<pre><code class="language-latex">\begin{enumerate}
+  \item Item the first...
+  \item Item the second...
+\end{enumerate}</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;ol&gt;
+  &lt;li&gt;Item the first...&lt;/li&gt;
+  &lt;li&gt;Item the second...&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+      <p>The tag <code class="language-html">&lt;ol&gt;</code> is an
+        abbreviation for "ordered list." Lists with numbers (or letters, etc.)
+        are ordered since the item marker is unique between items. HTML takes
+        care of assigning the number or letter for you, just like LaTeX does.</p>
+    </td>
+  </tr>
+</table>

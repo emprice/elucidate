@@ -6,33 +6,24 @@
 #include "zlib.h"
 #include "gsl/gsl_matrix.h"
 #include "gsl/gsl_blas.h"
+#include "gsl/gsl_interp.h"
 
-#define XN      (0.950489)
-#define YN      (1.)
-#define ZN      (1.088840)
+#define EPS     (1e-3)
 
-#define CMAX    (100.)
-#define CMIN    (0.)
+#define UMAX    (0.436)
+#define VMAX    (0.615)
 
-#define HMAX    (2 * M_PI)
-#define HMIN    (0.)
+static const double matrixData[] =
+    { 1., 0., 1.28033, 1., -0.21482, -0.38059, 1., 2.12798, 0. };
 
-#define DELTA       (6. / 29.)
-#define INTERCEPT   (4. / 29.)
-
-static const double matrixInverseData[] =
-    {  2.36461385, -0.89654057, -0.46807328,
-      -0.51516621,  1.4264081,   0.0887581,
-       0.0052037,  -0.01440816,  1.00920446 };
-
-unsigned short le16(unsigned short x)
+uint16_t le16(uint16_t x)
 {
     return x;   /* no-op */
 }
 
-unsigned short be16(unsigned short x)
+uint16_t be16(uint16_t x)
 {
-    unsigned short y;
+    uint16_t y;
 
     y  = (0x00ff & x) << 8;
     y |= (0xff00 & x) >> 8;
@@ -40,9 +31,9 @@ unsigned short be16(unsigned short x)
     return y;
 }
 
-unsigned int be32(unsigned int x)
+uint32_t be32(uint32_t x)
 {
-    unsigned long y;
+    uint32_t y;
 
     y  = (0x000000ff & x) << 24;
     y |= (0x0000ff00 & x) << 8;
@@ -52,90 +43,24 @@ unsigned int be32(unsigned int x)
     return y;
 }
 
-double finv(double t)
-{
-    return ((t > DELTA) ? (t * t * t) :
-        (3 * (DELTA * DELTA) * (t - INTERCEPT)));
-}
-
 double clamp(double t)
 {
     return fmin(fmax(t, 0), 1);
 }
 
-EMSCRIPTEN_KEEPALIVE
-void xyzToRgb(double L, double u, double v,
-    double *xyz, double *rgb, unsigned char *hex)
-{
-    double C, h, a, b;
-
-    gsl_matrix_const_view view1 = gsl_matrix_const_view_array(matrixInverseData, 3, 3);
-    gsl_vector_const_view view2 = gsl_vector_const_view_array(xyz, 3);
-    gsl_vector_view view3 = gsl_vector_view_array(rgb, 3);
-
-    h = (HMAX - HMIN) * u + HMIN;
-    C = (CMAX - CMIN) * v + CMIN;
-
-    a = C * cos(h);
-    b = C * sin(h);
-
-    xyz[0] = XN * finv((L + 16) / 116. + a / 500.);
-    xyz[1] = YN * finv((L + 16) / 116.);
-    xyz[2] = ZN * finv((L + 16) / 116. - b / 200.);
-
-    // https://en.wikipedia.org/wiki/CIE_1931_color_space#Construction_of_the_CIE_XYZ_color_space_from_the_Wright%E2%80%93Guild_data
-    gsl_blas_dgemv(CblasNoTrans, 1, &view1.matrix,
-        &view2.vector, 0, &view3.vector);
-
-    hex[0] = 0xff & lround(255 * clamp(rgb[0]));
-    hex[1] = 0xff & lround(255 * clamp(rgb[1]));
-    hex[2] = 0xff & lround(255 * clamp(rgb[2]));
-}
-
-EMSCRIPTEN_KEEPALIVE
-void xyzToRgbArray(double L, double *xyz, double *rgb,
-    unsigned char *png, size_t nx, size_t nz)
+void encodePngImage(const double *rgb, size_t nx, size_t ny, unsigned char *png)
 {
     size_t i, j;
-    double dC, dh, *p1, *p2;
+    const double *p;
 
-    unsigned char *q8;
-    unsigned short *q16;
-    unsigned int *q32;
+    uint8_t *q8;
+    uint16_t *q16;
+    uint32_t *q32;
 
     unsigned char *chunkoff, *origoff;
     unsigned long chunksz, origsz, datasz;
 
-    gsl_matrix_const_view view1 = gsl_matrix_const_view_array(matrixInverseData, 3, 3);
-    gsl_matrix_const_view view2 = gsl_matrix_const_view_array(xyz, nx * nz, 3);
-    gsl_matrix_view view3 = gsl_matrix_view_array(rgb, nx * nz, 3);
-
-    dC = (CMAX - CMIN) / (nx - 1);
-    dh = (HMAX - HMIN) / (nz - 1);
-
-    for (i = 0, p1 = xyz; i < nx; ++i)
-    {
-        for (j = 0; j < nz; ++j)
-        {
-            // https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_model
-            double C = i * dC;
-            double h = j * dh;
-
-            double a = C * cos(h);
-            double b = C * sin(h);
-
-            // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIELAB_to_CIEXYZ
-            (*p1++) = XN * finv((L + 16) / 116. + a / 500.);
-            (*p1++) = YN * finv((L + 16) / 116.);
-            (*p1++) = ZN * finv((L + 16) / 116. - b / 200.);
-        }
-    }
-
-    // https://en.wikipedia.org/wiki/CIE_1931_color_space#Construction_of_the_CIE_XYZ_color_space_from_the_Wright%E2%80%93Guild_data
-    gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1,
-        &view2.matrix, &view1.matrix, 0, &view3.matrix);
-
-    q32 = (unsigned int *) png;
+    q32 = (uint32_t *) png;
 
     /* magic bytes for png */
     (*q32++) = 0x474e5089;  /* 0x89504e47 -> big endian */
@@ -145,67 +70,169 @@ void xyzToRgbArray(double L, double *xyz, double *rgb,
 
     (*q32++) = 0x0d000000;  /* 13 bytes -> big endian */
 
-    chunkoff = (unsigned char *) q32;
+    chunkoff = (uint8_t *) q32;
     chunksz = 17;           /* 13 bytes + 4 name bytes */
 
     (*q32++) = 0x52444849;  /* 0x49484452 = 'IHDR' -> big endian */
     (*q32++) = be32(nx);    /* image width */
-    (*q32++) = be32(nz);    /* image height */
+    (*q32++) = be32(ny);    /* image height */
 
-    q8 = (unsigned char *) q32;
+    q8 = (uint8_t *) q32;
     (*q8++) = 0x8;          /* bit depth (bits/sample) */
     (*q8++) = 0x6;          /* color mode = truecolor + alpha */
     (*q8++) = 0x0;          /* compression method */
     (*q8++) = 0x0;          /* filter method */
     (*q8++) = 0x0;          /* interlacing method */
 
-    q32 = (unsigned int *) q8;
+    q32 = (uint32_t *) q8;
     (*q32++) = be32(crc32(0, chunkoff, chunksz));
 
     /*** image data ***/
 
-    origsz = (4 * nx + 1) * nz;
+    origsz = (4 * nx + 1) * ny;
     datasz = origsz + 11;
 
     (*q32++) = be32(datasz);    /* data size = image size + 11 header bytes */
 
-    chunkoff = (unsigned char *) q32;
+    chunkoff = (uint8_t *) q32;
     chunksz = datasz + 4;       /* run crc32 hash on data + name bytes */
 
     (*q32++) = 0x54414449;      /* 0x49444154 = 'IDAT' -> big endian */
 
-    q8 = (unsigned char *) q32;
+    q8 = (uint8_t *) q32;
     (*q8++) = 0x08;             /* zlib header, compression method */
     (*q8++) = 0x1d;             /* zlib header, flags */
     (*q8++) = 0x80;             /* deflate header */
 
-    q16 = (unsigned short *) q8;
+    q16 = (uint16_t *) q8;
     (*q16++) = be16(origsz);    /* size of filtered data */
     (*q16++) = be16(~origsz);   /* bitwise inverse */
 
-    origoff = (unsigned char *) q16;
+    origoff = (uint8_t *) q16;
 
-    for (i = 0, p1 = xyz, p2 = rgb,
-         q8 = (unsigned char *) q16; i < nx; ++i)
+    for (i = 0, p = rgb, q8 = (uint8_t *) q16; i < ny; ++i)
     {
         (*q8++) = 0x00;     /* filter method (none) */
 
-        for (j = 0; j < nz; ++j)
+        for (j = 0; j < nx; ++j)
         {
-            (*q8++) = 0xff & lround(255 * clamp(*p2++));
-            (*q8++) = 0xff & lround(255 * clamp(*p2++));
-            (*q8++) = 0xff & lround(255 * clamp(*p2++));
+            (*q8++) = 0xff & lround(255 * clamp(*p++));
+            (*q8++) = 0xff & lround(255 * clamp(*p++));
+            (*q8++) = 0xff & lround(255 * clamp(*p++));
             (*q8++) = 0xff;
         }
     }
 
-    q32 = (unsigned int *) q8;
+    q32 = (uint32_t *) q8;
     (*q32++) = be32(adler32(0, origoff, origsz));
     (*q32++) = be32(crc32(0, chunkoff, chunksz));
+
+    /*** image trailer ***/
 
     (*q32++) = 0;               /* no data in trailer */
     (*q32++) = 0x444e4549;      /* 0x49454e44 = 'IEND' -> big endian */
     (*q32++) = 0x826042ae;      /* 0xae426082 = crc32 hash -> big endian */
+}
+
+EMSCRIPTEN_KEEPALIVE
+void xyzToRgb(double Y, double U, double V,
+    double *xyz, double *rgb, unsigned char *hex)
+{
+    gsl_matrix_const_view view1 = gsl_matrix_const_view_array(matrixData, 3, 3);
+    gsl_vector_const_view view2 = gsl_vector_const_view_array(xyz, 3);
+    gsl_vector_view view3 = gsl_vector_view_array(rgb, 3);
+
+    xyz[0] = Y;
+    xyz[1] = UMAX * (2 * U - 1);
+    xyz[2] = VMAX * (2 * V - 1);
+
+    gsl_blas_dgemv(CblasNoTrans, 1, &view1.matrix,
+        &view2.vector, 0, &view3.vector);
+
+    hex[0] = 0xff & lround(255 * clamp(rgb[0]));
+    hex[1] = 0xff & lround(255 * clamp(rgb[1]));
+    hex[2] = 0xff & lround(255 * clamp(rgb[2]));
+}
+
+EMSCRIPTEN_KEEPALIVE
+void xyzToRgbArray(double Y, double *xyz, double *rgb,
+    unsigned char *png, size_t nx, size_t nz)
+{
+    size_t i, j;
+    double dU, dV, *p;
+
+    gsl_matrix_const_view view1 = gsl_matrix_const_view_array(matrixData, 3, 3);
+    gsl_matrix_const_view view2 = gsl_matrix_const_view_array(xyz, nx * nz, 3);
+    gsl_matrix_view view3 = gsl_matrix_view_array(rgb, nx * nz, 3);
+
+    dU = 2 * UMAX / (nx - 1);
+    dV = 2 * VMAX / (nz - 1);
+
+    for (i = 0, p = xyz; i < nz; ++i)
+    {
+        for (j = 0; j < nx; ++j)
+        {
+            double U = j * dU - UMAX;
+            double V = i * dV - VMAX;
+
+            (*p++) = Y;
+            (*p++) = U;
+            (*p++) = V;
+        }
+    }
+
+    gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1,
+        &view2.matrix, &view1.matrix, 0, &view3.matrix);
+    encodePngImage(rgb, nx, nz, png);
+}
+
+EMSCRIPTEN_KEEPALIVE
+void sample(double *Y, double *U, double *V, size_t nb, double *xyz,
+    double *rgb, unsigned char *png, size_t nsx, size_t nsy)
+{
+    size_t i, j;
+    double *p;
+
+    const gsl_interp_type *T = gsl_interp_linear;
+    if (nb > 2) T = gsl_interp_polynomial;
+
+    gsl_interp *uinterp = gsl_interp_alloc(T, nb);
+    gsl_interp_accel *uaccel = gsl_interp_accel_alloc();
+    gsl_interp_init(uinterp, Y, U, nb);
+
+    gsl_interp *vinterp = gsl_interp_alloc(T, nb);
+    gsl_interp_accel *vaccel = gsl_interp_accel_alloc();
+    gsl_interp_init(vinterp, Y, V, nb);
+
+    double dy = (Y[nb-1] - Y[0]) / (nsx - 1);
+
+    for (i = 0, p = xyz; i < nsy; ++i)
+    {
+        for (j = 0; j < nsx; ++j)
+        {
+            double y = j * dy + Y[0];
+            double u = gsl_interp_eval(uinterp, Y, U, y, uaccel);
+            double v = gsl_interp_eval(vinterp, Y, V, y, vaccel);
+
+            (*p++) = y;
+            (*p++) = UMAX * (2 * u - 1);
+            (*p++) = VMAX * (2 * v - 1);
+        }
+    }
+
+    gsl_interp_free(uinterp);
+    gsl_interp_accel_free(uaccel);
+
+    gsl_interp_free(vinterp);
+    gsl_interp_accel_free(vaccel);
+
+    gsl_matrix_const_view view1 = gsl_matrix_const_view_array(matrixData, 3, 3);
+    gsl_matrix_const_view view2 = gsl_matrix_const_view_array(xyz, nsx * nsy, 3);
+    gsl_matrix_view view3 = gsl_matrix_view_array(rgb, nsx * nsy, 3);
+
+    gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1,
+        &view2.matrix, &view1.matrix, 0, &view3.matrix);
+    encodePngImage(rgb, nsx, nsy, png);
 }
 
 /* vim: set ft=c.doxygen: */

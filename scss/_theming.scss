@@ -223,4 +223,29 @@ h1, .h1 {
   font-size: 175%;
 }
 
+h2, .h2 {
+  @include font-sans-serif;
+  font-size: 250%;
+}
+
+h3, .h3 {
+  @include font-sans-serif;
+  font-size: 193.75%;
+}
+
+h4, .h4 {
+  @include font-sans-serif;
+  font-size: 156.25%;
+}
+
+h5, .h5 {
+  @include font-sans-serif;
+  font-size: 125%;
+}
+
+h6, .h6 {
+  @include font-sans-serif;
+  font-size: 100%;
+}
+
 // vim: set ft=scss:

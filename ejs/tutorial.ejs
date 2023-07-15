@@ -48,6 +48,7 @@
       </div>
     </div>
   </div>
+  <!-- vendor scripts and page script -->
   <% for (const scriptName of htmlWebpackPlugin.files.js) { %>
   <script src="<%= scriptName %>" type="text/javascript"></script>
   <% } %>

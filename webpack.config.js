@@ -7,7 +7,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const apps = [
   {
-    name: 'mathml',
+    entry: 'mathml',
+    name: (e) => 'mathml',
     title: 'LaTeX to MathML tool',
     template: './ejs/mathml.ejs',
     stylesheets: [
@@ -15,7 +16,8 @@ const apps = [
     ],
   },
   {
-    name: 'colormap',
+    entry: 'colormap',
+    name: (e) => 'colormap',
     title: 'Colormap designer tool',
     template: './ejs/colormap.ejs',
     stylesheets: [
@@ -26,18 +28,24 @@ const apps = [
     ],
   },
   {
-    name: 'tutorial/basic',
+    entry: 'tutorial',
+    name: (e) => `tutorial/${e}`,
     title: 'HTML tutorial',
     template: './ejs/tutorial.ejs',
     script: './js/tutorial.js',
-    libraryName: 'tutorial',
     stylesheets: [
       './scss/tutorial.scss',
+    ],
+    pages: [
+      'basic',
+      'skeleton',
+      'cheatsheet',
     ],
     partials: [
       {
         name: 'body',
-        filename: path.resolve(__dirname, './ejs/partials/basic.html'),
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials', `${e}.html`),
       },
     ],
   },
@@ -46,42 +54,42 @@ const apps = [
 const entryPoints = apps.reduce((acc, cur) => {
   return {
     ...acc,
-    [cur.name]: {
+    [cur.entry]: {
       import: [
         ...(cur.otherImports || []),
         ...(cur.stylesheets || []),
-        (cur.script || `./js/${cur.name}.js`),
+        (cur.script || `./js/${cur.entry}.js`),
       ],
       library: {
-        name: (cur.libraryName || cur.name),
+        name: cur.entry,
         type: 'var',
       },
     },
   };
 }, {});
 
-console.log(entryPoints);
-
-const htmlPlugins = apps.map((obj) => {
-  return new HtmlWebpackPlugin({
-    filename: `${obj.name}.html`,
-    template: obj.template,
-    inject: false,
-    publicPath: '/',
-    chunks: [
-      obj.name,
-      'defaultVendors',
-    ],
-    templateParameters: {
-      entryName: obj.name,
-      pageTitle: obj.title,
-      partials: (obj.partials || []).reduce((acc, cur) => {
-        return {
-          ...acc,
-          [cur.name]: fs.readFileSync(cur.filename),
-        };
-      }, {}),
-    }
+var htmlPlugins = [];
+apps.forEach((obj) => {
+  (obj.pages || [obj.name]).forEach((page) => {
+    htmlPlugins.push(new HtmlWebpackPlugin({
+      filename: `${obj.name(page)}.html`,
+      template: obj.template,
+      inject: false,
+      publicPath: '/',
+      chunks: [
+        obj.entry,
+        'defaultVendors',
+      ],
+      templateParameters: {
+        pageTitle: obj.title,
+        partials: (obj.partials || []).reduce((acc, cur) => {
+          return {
+            ...acc,
+            [cur.name]: fs.readFileSync(cur.filename(page)),
+          };
+        }, {}),
+      }
+    }));
   });
 });
 

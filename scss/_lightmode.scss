@@ -34,6 +34,9 @@ $-switch-paddle-background: $white;
 $-titlebar-background: $dark-gray;
 $-titlebar-color: $white;
 
+$-tooltip-background: $dark-gray;
+$-tooltip-color: $white;
+
 $-offcanvas-background: color.scale($-body-background, $lightness: -10%);
 
 $-button-color: $-body-background;
@@ -50,6 +53,10 @@ $-token-classname-color: color.scale(map.get(nord.$aurora, "orange"), $lightness
 $-token-propertyname-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
 $-token-keyword-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
 $-token-symbol-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-meta-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-comment-color: map.get(nord.$polar-night, "medium");
+$-token-attr-color: color.scale(map.get(nord.$frost, "dark"), $lightness: -30%);
+$-token-string-color: color.scale(map.get(nord.$aurora, "yellow"), $lightness: -60%);
 
 $theme: (
   "palette-primary": $-palette-primary,
@@ -76,8 +83,13 @@ $theme: (
 
   "switch-background": $-switch-background,
   "switch-paddle-background": $-switch-paddle-background,
+
   "titlebar-background": $-titlebar-background,
   "titlebar-color": $-titlebar-color,
+
+  "tooltip-background": $-tooltip-background,
+  "tooltip-color": $-tooltip-color,
+
   "offcanvas-background": $-offcanvas-background,
 
   "button-color": $-button-color,
@@ -94,6 +106,10 @@ $theme: (
   "token-propertyname-color": $-token-propertyname-color,
   "token-keyword-color": $-token-keyword-color,
   "token-symbol-color": $-token-symbol-color,
+  "token-meta-color": $-token-meta-color,
+  "token-comment-color": $-token-comment-color,
+  "token-attr-color": $-token-attr-color,
+  "token-string-color": $-token-string-color,
 );
 
 // vim: set ft=scss:
