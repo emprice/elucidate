@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "make -C lib && npx webpack --color"
+    "build:bundle": "npx webpack --color",
+    "build": "make -C lib && npm run build:bundle"
   },
   "author": {
     "name": "Ellen M. Price",
@@ -16,6 +17,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.22.9",
     "@codemirror/commands": "^6.2.4",
     "@codemirror/lang-html": "^6.4.5",
     "@codemirror/state": "^6.2.1",
@@ -49,8 +51,5 @@
   },
   "sideEffects": [
     "**/*.css"
-  ],
-  "dependencies": {
-    "@babel/core": "^7.22.8"
-  }
+  ]
 }

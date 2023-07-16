@@ -162,6 +162,7 @@ export default (function() {
               'data-position': 'bottom',
               'data-alignment': 'center',
               'data-close-on-click': true,
+              'data-allow-overlap': true,
             })
             .addClass('dropdown-pane')
             .appendTo($( '#breakpointsControl' ));

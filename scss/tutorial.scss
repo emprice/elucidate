@@ -1,12 +1,16 @@
 @use "sass:map";
 @use "sass:color";
 
+:root {
+  --base-font-size: 1.1rem;
+}
+
 @import 'theming';
 @import 'switch';
 @import 'slider';
 
-@include foundation-sticky;
 @include foundation-table;
+@include foundation-sticky;
 
 $block-margin: 1rem;
 
@@ -17,6 +21,12 @@ $block-margin: 1rem;
 
   #pageWrapperOuter {
     overflow-y: scroll;
+  }
+}
+
+@include breakpoint(medium) {
+  #menu {
+    position: fixed;
   }
 }
 

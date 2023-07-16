@@ -12,12 +12,13 @@ hljs.registerLanguage('plaintext', plaintext);
 import * as $ from 'jquery';
 
 import { Slider, OffCanvas, Sticky } from 'fdn/js/foundation';
-import { initDarkModeToggle } from './utils';
+import { initDarkModeToggle, initFontSizeSlider } from './utils';
 
 export default (function() {
 
   $( document ).ready(() => {
 
+    initFontSizeSlider();
     initDarkModeToggle();
 
     // do syntax highlighting

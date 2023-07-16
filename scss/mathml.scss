@@ -1,42 +1,12 @@
 @use "sass:map";
 
-@import 'theming';
-@import 'switch';
-@import 'slider';
-
 :root {
   --base-font-size: 1rem;
 }
 
-@include breakpoint(medium) {
-  // these sizes are based on Foundation's default values but are
-  // converted from rem to percent so that they become relative to
-  // the parent container, assuming 1rem = 16px, a reasonable default
-
-  h1 {
-    font-size: 300%;
-  }
-
-  h2 {
-    font-size: 250%;
-  }
-
-  h3 {
-    font-size: 193.75%;
-  }
-
-  h4 {
-    font-size: 156.25%;
-  }
-
-  h5 {
-    font-size: 125%;
-  }
-
-  h6 {
-    font-size: 100%;
-  }
-}
+@import 'theming';
+@import 'switch';
+@import 'slider';
 
 #app {
 
@@ -128,8 +98,6 @@
     font-size: 200%;
     overflow: scroll;
   }
-
-  font-size: var(--base-font-size);
 }
 
 .cm-editor {

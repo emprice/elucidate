@@ -1,0 +1,78 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../ttf/material-icons/MaterialIcons-Regular.ttf') format('truetype');
+}
+
+.md {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  &-code::before {
+    // code
+    @extend .md;
+    content: "\e86f";
+  }
+
+  &-copy::before {
+    // content copy
+    @extend .md;
+    content: "\e14d";
+  }
+
+  &-warning::before {
+    // warning
+    @extend .md;
+    content: "\e002";
+  }
+
+  &-tip::before {
+    // thumb up
+    @extend .md;
+    content: "\e8dc";
+  }
+
+  &-note::before {
+    // sticky note 2
+    @extend .md;
+    content: "\f1fc";
+  }
+
+  &-delete::before {
+    // delete
+    @extend .md;
+    content: "\e872";
+  }
+
+  &-squiggle::before {
+    // gesture
+    @extend .md;
+    content: "\e155";
+  }
+
+  &-grayscale::before {
+    // contrast
+    @extend .md;
+    content: "\eb37";
+  }
+}
+
+button .icon {
+  padding: 0;
+  margin-right: 0.25em;
+  top: 0.15em;
+  position: relative;
+  display: inline-block;
+}
+
+// vim: set ft=scss:

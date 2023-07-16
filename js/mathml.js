@@ -9,13 +9,12 @@ import { syntaxHighlighting } from '@codemirror/language';
 import * as $ from 'jquery';
 
 import { Slider, OffCanvas } from 'fdn/js/foundation';
-import { initDarkModeToggle } from './utils';
+import { initDarkModeToggle, initFontSizeSlider } from './utils';
 
 import { mathjax } from 'mjx/mathjax';
 import { SerializedMmlVisitor } from 'mjx/core/MmlTree/SerializedMmlVisitor';
 import { HTMLAdaptor } from 'mjx/adaptors/HTMLAdaptor';
 import { RegisterHTMLHandler } from 'mjx/handlers/html';
-import { Safe } from 'mjx/ui/safe/safe';
 import { TeX } from 'mjx/input/tex';
 
 import 'mjx/input/tex/ams/AmsConfiguration';
@@ -30,12 +29,7 @@ function renderSingleMml(math, visitor, doc) {
 
 function initControls() {
 
-  $( '#fontSizeControl' ).on('moved.zf.slider', function(e) {
-    const elem = $( e.currentTarget ).find('input').first();
-    const newsize = elem.val().toString() + 'rem';
-    $( ':root' ).css('--base-font-size', newsize);
-  });
-
+  initFontSizeSlider();
   initDarkModeToggle();
 }
 
@@ -176,25 +170,34 @@ function addRenderListener(cm, mjx) {
     cm.elements.render.replaceChildren();
 
     // loop through any math and add the mathml and new elements
-    // to their respective panes
+    // to their respective panes; multiple equations are appended in
+    // the order they were input
+    var len = 0;
+    var changes = [
+      {
+        from: 0,
+        to: cm.views.output.state.doc.length,
+      },
+    ];
+
     for (let math of mjxdoc.math) {
-      const len = cm.views.output.state.doc.length;
-      const transaction = cm.views.output.state.update({
-        changes: [
-          {
-            from: 0,
-            to: len,
-          },
-          {
-            from: 0,
-            insert: math.typesetRoot.innerHTML,
-          },
-        ],
+      const newstr = math.typesetRoot.innerHTML;
+
+      changes.push({
+        from: len,
+        insert: newstr + '\n',
       });
 
-      cm.views.output.dispatch(transaction);
+      len += newstr.length + 1,
+
       cm.elements.render.appendChild(math.typesetRoot);
     }
+
+    // update the code window with the computed changes
+    const transaction = cm.views.output.state.update({
+      changes
+    });
+    cm.views.output.dispatch(transaction);
 
     // make sure the button goes back to its unfocused state,
     // indicating the render is complete

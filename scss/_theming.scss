@@ -5,7 +5,6 @@
 @use "darkmode" as dark;
 
 @import 'common';
-@import 'fonts';
 
 $themes: (
   "light": light.$theme,
@@ -26,6 +25,65 @@ $titlebar-padding: 0.5rem;
 
 body {
   @include font-sans-serif;
+}
+
+// see https://w3c.github.io/mathml-core/#the-top-level-math-element
+// these values are standard for a user-agent stylesheet, and we want to
+// make sure we don't accidentally override them
+math {
+  direction: ltr;
+  text-indent: 0;
+  letter-spacing: normal;
+  line-height: normal;
+  word-spacing: normal;
+  font-family: math;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: normal;
+  display: inline math;
+  math-shift: normal;
+  math-style: compact;
+  math-depth: 0;
+
+  &[display="block" i] {
+    display: block math;
+    math-style: normal;
+  }
+
+  &[display="inline" i] {
+    display: inline math;
+    math-style: compact;
+  }
+}
+
+@include breakpoint(medium) {
+  // these sizes are based on Foundation's default values but are
+  // converted from rem to percent so that they become relative to
+  // the parent container, assuming 1rem = 16px, a reasonable default
+
+  h1 {
+    font-size: 300%;
+  }
+
+  h2 {
+    font-size: 250%;
+  }
+
+  h3 {
+    font-size: 193.75%;
+  }
+
+  h4 {
+    font-size: 156.25%;
+  }
+
+  h5 {
+    font-size: 125%;
+  }
+
+  h6 {
+    font-size: 100%;
+  }
 }
 
 @each $name, $theme in $themes {
@@ -177,6 +235,8 @@ body {
     padding: 0 0.5rem;
     height: calc(100vh - $titlebar-inner-height);
   }
+
+  font-size: var(--base-font-size);
 }
 
 #body {
@@ -191,7 +251,7 @@ body {
     padding: 1rem;
   }
 
-  font-size: 110%;
+  font-size: var(--base-font-size);
 }
 
 button {
@@ -211,10 +271,6 @@ button {
         $background-hover: auto, $color: map.get($theme, "button-color"),
         $style: solid);
     }
-  }
-
-  span.icon {
-    padding-right: 0.5em;
   }
 }
 
@@ -246,6 +302,12 @@ h5, .h5 {
 h6, .h6 {
   @include font-sans-serif;
   font-size: 100%;
+}
+
+@each $name, $theme in $themes {
+  [data-theme="#{$name}"] .has-tip {
+    border-bottom: dotted 1px map.get($theme, "muted-label-color");
+  }
 }
 
 // vim: set ft=scss:

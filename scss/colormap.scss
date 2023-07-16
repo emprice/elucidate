@@ -1,5 +1,9 @@
 @use "sass:map";
 
+:root {
+  --base-font-size: 1rem;
+}
+
 @import 'theming';
 @import 'switch';
 @import 'slider';
@@ -40,19 +44,15 @@ button span.icon {
 }
 
 #menu {
-  li {
-    margin: 1rem 0;
-
-    button {
-      margin: 0 !important;
-    }
+  li button {
+    margin: 0 !important;
   }
 }
 
 #app {
   flex-direction: column;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow: visible;
 
   #preview {
     display: block;

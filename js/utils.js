@@ -1,5 +1,13 @@
 import * as $ from 'jquery';
 
+export function initFontSizeSlider() {
+  $( '#fontSizeControl' ).on('moved.zf.slider', function(e) {
+    const elem = $( e.currentTarget ).find('input').first();
+    const newsize = elem.val().toString() + 'rem';
+    $( ':root' ).css('--base-font-size', newsize);
+  });
+}
+
 export function initDarkModeToggle() {
 
   $( '#darkModeSwitch' ).on('change', function() {

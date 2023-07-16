@@ -5,4 +5,6 @@ _elucidate_: Tools for academics transitioning from LaTeX to HTML
 [![License: MIT](https://img.shields.io/github/license/emprice/elucidate?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/emprice/elucidate?style=for-the-badge)](https://github.com/emprice/elucidate/stargazers)
 
+![elucidate light logo](static/elucidate_light.svg#gh-light-mode-only)![elucidate dark logo](static/elucidate_dark.svg#gh-dark-mode-only)
+
 <!-- vim: set ft=markdown: -->

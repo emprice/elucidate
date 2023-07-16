@@ -3,6 +3,10 @@
 
 @use "nordtheme" as nord;
 
+@import 'fonts';
+@import 'icons';
+
+// global grayscale color definitions
 $light-gray: color.mix(map.get(nord.$snow-storm, "light"),
   map.get(nord.$polar-night, "dark"), $weight: 80%);
 $medium-gray: color.mix(map.get(nord.$snow-storm, "light"),
@@ -10,12 +14,15 @@ $medium-gray: color.mix(map.get(nord.$snow-storm, "light"),
 $dark-gray: color.mix(map.get(nord.$snow-storm, "light"),
   map.get(nord.$polar-night, "dark"), $weight: 20%);
 
+// global "black" and "white"
 $black: color.scale(map.get(nord.$polar-night, "darkest"), $lightness: -10%);
 $white: color.scale(map.get(nord.$snow-storm, "lightest"), $lightness: +35%);
 
+// global foundation settings
 $global-font-size: 100%;
 $global-width: 1300px;
 $global-lineheight: 1.5;
+
 $body-font-family: #{'Open Sans', sans-serif};
 $font-family-monospace: #{'Source Code Pro', monospace};
 

@@ -33,19 +33,19 @@
           </li>
           <li>
             <button type="button" class="primary button" id="interpolateButton">
-              <span class="icon md-squiggle"></span>Interpolate
+              <span class="icon md-squiggle" aria-hidden="true"></span>Interpolate
             </button>
           </li>
           <li>
             <button type="button" class="primary button" id="grayscaleButton">
-              <span class="icon md-grayscale"></span>Toggle grayscale
+              <span class="icon md-grayscale" aria-hidden="true"></span>Toggle grayscale
             </button>
           </li>
         </ul>
       </div>
       <div id="app" class="off-canvas-content" data-off-canvas-content>
         <div id="controlsWrapper">
-          <label id="luminosityLabel" for="luminosityThumb">Luminosity</label>
+          <label id="luminosityLabel" for="luminosityThumb" data-tooltip tabindex="0" title="For simplicity, this luminosity is Y' in the YUV color model." data-position="right" data-alignment="center" role="tooltip">Luminosity</label>
           <div id="luminosityControl" class="slider" data-slider data-initial-start="0.8" data-start="0" data-end="1" data-step="0.02" role="presentation">
             <span id="luminosityThumb" name="luminosityThumb" aria-labelledby="luminosityLabel" class="slider-handle" data-slider-handle role="slider" aria-controls="luminosityInput" tabindex="0"></span>
             <span class="slider-fill" data-slider-fill role="presentation"></span>
