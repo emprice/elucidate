@@ -74,8 +74,9 @@ apps.forEach((obj) => {
     htmlPlugins.push(new HtmlWebpackPlugin({
       filename: `${obj.name(page)}.html`,
       template: obj.template,
-      inject: false,
+      inject: 'body',
       publicPath: '/',
+      base: process.env.BASE_URL || false,
       chunks: [
         obj.entry,
         'defaultVendors',

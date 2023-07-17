@@ -5,10 +5,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= htmlWebpackPlugin.options.templateParameters.pageTitle %></title>
-  <!-- all stylesheets loaded here -->
-  <% for (const styleName of htmlWebpackPlugin.files.css) { %>
-  <link rel="stylesheet" href="<%= styleName %>" />
-  <% } %>
+  <!-- all stylesheets are loaded here -->
 </head>
 <body>
   <div id="title" class="title-bar show-for-small-only">
@@ -65,9 +62,6 @@
       </div>
     </div>
   </div>
-  <!-- vendor scripts and page script -->
-  <% for (const scriptName of htmlWebpackPlugin.files.js) { %>
-  <script src="<%= scriptName %>" type="text/javascript"></script>
-  <% } %>
+  <!-- vendor and page scripts are loaded here -->
 </body>
 </html>
