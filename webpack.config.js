@@ -75,7 +75,7 @@ apps.forEach((obj) => {
       filename: `${obj.name(page)}.html`,
       template: obj.template,
       inject: 'body',
-      publicPath: '/',
+      publicPath: './',
       base: process.env.BASE_URL || false,
       chunks: [
         obj.entry,
