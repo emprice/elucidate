@@ -4,26 +4,24 @@
   --base-font-size: 1rem;
 }
 
-@import 'theming';
-@import 'switch';
-@import 'slider';
+@import 'theme/common';
+@import 'theme/code/codemirror';
 
 #app {
-
   @include breakpoint(medium up) {
-    #editorWrapper {
+    #editor-wrapper {
       @include xy-cell($size: 12, $vertical: false);
     }
 
-    #renderWrapper, #outputWrapper {
+    #render-wrapper, #output-wrapper {
       @include xy-cell($size: 6, $vertical: false);
     }
 
-    #outputWrapper #innerOutputWrapper {
+    #output-wrapper #inner-output-wrapper {
       height: calc(xy-cell-size-css($size: 6) - 3rem);
     }
 
-    #editorWrapper, #renderWrapper, #outputWrapper {
+    #editor-wrapper, #render-wrapper, #output-wrapper {
       @include xy-cell-base($size: grow);
       @include xy-cell-gutters($gutters: 1rem, $gutter-type: margin,
         $gutter-position: (top, bottom));
@@ -32,31 +30,31 @@
   }
 
   @include breakpoint(small only) {
-    #editorWrapper {
+    #editor-wrapper {
       @include xy-cell($size: 5, $vertical: true);
       @include xy-cell-base($size: grow);
     }
 
-    #renderWrapper {
+    #render-wrapper {
       @include xy-cell($size: 2, $vertical: true);
       @include xy-cell-base($size: grow);
       @include flex-order(0);
     }
 
-    #outputWrapper {
+    #output-wrapper {
       @include xy-cell($size: 5, $vertical: true);
       @include xy-cell-base($size: grow);
       @include flex-order(1);
 
-      #innerOutputWrapper {
+      #inner-output-wrapper {
         height: calc(xy-cell-size-css($size: 5) - 3rem);
       }
     }
   }
 
-  #outputWrapper {
+  #output-wrapper {
 
-    #innerOutputWrapper {
+    #inner-output-wrapper {
       position: relative;
       flex: 1 0 auto;
 
@@ -65,7 +63,7 @@
         font-size: 75%;
       }
 
-      #copyButton {
+      #copy-button {
         position: absolute;
         top: 0;
         right: 0;
@@ -74,7 +72,7 @@
     }
   }
 
-  #editorWrapper, #outputWrapper, #renderWrapper {
+  #editor-wrapper, #output-wrapper, #render-wrapper {
     display: flex;
     flex-direction: column;
 
@@ -97,34 +95,6 @@
   #render {
     font-size: 200%;
     overflow: scroll;
-  }
-}
-
-.cm-editor {
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] & .tok-typeName {
-      color: map.get($theme, "token-typename-color");
-    }
-
-    [data-theme="#{$name}"] & .tok-className {
-      color: map.get($theme, "token-classname-color");
-    }
-
-    [data-theme="#{$name}"] & .tok-propertyName {
-      color: map.get($theme, "token-propertyname-color");
-    }
-
-    [data-theme="#{$name}"] & {
-      border-color: map.get($theme, "body-font-color");
-    }
-  }
-
-  .tok-typeName, .tok-className, .tok-propertyName {
-    font-weight: bold;
-  }
-
-  .cm-scroller {
-    @include font-monospace;
   }
 }
 

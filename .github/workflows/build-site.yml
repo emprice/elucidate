@@ -28,7 +28,7 @@ jobs:
       - name: Build static site
         run: |
           npm install
-          BASE_URL=https://emprice.github.io PUBLIC_PATH=/elucidate npm run build:bundle
+          BASE_URL=/elucidate/ npm run build:bundle
           touch $GITHUB_WORKSPACE/dist/.nojekyll
 
       # Emit JSON endpoint indicating job success (accessing via API is complicated)

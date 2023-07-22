@@ -65,14 +65,30 @@
     @extend .md;
     content: "\eb37";
   }
-}
 
-button .icon {
-  padding: 0;
-  margin-right: 0.25em;
-  top: 0.15em;
-  position: relative;
-  display: inline-block;
+  &-done::before {
+    // done
+    @extend .md;
+    content: "\e876";
+  }
+
+  &-data::before {
+    // data object
+    @extend .md;
+    content: "\ead3";
+  }
+
+  &-terminal::before {
+    // terminal
+    @extend .md;
+    content: "\eb8e";
+  }
+
+  &-image::before {
+    // image
+    @extend .md;
+    content: "\e3f4";
+  }
 }
 
 // vim: set ft=scss:

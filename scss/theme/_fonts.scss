@@ -91,6 +91,11 @@
   font-variant: all-small-caps;
 }
 
+@mixin font-display-nobold {
+  font-family: #{Rubik, sans-serif};
+  font-variant: all-small-caps;
+}
+
 @mixin font-sans-serif {
   font-family: #{'Open Sans', sans-serif};
 }

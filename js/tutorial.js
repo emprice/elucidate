@@ -11,7 +11,7 @@ hljs.registerLanguage('plaintext', plaintext);
 
 import * as $ from 'jquery';
 
-import { Slider, OffCanvas, Sticky } from 'fdn/js/foundation';
+import { Slider, OffCanvas, Sticky, Drilldown } from 'fdn/js/foundation';
 import { initDarkModeToggle, initFontSizeSlider } from './utils';
 
 export default (function() {

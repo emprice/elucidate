@@ -1,5 +1,7 @@
 <h1>LaTeX to HTML cheatsheet</h1>
-<h2 class="permalink" id="document-structure"><a href="#document-structure">Document structure</a></h2>
+<h2 class="permalink" id="document-structure">
+  <a href="tutorial/cheatsheet.html#document-structure">Document structure</a>
+</h2>
 <table>
   <tr>
     <th></th>
@@ -107,6 +109,68 @@ doesn't really say anything, but, boy, is it shiny.&lt;/p&gt;</code></pre>
         abbreviation for "ordered list." Lists with numbers (or letters, etc.)
         are ordered since the item marker is unique between items. HTML takes
         care of assigning the number or letter for you, just like LaTeX does.</p>
+    </td>
+  </tr>
+</table>
+<h2 class="permalink" id="common-misc">
+  <a href="tutorial/cheatsheet.html#common-misc">Common miscellaneous elements</a>
+</h2>
+<table>
+  <tr>
+    <th></th>
+    <th>LaTeX</th>
+    <th>HTML</th>
+  </tr>
+  <tr>
+    <th>Web links</th>
+    <td>
+<pre><code class="language-latex">% in the preamble
+\usepackage{hyperref}
+
+% in the document environment
+\href{https://www.w3.org}{Read more about HTML!}</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;a href="https://www.w3.org"&gt;Read more about HTML!&lt;/a&gt;</code></pre>
+      <p>It may seem counterintuitive that the HTML tag for a link is
+        <code class="language-html">&lt;a&gt;</code> when a
+        <code class="language-html">&lt;link&gt;</code> tag exists and does
+        something entirely different! The correct tag for a link to a URL
+        is <code class="language-html">&lt;a&gt;</code>, which is an
+        abbreviation of the word "anchor." Anchors can also be used to jump
+        around a document with defined anchor points.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Static images</th>
+    <td>
+<pre><code class="language-latex">% in the preamble
+\usepackage{graphicx}
+
+% in the document environment
+\includegraphics{very_cool_image}</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;img src="very_cool_image.png" alt="Short alt text" /&gt;</code></pre>
+      <p>The <code class="language-html">&lt;img /&gt;</code> element is good for
+        web-friendly rasterized images like PNG, JPEG, or GIF (static or animated)
+        files. It is not used for interactive content, however.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Code snippets</th>
+    <td>
+<pre><code class="language-latex">% in the preamble
+\usepackage{listings}
+
+% in the document environment
+\begin{lstlisting}
+def the_song_that_never_ends():
+    print('Yes: It goes on and on, my friends!')
+    the_song_that_never_ends()
+\end{lstlisting}</code></pre>
+    </td>
+    <td>
     </td>
   </tr>
 </table>

@@ -8,37 +8,50 @@
   <!-- all stylesheets are loaded here -->
 </head>
 <body>
-  <div id="stickyContainer" data-sticky-container>
-    <div id="title" class="sticky title-bar show-for-small-only" data-sticky data-margin-top="0">
+  <div id="sticky-container" data-sticky-container>
+    <div id="title" class="sticky title-bar show-for-small-only"
+     data-sticky data-margin-top="0">
       <div class="title-bar-left">
-        <span class="title-bar-title"><%= htmlWebpackPlugin.options.templateParameters.pageTitle %></span>
+        <span class="title-bar-title">
+          <%= htmlWebpackPlugin.options.templateParameters.pageTitle %>
+        </span>
       </div>
       <div class="title-bar-right">
-        <button type="button" class="primary button" id="menuButton" data-toggle="menuWrapper">Menu</button>
+        <button type="button" class="primary button" id="menu-button"
+         data-toggle="menu-wrapper">Menu</button>
       </div>
     </div>
   </div>
-  <div id="pageWrapperOuter">
-    <div id="pageWrapperInner">
-      <div id="menuWrapper" class="off-canvas" data-off-canvas data-close-on-click="true" data-in-canvas-on="medium">
-        <ul id="menu">
-          <li class="hide-for-small-only"><span class="menu-title"><%= htmlWebpackPlugin.options.templateParameters.pageTitle %></span></li>
-          <li>
-            <label id="fontSizeLabel" for="fontSizeThumb">Font size multiplier</label>
-            <div id="fontSizeControl" class="slider" data-slider data-initial-start="1.1" data-start="0.6" data-end="2.6" data-step="0.1" role="presentation">
-              <span id="fontSizeThumb" name="fontSizeThumb" aria-labelledby="fontSizeLabel" class="slider-handle" data-slider-handle role="slider" tabindex="0"></span>
-              <span class="slider-fill" data-slider-fill role="presentation"></span>
-              <input type="hidden" id="fontSizeInput">
-            </div>
-          </li>
-          <li>
-            <label id="darkModeLabel" for="darkModeSwitch">Toggle dark mode</label>
-            <div class="switch" id="darkModeControl">
-              <input class="switch-input" id="darkModeSwitch" name="darkModeSwitch" aria-labelledby="darkModeLabel" type="checkbox">
-              <label class="switch-paddle" for="darkModeSwitch"></label>
-            </div>
-          </li>
-        </ul>
+  <div id="page-wrapper-outer">
+    <div id="page-wrapper-inner">
+      <div id="menu-wrapper" class="off-canvas" data-off-canvas
+       data-close-on-click="true" data-in-canvas-on="medium">
+        <div id="menu">
+          <span class="hide-for-small-only menu-title">
+            <%= htmlWebpackPlugin.options.templateParameters.pageTitle %>
+          </span>
+          <ul id="controls">
+            <li>
+              <label id="font-size-label" for="font-size-thumb">Font size multiplier</label>
+              <div id="font-size-control" class="slider" data-slider
+               data-initial-start="1.1" data-start="0.6" data-end="2.6" data-step="0.1">
+                <span id="font-size-thumb" aria-labelledby="font-size-label"
+                 class="slider-handle" data-slider-handle role="slider" tabindex="0"></span>
+                <span class="slider-fill" data-slider-fill role="presentation"></span>
+                <input type="hidden" id="font-size-input">
+              </div>
+            </li>
+            <li>
+              <label id="dark-mode-label" for="dark-mode-switch">Toggle dark mode</label>
+              <div class="switch" id="dark-mode-control">
+                <input class="switch-input" id="dark-mode-switch"
+                 aria-labelledby="dark-mode-label" type="checkbox">
+                <label class="switch-paddle" for="dark-mode-switch"></label>
+              </div>
+            </li>
+          </ul>
+          <%= htmlWebpackPlugin.options.templateParameters.partials.nav %>
+        </div>
       </div>
       <div id="body" class="off-canvas-content" data-off-canvas-content>
         <%= htmlWebpackPlugin.options.templateParameters.partials.body %>

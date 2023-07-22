@@ -134,12 +134,22 @@ function initMathJax() {
 
 function addRenderListener(cm, mjx) {
 
-  $( '#renderButton' ).on('click', (e) => {
+  $( '#render-button' ).on('click', (e) => {
+
+    const mathRegex = /(\$\$).+\1|(\$)[^\$]+?\2|\\\[.+\\\]|\\\(.+\\\)/;
 
     // create a dummy element with just the input content combined into
     // a single string; codemirror input is split across several html
     // elements for display, but mathjax works on the concatenated version
-    const buffer = cm.views.input.state.sliceDoc();
+    var buffer = cm.views.input.state.sliceDoc();
+    if (buffer.length == 0) {
+      // no contents in buffer -- early exit
+      e.target.blur();
+      return;
+    } else if (buffer.search(mathRegex) == -1) {
+      // no math found -- add delimiters around the content
+      buffer = `$$ ${buffer} $$`;
+    }
     const pseudo = document.createElement('span');
     pseudo.innerHTML = buffer;
 
@@ -207,7 +217,7 @@ function addRenderListener(cm, mjx) {
 
 function addCopyListener(cm) {
 
-  $( '#copyButton' ).on('click', (e) => {
+  $( '#copy-button' ).on('click', (e) => {
 
     // put all the output text onto the user's clipboard
     const buffer = cm.views.output.state.sliceDoc();

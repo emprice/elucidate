@@ -1,0 +1,46 @@
+button, a.button {
+  @include font-display-nobold;
+
+  margin: 0;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  position: relative;
+  cursor: pointer;
+  vertical-align: text-bottom;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] &.primary {
+      @include button-fill-style($fill: solid,
+        $background: map.get($theme, "button-background-primary"),
+        $background-hover: auto, $color: map.get($theme, "button-color"));
+    }
+
+    [data-theme="#{$name}"] &.secondary {
+      @include button-fill-style($fill: solid,
+        $background: map.get($theme, "button-background-secondary"),
+        $background-hover: auto, $color: map.get($theme, "button-color"));
+    }
+  }
+
+  &.icon-button::before {
+    padding: 0;
+    margin-right: 0.2rem;
+    position: relative;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+}
+
+button.icon-button::before{
+  vertical-align: bottom;
+}
+
+a.button.icon-button::before {
+  vertical-align: text-bottom;
+}
+
+// vim: set ft=scss:

@@ -4,7 +4,7 @@
 @use "lightmode" as light;
 @use "darkmode" as dark;
 
-@import 'common';
+@import 'global';
 
 $themes: (
   "light": light.$theme,
@@ -22,6 +22,11 @@ $titlebar-padding: 0.5rem;
 @include foundation-visibility-classes;
 @include foundation-title-bar;
 @include foundation-off-canvas;
+@include foundation-drilldown-menu;
+
+@import 'ux/button';
+@import 'ux/switch';
+@import 'ux/slider';
 
 body {
   @include font-sans-serif;
@@ -53,36 +58,6 @@ math {
   &[display="inline" i] {
     display: inline math;
     math-style: compact;
-  }
-}
-
-@include breakpoint(medium) {
-  // these sizes are based on Foundation's default values but are
-  // converted from rem to percent so that they become relative to
-  // the parent container, assuming 1rem = 16px, a reasonable default
-
-  h1 {
-    font-size: 300%;
-  }
-
-  h2 {
-    font-size: 250%;
-  }
-
-  h3 {
-    font-size: 193.75%;
-  }
-
-  h4 {
-    font-size: 156.25%;
-  }
-
-  h5 {
-    font-size: 125%;
-  }
-
-  h6 {
-    font-size: 100%;
   }
 }
 
@@ -147,7 +122,7 @@ math {
   line-height: 1;
 }
 
-#pageWrapperOuter {
+#page-wrapper-outer {
   @include breakpoint(medium up) {
     @include xy-grid-container;
   }
@@ -157,13 +132,13 @@ math {
   }
 }
 
-#pageWrapperInner {
+#page-wrapper-inner {
   @include breakpoint(medium up) {
     @include xy-grid;
   }
 }
 
-#menuWrapper {
+#menu-wrapper {
   @include breakpoint(medium up) {
     @include in-canvas;
     @include xy-cell($size: 2);
@@ -184,37 +159,73 @@ math {
     @include off-canvas-position($position: left);
   }
 
-  min-width: 150px;
+  min-width: 200px;   // keep the menu from getting too squashed
 }
 
 #menu {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#controls, #nav {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & label {
+      color: map.get($theme, "muted-label-color");
+    }
+  }
+
+  label {
+    @include font-display;
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+}
+
+#controls {
   @include menu-base;
   @include menu-expand;
   @include menu-direction($dir: vertical);
-
-  padding: 1rem;
 
   li {
     margin: 0.5rem 0 0.5rem 0;
   }
 
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] & {
-      li label {
-        color: map.get($theme, "muted-label-color");
-      }
-    }
-  }
-
-  li label {
-    @include font-display;
-    font-size: 0.9rem;
-    line-height: 1;
-  }
-
   li button, li .button {
     margin: 1rem 0;
     padding: 0.5rem;
+  }
+}
+
+#nav {
+  margin: 0.5rem 0;
+}
+
+#nav-drilldown {
+  @include menu-base;
+
+  display: block;
+
+  li a {
+    padding: 0.5rem 0;
+  }
+
+  &, & ul, & li, & a {
+    background-color: #00000000 !important;
+  }
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & a {
+      color: map.get($theme, "body-font-color");
+    }
+
+    [data-theme="#{$name}"] & a::after {
+      border-left-color: map.get($theme, "palette-primary");
+    }
+
+    [data-theme="#{$name}"] & .js-drilldown-back > a::before {
+      border-right-color: map.get($theme, "palette-primary");
+    }
   }
 }
 
@@ -254,25 +265,9 @@ math {
   font-size: var(--base-font-size);
 }
 
-button {
-  @include font-display;
-  padding: 0.5rem;
-  font-size: 1rem;
-
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] &.primary {
-      @include button($background: map.get($theme, "button-background-primary"),
-        $background-hover: auto, $color: map.get($theme, "button-color"),
-        $style: solid);
-    }
-
-    [data-theme="#{$name}"] &.secondary {
-      @include button($background: map.get($theme, "button-background-secondary"),
-        $background-hover: auto, $color: map.get($theme, "button-color"),
-        $style: solid);
-    }
-  }
-}
+// these sizes are (originally) based on Foundation's default values but are
+// converted from rem to percent so that they become relative to the parent
+// container, assuming 1rem = 16px, a reasonable default
 
 h1, .h1 {
   @include font-display;
@@ -281,7 +276,7 @@ h1, .h1 {
 
 h2, .h2 {
   @include font-sans-serif;
-  font-size: 250%;
+  font-size: 225%;
 }
 
 h3, .h3 {

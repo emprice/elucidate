@@ -1,0 +1,36 @@
+// inline code snippet
+@mixin inline-code {
+  line-height: 1;
+  display: inline-block;
+  padding: 2px !important;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "body-font-color");
+      background-color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-background"), $weight: 10%);
+      border: 1px solid color.mix(map.get($theme, "body-font-color"),
+        map.get($theme, "body-background"), $weight: 60%);
+    }
+  }
+}
+
+// display code block
+@mixin code-block($block-margin: 1rem) {
+  line-height: 1.2;
+  margin-bottom: $block-margin;
+  padding: 1rem !important;
+  display: block;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "body-font-color");
+      background-color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-background"), $weight: 5%);
+      border: 1px solid color.mix(map.get($theme, "body-font-color"),
+        map.get($theme, "body-background"), $weight: 50%);
+    }
+  }
+}
+
+// vim: set ft=scss:

@@ -8,23 +8,38 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const apps = [
   {
     entry: 'mathml',
-    name: (e) => 'mathml',
+    name: (e) => 'tools/mathml',
     title: 'LaTeX to MathML tool',
     template: './ejs/mathml.ejs',
     stylesheets: [
       './scss/mathml.scss',
     ],
+    partials: [
+      {
+        name: 'nav',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/nav.html'),
+      },
+    ],
   },
   {
     entry: 'colormap',
-    name: (e) => 'colormap',
+    name: (e) => 'tools/colormap',
     title: 'Colormap designer tool',
     template: './ejs/colormap.ejs',
+    script: './js/colormap/main.js',
     stylesheets: [
       './scss/colormap.scss',
     ],
     otherImports: [
-      './js/tristimulus.bin.wasm',
+      './js/colormap/tristimulus.bin.wasm',
+    ],
+    partials: [
+      {
+        name: 'nav',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/nav.html'),
+      },
     ],
   },
   {
@@ -42,6 +57,11 @@ const apps = [
       'cheatsheet',
     ],
     partials: [
+      {
+        name: 'nav',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/nav.html'),
+      },
       {
         name: 'body',
         filename: (e) =>
@@ -75,8 +95,8 @@ apps.forEach((obj) => {
       filename: `${obj.name(page)}.html`,
       template: obj.template,
       inject: 'body',
-      publicPath: process.env.PUBLIC_PATH || '/',
-      base: process.env.BASE_URL || false,
+      publicPath: process.env.BASE_URL || '/',
+      base: process.env.BASE_URL || '/',
       chunks: [
         obj.entry,
         'defaultVendors',

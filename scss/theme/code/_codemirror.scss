@@ -1,0 +1,30 @@
+// settings for codemirror token colors, fonts, etc.
+.cm-editor {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & .tok-typeName {
+      color: map.get($theme, "token-typename-color");
+    }
+
+    [data-theme="#{$name}"] & .tok-className {
+      color: map.get($theme, "token-classname-color");
+    }
+
+    [data-theme="#{$name}"] & .tok-propertyName {
+      color: map.get($theme, "token-propertyname-color");
+    }
+
+    [data-theme="#{$name}"] & {
+      border-color: map.get($theme, "body-font-color");
+    }
+  }
+
+  .tok-typeName, .tok-className, .tok-propertyName {
+    font-weight: bold;
+  }
+
+  .cm-scroller {
+    @include font-monospace;
+  }
+}
+
+// vim: set ft=scss:

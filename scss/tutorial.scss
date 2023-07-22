@@ -5,9 +5,9 @@
   --base-font-size: 1.1rem;
 }
 
-@import 'theming';
-@import 'switch';
-@import 'slider';
+@import 'theme/common';
+@import 'theme/code/common';
+@import 'theme/code/hljs';
 
 @include foundation-table;
 @include foundation-sticky;
@@ -15,11 +15,11 @@
 $block-margin: 1rem;
 
 @include breakpoint(small only) {
-  #stickyContainer {
+  #sticky-container {
     overflow: hidden;
   }
 
-  #pageWrapperOuter {
+  #page-wrapper-outer {
     overflow-y: scroll;
   }
 }
@@ -67,6 +67,7 @@ th {
 
   &:hover::after {
     content: '\00b6';
+    margin-left: 0.5em;
   }
 
   @each $name, $theme in $themes {
@@ -113,87 +114,14 @@ pre {
   }
 }
 
-// syntax highlighting
-code, code.hljs {
-  @include font-monospace;
-
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] & .hljs-keyword {
-      color: map.get($theme, "token-keyword-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-name {
-      color: map.get($theme, "token-name-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-symbol {
-      color: map.get($theme, "token-symbol-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-meta {
-      color: map.get($theme, "token-meta-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-comment {
-      color: map.get($theme, "token-comment-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-tag {
-      color: map.get($theme, "body-font-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-attr {
-      color: map.get($theme, "token-attr-color") !important;
-    }
-
-    [data-theme="#{$name}"] & .hljs-string {
-      color: map.get($theme, "token-string-color") !important;
-    }
-  }
-
-  .hljs-keyword {
-    font-weight: bold !important;
-  }
-
-  .hljs-comment {
-    font-style: italic !important;
-  }
-}
-
 // highlighted inline code
 p code, p code.hljs, li code, li code.hljs {
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] & {
-      color: map.get($theme, "body-font-color");
-      background-color: color.mix(map.get($theme, "palette-secondary"),
-        map.get($theme, "body-background"), $weight: 10%);
-      border: 1px solid color.mix(map.get($theme, "body-font-color"),
-        map.get($theme, "body-background"), $weight: 60%);
-      border-radius: 5px;
-    }
-  }
-
-  line-height: 1;
-  display: inline-block;
-  padding: 2px !important;
+  @include inline-code;
 }
 
 // highlighted code block
 pre code, pre code.hljs {
-  line-height: 1.2;
-  margin-bottom: $block-margin;
-  padding: 1rem !important;
-  display: block;
-
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] & {
-      color: map.get($theme, "body-font-color");
-      background-color: color.mix(map.get($theme, "palette-secondary"),
-        map.get($theme, "body-background"), $weight: 5%);
-      border: 1px solid color.mix(map.get($theme, "body-font-color"),
-        map.get($theme, "body-background"), $weight: 50%);
-    }
-  }
+  @include code-block($block-margin: $block-margin);
 }
 
 $admonitions: (

@@ -1,7 +1,8 @@
 import * as $ from 'jquery';
 
 export function initFontSizeSlider() {
-  $( '#fontSizeControl' ).on('moved.zf.slider', function(e) {
+
+  $( '#font-size-control' ).on('moved.zf.slider', function(e) {
     const elem = $( e.currentTarget ).find('input').first();
     const newsize = elem.val().toString() + 'rem';
     $( ':root' ).css('--base-font-size', newsize);
@@ -10,7 +11,7 @@ export function initFontSizeSlider() {
 
 export function initDarkModeToggle() {
 
-  $( '#darkModeSwitch' ).on('change', function() {
+  $( '#dark-mode-switch' ).on('change', function() {
     // when the toggle changes, update the html attribute to reflect the
     // current preference, which affects the rest of the page indirectly
     // through css
@@ -22,18 +23,34 @@ export function initDarkModeToggle() {
   if (window.matchMedia) {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       // user prefers dark mode, so set dark mode
-      $( '#darkModeSwitch' ).prop('checked', true);
+      $( '#dark-mode-switch' ).prop('checked', true);
       $( 'html' ).attr('data-theme', 'dark');
     } else {
       // user prefers light mode or has no preference set, so set light mode
-      $( '#darkModeSwitch' ).prop('checked', false);
+      $( '#dark-mode-mwitch' ).prop('checked', false);
       $( 'html' ).attr('data-theme', 'light');
     }
   } else {
     // can't use matchmedia, so assume dark mode by default
-    $( '#darkModeSwitch' ).prop('checked', true);
+    $( '#dark-mode-switch' ).prop('checked', true);
     $( 'html' ).attr('data-theme', 'dark');
   }
+}
+
+export function divWrap(elements, classes) {
+
+  const wrapper = document.createElement('div');
+  $( wrapper ).addClass(classes).append(elements);
+  return wrapper;
+}
+
+export function createButtonWithIcon(labelText, iconName) {
+
+  const button = document.createElement('button');
+  return $( button )
+    .attr('type', 'button')
+    .addClass(['primary', 'button', 'icon-button', `md-${iconName}`])
+    .html(labelText);
 }
 
 // vim: set ft=javascript:

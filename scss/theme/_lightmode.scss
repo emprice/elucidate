@@ -1,14 +1,14 @@
 @use "sass:map";
 @use "sass:color";
 
-@use "common" as *;
+@use "global" as *;
 @use "nordtheme" as nord;
 
-$-body-background: $black;
-$-body-font-color: $white;
+$-body-background: $white;
+$-body-font-color: $black;
 
-$-palette-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
-$-palette-secondary: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
+$-palette-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
+$-palette-secondary: color.scale(map.get(nord.$frost, "dark"), $lightness: -40%);
 
 // admonition coloring
 $-palette-todo: color.mix(map.get(nord.$aurora, "purple"), $-body-background, $weight: 30%);
@@ -22,41 +22,41 @@ $-palette-note: color.mix(map.get(nord.$frost, "light"), $-body-background, $wei
 $-palette-seealso: color.mix(map.get(nord.$frost, "medium"), $-body-background, $weight: 30%);
 $-palette-tip: color.mix(map.get(nord.$aurora, "green"), $-body-background, $weight: 30%);
 
-$-muted-label-color: $light-gray;
+$-muted-label-color: $dark-gray;
 
-$-slider-background: $medium-gray;
-$-slider-fill-background: $light-gray;
+$-slider-background: $light-gray;
+$-slider-fill-background: $medium-gray;
 $-slider-handle-background: $-palette-primary;
 
-$-switch-background: $light-gray;
-$-switch-paddle-background: $black;
+$-switch-background: $medium-gray;
+$-switch-paddle-background: $white;
 
-$-titlebar-background: $light-gray;
-$-titlebar-color: $black;
+$-titlebar-background: $dark-gray;
+$-titlebar-color: $white;
 
-$-tooltip-background: $light-gray;
-$-tooltip-color: $black;
+$-tooltip-background: $dark-gray;
+$-tooltip-color: $white;
 
-$-offcanvas-background: color.scale($-body-background, $lightness: +10%);
+$-offcanvas-background: color.scale($-body-background, $lightness: -10%);
 
 $-button-color: $-body-background;
 $-button-background-primary: $-palette-primary;
 $-button-background-secondary: $-palette-secondary;
 
 $-titlebar-button-color: $-body-font-color;
-$-titlebar-button-background-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
-$-titlebar-button-background-secondary: color.scale(map.get(nord.$frost, "dark"), $lightness: -40%);
+$-titlebar-button-background-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
+$-titlebar-button-background-secondary: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
 
-$-token-typename-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
-$-token-name-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
-$-token-classname-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
-$-token-propertyname-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
-$-token-keyword-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
-$-token-symbol-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
-$-token-meta-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
-$-token-comment-color: color.scale(map.get(nord.$aurora, "yellow"), $lightness: +40%);
-$-token-attr-color: color.scale(map.get(nord.$frost, "greenish"), $lightness: +30%);
-$-token-string-color: color.scale(map.get(nord.$aurora, "green"), $lightness: +20%);
+$-token-typename-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
+$-token-name-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
+$-token-classname-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-propertyname-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-keyword-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-symbol-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-meta-color: color.scale(map.get(nord.$aurora, "orange"), $lightness: -40%);
+$-token-comment-color: map.get(nord.$polar-night, "medium");
+$-token-attr-color: color.scale(map.get(nord.$frost, "dark"), $lightness: -30%);
+$-token-string-color: color.scale(map.get(nord.$aurora, "yellow"), $lightness: -60%);
 
 $theme: (
   "palette-primary": $-palette-primary,
@@ -113,4 +113,3 @@ $theme: (
 );
 
 // vim: set ft=scss:
-

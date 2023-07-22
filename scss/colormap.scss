@@ -4,39 +4,39 @@
   --base-font-size: 1rem;
 }
 
-@import 'theming';
-@import 'switch';
-@import 'slider';
+@import 'theme/common';
 
 @include foundation-tooltip;
 @include foundation-dropdown;
 @include foundation-float-classes;
 
-button span.icon {
-  padding: 0;
-  margin-right: 0.5em;
-  top: 0.15em;
-  position: relative;
-  display: inline-block;
-}
-
-#interpolateButton span.icon,
-#grayscaleButton span.icon {
-  margin-right: 2px;
-}
-
 .grayscale {
   filter: #{grayscale(100%)};
 }
 
-.tooltip.right {
+.tooltip {
   @each $name, $theme in $themes {
     [data-theme="#{$name}"] & {
       color: map.get($theme, "tooltip-color");
       background-color: map.get($theme, "tooltip-background");
     }
 
-    [data-theme="#{$name}"] &::before {
+    [data-theme="#{$name}"] &.top::before {
+      @include css-triangle($tooltip-pip-width,
+        map.get($theme, "tooltip-background"), bottom);
+    }
+
+    [data-theme="#{$name}"] &.bottom::before {
+      @include css-triangle($tooltip-pip-width,
+        map.get($theme, "tooltip-background"), top);
+    }
+
+    [data-theme="#{$name}"] &.left::before {
+      @include css-triangle($tooltip-pip-width,
+        map.get($theme, "tooltip-background"), right);
+    }
+
+    [data-theme="#{$name}"] &.right::before {
       @include css-triangle($tooltip-pip-width,
         map.get($theme, "tooltip-background"), left);
     }
@@ -44,6 +44,10 @@ button span.icon {
 }
 
 #menu {
+  button {
+    @include button-expand($expand: true);
+  }
+
   li button {
     margin: 0 !important;
   }
@@ -66,34 +70,68 @@ button span.icon {
     display: block;
     width: 100%;
     height: 100%;
-    visibility: hidden;
     object-fit: fill;
   }
 
-  #controlsWrapper, #renderWrapper, #previewWrapper {
+  #preview-controls {
+    margin-bottom: 0.5rem;
+
+    #preview-label {
+      margin-right: 1rem;
+      display: inline-block;
+    }
+
+    #preview-buttons {
+      display: inline-block;
+      vertical-align: bottom;
+
+      .button {
+        margin: 0 0.5rem;
+        display: inline-block;
+      }
+    }
+
+    @include breakpoint(small only) {
+      display: flex;
+
+      #preview-label {
+        flex: 1 0 auto;
+      }
+
+      #preview-buttons {
+        flex: 0 1 auto;
+
+        .button {
+          margin: 2px 0.5rem;
+        }
+      }
+    }
+  }
+
+  #controls-wrapper, #render-wrapper, #preview-wrapper {
     margin-bottom: 1rem;
   }
 
   @include breakpoint(medium up) {
-    #controlsWrapper, #renderWrapper, #previewWrapper {
+    #controls-wrapper, #render-wrapper, #preview-wrapper {
       @include xy-cell($size: 12, $vertical: false);
       flex: 0 1 auto;
     }
   }
 
   @include breakpoint(small only) {
-    #renderWrapper {
+    #render-wrapper {
       flex: 1 0 auto;
       width: auto;
     }
 
-    #controlsWrapper, #previewWrapper {
+    #controls-wrapper, #preview-wrapper {
       @include xy-cell($size: 12, $vertical: false);
       flex: 0 1 auto;
     }
   }
 
-  #renderWrapper {
+  #render-wrapper {
     margin-left: 1rem;
     margin-right: 1rem;
     min-height: 100px;
@@ -109,7 +147,7 @@ button span.icon {
     margin: 10px;
   }
 
-  #controlsWrapper label, #previewWrapper label {
+  #controls-wrapper label, #preview-wrapper label {
     @include font-display;
     flex: 0 0 auto;
     height: 3rem;
@@ -122,7 +160,7 @@ button span.icon {
     border-radius: 50%;
   }
 
-  #breakpointsControl {
+  #breakpoints-control {
     .slider-handle {
       cursor: pointer;
 
@@ -144,19 +182,60 @@ button span.icon {
     .dropdown-pane {
       label {
         font-size: medium;
+        display: block;
+        height: auto;
+      }
+
+      & > div {
+        margin: 0.5rem 0;
       }
 
       .swatch {
         height: 4rem;
         width: 100%;
         display: block;
-        margin: 0.5rem 0;
+        margin: 0;
+        padding: 0;
+      }
+
+      .hex {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        label {
+          width: 100%;
+          display: block;
+        }
+
+        div {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+
+          input {
+            @include font-monospace;
+
+            display: block;
+            flex: 0 1 100%;
+            padding: 0;
+            margin: 0;
+            min-width: 0;
+          }
+
+          button {
+            display: block;
+            flex: 1 0 auto;
+          }
+        }
       }
 
       button {
         @extend .float-right;
 
         margin: 0;
+        padding: 0.5rem;
+        font-size: medium;
 
         @each $name, $theme in $themes {
           [data-theme="#{$name}"] & {
@@ -172,6 +251,24 @@ button span.icon {
           }
         }
       }
+
+      &::before {
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-100%);
+        position: relative;
+      }
+
+      @each $name, $theme in $themes {
+        [data-theme="#{$name}"] &::before {
+          @include css-triangle($triangle-size: 1rem, $triangle-direction: up,
+            $triangle-color: map.get($theme, "titlebar-background"));
+        }
+      }
+
+      cursor: default;  // otherwise inherited from the handle
+      padding-top: 0;   // pip on top edge adds "ghost" padding
+      z-index: 20;      // set sufficiently high to appear "on top"
     }
   }
 }

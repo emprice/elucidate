@@ -1,0 +1,48 @@
+// overrides for highlight.js colors, fonts, etc.
+code, code.hljs {
+  @include font-monospace;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & .hljs-keyword {
+      color: map.get($theme, "token-keyword-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-name {
+      color: map.get($theme, "token-name-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-symbol {
+      color: map.get($theme, "token-symbol-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-meta {
+      color: map.get($theme, "token-meta-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-comment {
+      color: map.get($theme, "token-comment-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-tag {
+      color: map.get($theme, "body-font-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-attr {
+      color: map.get($theme, "token-attr-color") !important;
+    }
+
+    [data-theme="#{$name}"] & .hljs-string {
+      color: map.get($theme, "token-string-color") !important;
+    }
+  }
+
+  .hljs-keyword {
+    font-weight: bold !important;
+  }
+
+  .hljs-comment {
+    font-style: italic !important;
+  }
+}
+
+// vim: set ft=scss:
