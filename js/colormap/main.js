@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import { Buffer } from 'buffer';
-import { Slider, OffCanvas, Tooltip } from 'fdn/js/foundation';
+import { Slider, OffCanvas, Drilldown, Tooltip } from 'fdn/js/foundation';
 
 import { Breakpoint } from './breakpoint';
 import { initDarkModeToggle } from '../utils';

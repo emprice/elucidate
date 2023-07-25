@@ -8,6 +8,7 @@
 @import 'theme/common';
 @import 'theme/code/common';
 @import 'theme/code/hljs';
+@import 'theme/ux/callout';
 
 @include foundation-table;
 @include foundation-sticky;
@@ -21,12 +22,6 @@ $block-margin: 1rem;
 
   #page-wrapper-outer {
     overflow-y: scroll;
-  }
-}
-
-@include breakpoint(medium) {
-  #menu {
-    position: fixed;
   }
 }
 
@@ -101,6 +96,12 @@ p, li {
         map.get($theme, "body-font-color"), $weight: 20%);
         text-decoration: underline solid;
     }
+
+    [data-theme="#{$name}"] & a.button,
+    [data-theme="#{$name}"] & a.button:hover,
+    [data-theme="#{$name}"] & a.button:active {
+      text-decoration: none !important;
+    }
   }
 }
 
@@ -139,17 +140,9 @@ $admonitions: (
 
 .callout {
 
-  padding: 1rem;
   margin-bottom: $block-margin;
 
-  // paragraphs inside callouts
-  p {
-    margin: 0;
-    padding: 0;
-  }
-
-  // callout title block
-  & > div {
+  .title {
     @include font-display;
     margin-bottom: 0.5rem;
 
@@ -172,11 +165,6 @@ $admonitions: (
             map.get($theme, "body-background"), $weight: 10%);
           border: 1px solid color.mix(map.get($theme, "palette-#{$admonition}"),
             map.get($theme, "body-background"), $weight: 60%);
-        }
-
-        // block code inside admonitions get different margins
-        pre code, pre code.hljs {
-          margin: 0.5rem 0;
         }
 
         a {
@@ -233,6 +221,15 @@ $admonitions: (
   &.tip > div::after {
     content: "Tip";
   }
+}
+
+a.button {
+  margin: 1rem 0 0 0;
+  display: inline-block;
+}
+
+#pages-gallery .callout h1 {
+  margin: 0;
 }
 
 // vim: set ft=scss:

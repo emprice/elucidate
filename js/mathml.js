@@ -1,6 +1,6 @@
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
-import { defaultKeymap } from '@codemirror/commands';
+import { defaultKeymap, historyKeymap, history } from '@codemirror/commands';
 
 import { html } from '@codemirror/lang-html';
 import { classHighlighter } from '@lezer/highlight';
@@ -8,7 +8,7 @@ import { syntaxHighlighting } from '@codemirror/language';
 
 import * as $ from 'jquery';
 
-import { Slider, OffCanvas } from 'fdn/js/foundation';
+import { Slider, OffCanvas, Drilldown } from 'fdn/js/foundation';
 import { initDarkModeToggle, initFontSizeSlider } from './utils';
 
 import { mathjax } from 'mjx/mathjax';
@@ -57,6 +57,8 @@ function initCodemirror() {
   let inputState = EditorState.create({
     doc: '$$ a^2 + b^2 = c^2 $$',
     extensions: [
+      history(),
+      keymap.of(historyKeymap),
       keymap.of(defaultKeymap),
       EditorView.lineWrapping,
       EditorView.editable.of(true),
@@ -71,16 +73,16 @@ function initCodemirror() {
   });
 
   // output state is not editable and has html syntax highlighting
+  const htmlExtensions = [
+    html(),
+    syntaxHighlighting(classHighlighter),
+    EditorView.lineWrapping,
+    EditorView.editable.of(false),
+    fixedSizeTheme,
+  ];
   let outputState = EditorState.create({
     doc: '',
-    extensions: [
-      html(),
-      syntaxHighlighting(classHighlighter),
-      keymap.of(defaultKeymap),
-      EditorView.lineWrapping,
-      EditorView.editable.of(false),
-      fixedSizeTheme,
-    ]
+    extensions: htmlExtensions,
   });
 
   // attach a view of the output state to the document
@@ -99,6 +101,7 @@ function initCodemirror() {
       input: inputView,
       output: outputView,
     },
+    htmlExtensions,
   };
 }
 
@@ -182,32 +185,20 @@ function addRenderListener(cm, mjx) {
     // loop through any math and add the mathml and new elements
     // to their respective panes; multiple equations are appended in
     // the order they were input
-    var len = 0;
-    var changes = [
-      {
-        from: 0,
-        to: cm.views.output.state.doc.length,
-      },
-    ];
+    var allmath = '';
 
     for (let math of mjxdoc.math) {
-      const newstr = math.typesetRoot.innerHTML;
-
-      changes.push({
-        from: len,
-        insert: newstr + '\n',
-      });
-
-      len += newstr.length + 1,
-
+      allmath += math.typesetRoot.innerHTML + '\n';
       cm.elements.render.appendChild(math.typesetRoot);
     }
 
-    // update the code window with the computed changes
-    const transaction = cm.views.output.state.update({
-      changes
+    let outputState = EditorState.create({
+      doc: allmath,
+      extensions: cm.htmlExtensions,
     });
-    cm.views.output.dispatch(transaction);
+
+    // update the output window with the new content
+    cm.views.output.setState(outputState);
 
     // make sure the button goes back to its unfocused state,
     // indicating the render is complete

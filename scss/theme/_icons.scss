@@ -89,6 +89,24 @@
     @extend .md;
     content: "\e3f4";
   }
+
+  &-math::before {
+    // functions
+    @extend .md;
+    content: "\e24a";
+  }
+
+  &-color::before {
+    // palette
+    @extend .md;
+    content: "\e40a";
+  }
+
+  &-learn::before {
+    // school
+    @extend .md;
+    content: "\e80c";
+  }
 }
 
 // vim: set ft=scss:

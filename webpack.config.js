@@ -7,10 +7,31 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const apps = [
   {
+    entry: 'toolbox',
+    name: (e) => 'tools/index',
+    title: 'Toolbox',
+    template: './ejs/toolbox/index.ejs',
+    script: './js/toolbox.js',
+    stylesheets: [
+      './scss/toolbox.scss',
+    ],
+    otherImports: [
+      './static/latex_to_mathml_tool_lowres.png',
+      './static/colormap_designer_tool_lowres.png',
+    ],
+    partials: [
+      {
+        name: 'nav',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/nav.html'),
+      },
+    ],
+  },
+  {
     entry: 'mathml',
     name: (e) => 'tools/mathml',
     title: 'LaTeX to MathML tool',
-    template: './ejs/mathml.ejs',
+    template: './ejs/toolbox/mathml.ejs',
     stylesheets: [
       './scss/mathml.scss',
     ],
@@ -26,7 +47,7 @@ const apps = [
     entry: 'colormap',
     name: (e) => 'tools/colormap',
     title: 'Colormap designer tool',
-    template: './ejs/colormap.ejs',
+    template: './ejs/toolbox/colormap.ejs',
     script: './js/colormap/main.js',
     stylesheets: [
       './scss/colormap.scss',
@@ -46,12 +67,13 @@ const apps = [
     entry: 'tutorial',
     name: (e) => `tutorial/${e}`,
     title: 'HTML tutorial',
-    template: './ejs/tutorial.ejs',
+    template: './ejs/tutorial/page.ejs',
     script: './js/tutorial.js',
     stylesheets: [
       './scss/tutorial.scss',
     ],
     pages: [
+      'index',
       'basic',
       'skeleton',
       'cheatsheet',
@@ -65,7 +87,7 @@ const apps = [
       {
         name: 'body',
         filename: (e) =>
-          path.resolve(__dirname, './ejs/partials', `${e}.html`),
+          path.resolve(__dirname, './ejs/tutorial/partials', `${e}.html`),
       },
     ],
   },
@@ -76,6 +98,7 @@ const entryPoints = apps.reduce((acc, cur) => {
     ...acc,
     [cur.entry]: {
       import: [
+        './static/elucidate_favicon.ico',
         ...(cur.otherImports || []),
         ...(cur.stylesheets || []),
         (cur.script || `./js/${cur.entry}.js`),
@@ -125,11 +148,25 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /favicon.ico$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'favicon.ico',
+        },
+      },
+      {
         test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
         type: 'asset/resource',
         generator: {
           filename: 'assets/fonts-[name][ext]',
-        }
+        },
+      },
+      {
+        test: /\.png$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/images-[name][ext]',
+        },
       },
       {
         test: /compute\.js$/,
@@ -147,7 +184,7 @@ module.exports = {
         type: 'asset/resource',
         generator: {
           filename: 'assets/[name].wasm',
-        }
+        },
       },
       {
         test: /\.css$/,
@@ -171,7 +208,7 @@ module.exports = {
                 quietDeps: true,
               },
             },
-          }
+          },
         ],
       },
       {
@@ -188,7 +225,7 @@ module.exports = {
             options: {
               esModule: false,
             },
-          }
+          },
         ],
       },
     ]

@@ -1,4 +1,5 @@
 @use "sass:map";
+@use "sass:color";
 
 @use "nordtheme" as nord;
 @use "lightmode" as light;
@@ -166,6 +167,12 @@ math {
   padding: 1rem;
   display: flex;
   flex-direction: column;
+
+  @include breakpoint(medium) {
+    position: sticky;
+    width: 100%;
+    top: 0;
+  }
 }
 
 #controls, #nav {

@@ -1,0 +1,87 @@
+@use "sass:map";
+@use "sass:color";
+
+:root {
+  --base-font-size: 1.1rem;
+}
+
+@import 'theme/common';
+@import 'theme/ux/callout';
+
+@include foundation-sticky;
+@include foundation-flex-classes;
+
+$block-margin: 1rem;
+
+@include breakpoint(small only) {
+  #sticky-container {
+    overflow: hidden;
+  }
+
+  #page-wrapper-outer {
+    overflow-y: scroll;
+  }
+}
+
+p {
+  line-height: 1.5;
+}
+
+.callout {
+  padding: 1rem;
+  margin: 0;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  @include breakpoint(medium up) {
+    & .title {
+      flex: 1 0 100%;
+    }
+
+    & .description {
+      flex: 0 1 60%;
+    }
+
+    & .thumbnail {
+      flex: 0 1 40%;
+      padding-left: 1rem;
+    }
+  }
+
+  @include breakpoint(small only) {
+    & .title, & .description, & .thumbnail {
+      flex: 1 0 100%;
+    }
+
+    & .thumbnail {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.title {
+  line-height: 1;
+}
+
+.thumbnail {
+  min-width: 100px;
+  height: 100%;
+}
+
+#tools-list {
+  margin: 0;
+  padding: 0;
+
+  li ~ li {
+    margin-top: $block-margin;
+  }
+}
+
+a.button {
+  margin: 1rem 0 0 0;
+  display: inline-block;
+}
+
+// vim: set ft=scss:

@@ -6,3 +6,4 @@ js/*.bin.wasm filter=lfs diff=lfs merge=lfs -text linguist-generated
 *.svg filter=lfs diff=lfs merge=lfs -text
 static/*.png filter=lfs diff=lfs merge=lfs -text
 static/*.svg filter=lfs diff=lfs merge=lfs -text
+static/*.ico filter=lfs diff=lfs merge=lfs -text
