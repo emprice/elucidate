@@ -1,0 +1,68 @@
+@use "sass:map";
+@use "sass:color";
+
+:root {
+  --base-font-size: 1.1rem;
+}
+
+@import 'theme/common';
+@import 'theme/ux/callout';
+
+@include foundation-sticky;
+
+$block-margin: 1rem;
+
+@include breakpoint(small only) {
+  #sticky-container {
+    overflow: hidden;
+  }
+
+  #page-wrapper-outer {
+    overflow-y: scroll;
+  }
+}
+
+// all text containers
+p, li {
+  line-height: 1.5;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & a {
+      color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-font-color"), $weight: 30%);
+        text-decoration: underline dotted;
+    }
+
+    [data-theme="#{$name}"] & a:hover,
+    [data-theme="#{$name}"] & a:active {
+      color: color.mix(map.get($theme, "palette-secondary"),
+        map.get($theme, "body-font-color"), $weight: 20%);
+        text-decoration: underline solid;
+    }
+
+    [data-theme="#{$name}"] & a.button,
+    [data-theme="#{$name}"] & a.button:hover,
+    [data-theme="#{$name}"] & a.button:active {
+      text-decoration: none !important;
+    }
+  }
+}
+
+.callout {
+
+  margin-bottom: $block-margin;
+
+  .title {
+    @include font-display;
+    margin-bottom: 0.5rem;
+
+    &::before {
+      margin-right: 0.5em;
+      top: 0.15em;
+      position: relative;
+      display: inline-block;
+    }
+  }
+}
+
+// vim: set ft=scss:

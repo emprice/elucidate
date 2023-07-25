@@ -96,12 +96,6 @@ p, li {
         map.get($theme, "body-font-color"), $weight: 20%);
         text-decoration: underline solid;
     }
-
-    [data-theme="#{$name}"] & a.button,
-    [data-theme="#{$name}"] & a.button:hover,
-    [data-theme="#{$name}"] & a.button:active {
-      text-decoration: none !important;
-    }
   }
 }
 
@@ -125,28 +119,15 @@ pre code, pre code.hljs {
   @include code-block($block-margin: $block-margin);
 }
 
-$admonitions: (
-  "todo",
-  "caution",
-  "warning",
-  "danger",
-  "attention",
-  "hint",
-  "important",
-  "note",
-  "seealso",
-  "tip",
-);
-
 .callout {
 
   margin-bottom: $block-margin;
 
   .title {
     @include font-display;
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem 0;
 
-    span {
+    &::before {
       margin-right: 0.5em;
       top: 0.15em;
       position: relative;
@@ -154,82 +135,10 @@ $admonitions: (
     }
   }
 
-  @each $name, $theme in $themes {
-    @each $admonition in $admonitions {
-      [data-theme="#{$name}"] &.#{$admonition} {
-        background-color: map.get($theme, "palette-#{$admonition}");
-
-        // inline code nested inside admonitions get slightly different styling
-        p code, p code.hljs {
-          background-color: color.mix(map.get($theme, "palette-#{$admonition}"),
-            map.get($theme, "body-background"), $weight: 10%);
-          border: 1px solid color.mix(map.get($theme, "palette-#{$admonition}"),
-            map.get($theme, "body-background"), $weight: 60%);
-        }
-
-        a {
-          color: color.mix(map.get($theme, "palette-#{$admonition}"),
-            map.get($theme, "body-font-color"), $weight: 20%);
-          text-decoration: underline dotted;
-        }
-
-        a:hover, a:active {
-          color: color.mix(map.get($theme, "palette-#{$admonition}"),
-            map.get($theme, "body-font-color"), $weight: 10%);
-          text-decoration: underline solid;
-        }
-      }
-    }
+  a.button {
+    margin: 1rem 0 0 0;
+    display: inline-block;
   }
-
-  &.todo > div::after {
-    content: "TODO";
-  }
-
-  &.caution > div::after {
-    content: "Caution";
-  }
-
-  &.warning > div::after {
-    content: "Warning";
-  }
-
-  &.danger > div::after {
-    content: "Danger";
-  }
-
-  &.attention > div::after {
-    content: "Attention";
-  }
-
-  &.hint > div::after {
-    content: "Hint";
-  }
-
-  &.important > div::after {
-    content: "Important";
-  }
-
-  &.note > div::after {
-    content: "Note";
-  }
-
-  &.seealso > div::after {
-    content: "See also";
-  }
-
-  &.tip > div::after {
-    content: "Tip";
-  }
-}
-
-a.button {
-  margin: 1rem 0 0 0;
-  display: inline-block;
-}
-
-#pages-gallery .callout h1 {
-  margin: 0;
 }
 
 // vim: set ft=scss:

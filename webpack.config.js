@@ -7,11 +7,37 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const apps = [
   {
+    entry: 'main',
+    name: (e) => 'index',
+    title: 'elucidate',
+    template: './ejs/main.ejs',
+    script: './js/simple.js',
+    stylesheets: [
+      './scss/main.scss',
+    ],
+    otherImports: [
+      './static/elucidate_light.svg',
+      './static/elucidate_dark.svg',
+    ],
+    partials: [
+      {
+        name: 'nav',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/nav.html'),
+      },
+      {
+        name: 'body',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/index.html'),
+      },
+    ],
+  },
+  {
     entry: 'toolbox',
     name: (e) => 'tools/index',
     title: 'Toolbox',
     template: './ejs/toolbox/index.ejs',
-    script: './js/toolbox.js',
+    script: './js/simple.js',
     stylesheets: [
       './scss/toolbox.scss',
     ],
@@ -125,7 +151,7 @@ apps.forEach((obj) => {
         'defaultVendors',
       ],
       templateParameters: {
-        pageTitle: obj.title,
+        pageTitle: obj.title || '',
         partials: (obj.partials || []).reduce((acc, cur) => {
           return {
             ...acc,
@@ -155,17 +181,17 @@ module.exports = {
         },
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
-        type: 'asset/resource',
-        generator: {
-          filename: 'assets/fonts-[name][ext]',
-        },
-      },
-      {
-        test: /\.png$/,
+        test: /\.(png|svg)$/,
         type: 'asset/resource',
         generator: {
           filename: 'assets/images-[name][ext]',
+        },
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts-[name][ext]',
         },
       },
       {

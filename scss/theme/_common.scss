@@ -312,4 +312,16 @@ h6, .h6 {
   }
 }
 
+@each $name, $theme in $themes {
+  @each $othername, $othertheme in $themes {
+    [data-theme="#{$name}"] .show-for-#{$othername}-only {
+      @if $name == $othername {
+        display: block;
+      } @else {
+        display: none;
+      }
+    }
+  }
+}
+
 // vim: set ft=scss:

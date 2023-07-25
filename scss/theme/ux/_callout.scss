@@ -1,3 +1,19 @@
+@use "sass:map";
+@use "sass:color";
+
+$admonitions: (
+  "todo",
+  "caution",
+  "warning",
+  "danger",
+  "attention",
+  "hint",
+  "important",
+  "note",
+  "seealso",
+  "tip",
+);
+
 .callout {
   @include callout-base;
 
@@ -25,6 +41,74 @@
       background-color: color.mix(map.get($theme, "palette-primary"),
         map.get($theme, "body-background"), 20%);
     }
+  }
+
+  @each $name, $theme in $themes {
+    @each $admonition in $admonitions {
+      [data-theme="#{$name}"] &.#{$admonition} {
+        background-color: map.get($theme, "palette-#{$admonition}");
+
+        // inline code nested inside admonitions get slightly different styling
+        p code, p code.hljs {
+          background-color: color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-background"), $weight: 10%);
+          border: 1px solid color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-background"), $weight: 60%);
+        }
+
+        a {
+          color: color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-font-color"), $weight: 20%);
+          text-decoration: underline dotted;
+        }
+
+        a:hover, a:active {
+          color: color.mix(map.get($theme, "palette-#{$admonition}"),
+            map.get($theme, "body-font-color"), $weight: 10%);
+          text-decoration: underline solid;
+        }
+      }
+    }
+  }
+
+  &.todo .title::after {
+    content: "TODO";
+  }
+
+  &.caution .title::after {
+    content: "Caution";
+  }
+
+  &.warning .title::after {
+    content: "Warning";
+  }
+
+  &.danger .title::after {
+    content: "Danger";
+  }
+
+  &.attention .title::after {
+    content: "Attention";
+  }
+
+  &.hint .title::after {
+    content: "Hint";
+  }
+
+  &.important .title::after {
+    content: "Important";
+  }
+
+  &.note .title::after {
+    content: "Note";
+  }
+
+  &.seealso .title::after {
+    content: "See also";
+  }
+
+  &.tip .title::after {
+    content: "Tip";
   }
 }
 
