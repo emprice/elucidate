@@ -171,6 +171,154 @@ def the_song_that_never_ends():
 \end{lstlisting}</code></pre>
     </td>
     <td>
+<pre><code class="language-html">&lt;code&gt;
+def the_song_that_never_ends():
+    print('Yes: It goes on and on, my friends!')
+    the_song_that_never_ends()
+&lt;/code&gt;</code></pre>
+      <p>The <code class="language-html">&lt;code&gt;</code> block does not
+        take care of syntax highlighting for you; it just indicates that
+        the contents are code. You can use a library like
+        <a href="https://highlightjs.org">highlight.js</a> to lex and
+        highlight many programming languages.</p>
+      <p>You might also nest the <code class="language-html">&lt;code&gt;</code>
+        block inside a <code class="language-html">&lt;pre&gt;</code> block,
+        a section of preformatted text. A default styling for both
+        <code class="language-html">&lt;code&gt;</code> and
+        <code class="language-html">&lt;pre&gt;</code> might be monospaced
+        font, but this can also be customized with styling.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Superscripts and subscripts</th>
+    <td>
+<pre><code class="language-latex">Have you heard about the dangers of dihydrogen monoxide, commonly known as H\textsubscript{2}O? It is the 1\textsuperscript{st} most abundant molecule in the human body!</code></pre>
+    </td>
+    <td>
+<pre><code class="language-html">Have you heard about the dangers of dihydrogen monoxide, commonly known as H&lt;sub&gt;2&lt;/sub&gt;O? It is the 1&lt;sup&gt;st&lt;/sup&gt; most abundant molecule in the human body!</code></pre>
+    </td>
+  </tr>
+</table>
+<h2 class="permalink" id="inline-mods">
+  <a href="tutorial/cheatsheet.html#inline-mods">Inline text modifiers</a>
+</h2>
+<div class="callout attention">
+  <div class="title md-warning"></div>
+  <p>HTML5 changed the definitions of <code class="language-html">&lt;b&gt;</code>,
+    <code class="language-html">&lt;i&gt;</code>, <code class="language-html">&lt;s&gt;</code>,
+    and <code class="language-html">&lt;u&gt;</code> from the previous standard.
+    Before, those elements were only given a visual definition, so
+    <code class="language-html">&lt;b&gt;</code> indicated bold text but did not
+    convey any particular intent. These elements now represent text that would
+    conventionally be typeset with each font variant. <code class="language-html">&lt;em&gt;</code>
+    and <code class="language-html">&lt;strong&gt;</code> still carry more
+    unambiguous intent, which allows styling to be specified independently.</p>
+</div>
+<table>
+  <tr>
+    <th></th>
+    <th>LaTeX</th>
+    <th>HTML</th>
+  </tr>
+  <tr>
+    <th>Emphasis</th>
+    <td>
+<pre><code class="language-latex">\emph{I really want to emphasize this!}</code></pre>
+      <p>Text enclosed in <code class="language-latex">\emph{...}</code> is
+        usually typeset in italic font. The difference between
+        <code class="language-latex">\emph{...}</code> and
+        <code class="language-latex">\textit{...}</code> is subtle and seems
+        to be related to inter-character spacing when the font changes. Whether
+        the intent of emphasis makes it into the PDF is not clear (to me).</p>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;em&gt;I really want to emphasize this!&lt;/em&gt;</code></pre>
+      <p>Text between <code class="language-html">&lt;em&gt;</code> and
+        <code class="language-html">&lt;/em&gt;</code> tags may be shown to the
+        user in italic font, but <code class="language-html">&lt;em&gt;</code>
+        more specifically indicates text with "emphatic stress." There is no
+        ambiguity about the intent, for example, if the document is being
+        rendered as audio.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Strong importance</th>
+    <td>
+      <p>LaTeX does not seem to have a standard way of typesetting strong
+        importance. If you roll your own macro, you might use bold or
+        bold-italic font, but that choice can easily vary from user to
+        user or even document to document.</p>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;strong&gt;This is strongly important.&lt;/strong&gt;</code></pre>
+      <p>Text between <code class="language-html">&lt;strong&gt;</code> and
+        <code class="language-html">&lt;/strong&gt;</code> tags may be shown to the
+        user in boldface, but <code class="language-html">&lt;strong&gt;</code>
+        more specifically indicates text with "strong importance." There is no
+        ambiguity about the intent, for example, if the document is being
+        rendered as audio.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Boldface</th>
+    <td>
+<pre><code class="language-latex">\textbf{I think this looks nice in bold.}</code></pre>
+      <p>Text enclosed in <code class="language-latex">\textbf{...}</code> will
+        always be typeset in boldface, but the significance of the formatting may
+        or may not be clear from context.</p>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;b&gt;I think this looks nice in bold.&lt;b&gt;</code></pre>
+      <p>Text between <code class="language-html">&lt;b&gt;</code> and
+        <code class="language-html">&lt;/b&gt;</code> tags may be shown to the
+        user in boldface. The element itself does not indicate emphasis, just
+        that the conventional formatting would be boldface.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Italics</th>
+    <td>
+<pre><code class="language-latex">\textit{I think this looks nice in italic.}</code></pre>
+      <p>Text enclosed in <code class="language-latex">\textit{...}</code> will
+        always be typeset in italic font, but the significance of the formatting may
+        or may not be clear from context.</p>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;i&gt;I think this looks nice in italic.&lt;i&gt;</code></pre>
+      <p>Text between <code class="language-html">&lt;i&gt;</code> and
+        <code class="language-html">&lt;/i&gt;</code> tags may be shown to the
+        user in italic font. The element itself does not indicate emphasis, just
+        that the conventional formatting would be as italicized text.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Underline</th>
+    <td>
+<pre><code class="language-latex">\underline{I think this looks nice underlined.}</code></pre>
+      <p>Text enclosed in <code class="language-latex">\underline{...}</code> will
+        always be typeset underlined, but the significance of the formatting may
+        or may not be clear from context.</p>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;u&gt;I think this looks nice underlined.&lt;u&gt;</code></pre>
+      <p>Text between <code class="language-html">&lt;u&gt;</code> and
+        <code class="language-html">&lt;/u&gt;</code> tags may be shown to the
+        user underlined. The element itself does not indicate emphasis, just
+        that the conventional formatting would be as underlined text.</p>
+    </td>
+  </tr>
+  <tr>
+    <th>Strikethrough</th>
+    <td>
+      <p>LaTeX does not have a standard command for strikethrough text, though
+        additional packages may add that capability.</p>
+    </td>
+    <td>
+<pre><code class="language-html">&lt;s&gt;I think this looks nice struck out.&lt;s&gt;</code></pre>
+      <p>Text between <code class="language-html">&lt;s&gt;</code> and
+        <code class="language-html">&lt;/s&gt;</code> tags may be shown to the
+        user struck through with a horizontal line. It is used to indicate
+        content that is "no longer accurate or no longer relevant.".</p>
     </td>
   </tr>
 </table>

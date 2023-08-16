@@ -8,7 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const apps = [
   {
     entry: 'main',
-    name: (e) => 'index',
+    name: (e) => e,
     title: 'elucidate',
     template: './ejs/main.ejs',
     script: './js/simple.js',
@@ -19,6 +19,10 @@ const apps = [
       './static/elucidate_light.svg',
       './static/elucidate_dark.svg',
     ],
+    pages: [
+      'index',
+      'motivation',
+    ],
     partials: [
       {
         name: 'nav',
@@ -28,7 +32,7 @@ const apps = [
       {
         name: 'body',
         filename: (e) =>
-          path.resolve(__dirname, './ejs/partials/index.html'),
+          path.resolve(__dirname, './ejs/partials', `${e}.html`),
       },
     ],
   },
@@ -103,6 +107,7 @@ const apps = [
       'basic',
       'skeleton',
       'cheatsheet',
+      'resources',
     ],
     partials: [
       {

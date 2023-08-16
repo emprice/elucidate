@@ -32,19 +32,9 @@ $block-margin: 1rem;
     background-color: map.get($theme, "body-background");
   }
 
-  [data-theme="#{$name}"] tr:hover {
-    background-color: color.mix(map.get($theme, "body-font-color"),
-      map.get($theme, "body-background"), 2.5%);
-  }
-
   [data-theme="#{$name}"] tr:nth-child(2n) {
     background-color: color.mix(map.get($theme, "body-font-color"),
       map.get($theme, "body-background"), 5%);
-  }
-
-  [data-theme="#{$name}"] tr:nth-child(2n):hover {
-    background-color: color.mix(map.get($theme, "body-font-color"),
-      map.get($theme, "body-background"), 7.5%);
   }
 }
 
@@ -60,9 +50,14 @@ th {
 .permalink {
   display: inline-block;
 
-  &:hover::after {
+  & a::after {
     content: '\00b6';
     margin-left: 0.5em;
+    visibility: hidden;
+  }
+
+  &:hover a::after {
+    visibility: visible;
   }
 
   @each $name, $theme in $themes {
@@ -94,6 +89,24 @@ p, li {
     [data-theme="#{$name}"] & a:active {
       color: color.mix(map.get($theme, "palette-secondary"),
         map.get($theme, "body-font-color"), $weight: 20%);
+        text-decoration: underline solid;
+    }
+  }
+}
+
+// definition lists
+dt {
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & a {
+      color: color.mix(map.get($theme, "palette-primary"),
+        map.get($theme, "body-font-color"), $weight: 70%);
+        text-decoration: underline dotted;
+    }
+
+    [data-theme="#{$name}"] & a:hover,
+    [data-theme="#{$name}"] & a:active {
+      color: color.mix(map.get($theme, "palette-primary"),
+        map.get($theme, "body-font-color"), $weight: 60%);
         text-decoration: underline solid;
     }
   }
