@@ -58,8 +58,7 @@ function initCodemirror() {
     doc: '$$ a^2 + b^2 = c^2 $$',
     extensions: [
       history(),
-      keymap.of(historyKeymap),
-      keymap.of(defaultKeymap),
+      keymap.of([...defaultKeymap, ...historyKeymap]),
       EditorView.lineWrapping,
       EditorView.editable.of(true),
       fixedSizeTheme,

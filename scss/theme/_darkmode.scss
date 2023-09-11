@@ -47,6 +47,13 @@ $-titlebar-button-color: $-body-font-color;
 $-titlebar-button-background-primary: color.scale(map.get(nord.$aurora, "purple"), $lightness: -40%);
 $-titlebar-button-background-secondary: color.scale(map.get(nord.$frost, "dark"), $lightness: -40%);
 
+$-tab-background: color.scale($-body-background, $lightness: +10%);
+$-tab-border-color: $-tab-background;
+$-tab-color: $-body-font-color;
+$-tab-color-active: $-palette-secondary;
+$-tab-background-hover: color.scale($-body-background, $lightness: +5%);
+$-tab-background-active: $-body-background;
+
 $-token-typename-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
 $-token-name-color: color.scale(map.get(nord.$aurora, "purple"), $lightness: +20%);
 $-token-classname-color: color.scale(map.get(nord.$frost, "light"), $lightness: +40%);
@@ -99,6 +106,13 @@ $theme: (
   "titlebar-button-color": $-titlebar-button-color,
   "titlebar-button-background-primary": $-titlebar-button-background-primary,
   "titlebar-button-background-secondary": $-titlebar-button-background-secondary,
+
+  "tab-background": $-tab-background,
+  "tab-border-color": $-tab-border-color,
+  "tab-color": $-tab-color,
+  "tab-color-active": $-tab-color-active,
+  "tab-background-hover": $-tab-background-hover,
+  "tab-background-active": $-tab-background-active,
 
   "token-typename-color": $-token-typename-color,
   "token-name-color": $-token-name-color,

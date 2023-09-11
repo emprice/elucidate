@@ -94,6 +94,23 @@ const apps = [
     ],
   },
   {
+    entry: 'workspace',
+    name: (e) => 'tools/workspace',
+    title: 'HTML authoring workspace',
+    template: './ejs/toolbox/workspace.ejs',
+    script: './js/workspace.js',
+    stylesheets: [
+      './scss/workspace.scss',
+    ],
+    partials: [
+      {
+        name: 'nav',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/partials/nav.html'),
+      },
+    ],
+  },
+  {
     entry: 'tutorial',
     name: (e) => `tutorial/${e}`,
     title: 'HTML tutorial',
@@ -294,7 +311,8 @@ module.exports = {
             return `common-${allChunksNames}`;
           },
           test(module) {
-            return module.type === 'javascript/auto';
+            return (module.type === 'javascript/auto') ||
+                   (module.type === 'javascript/esm');
           },
           minChunks: 2,
         },

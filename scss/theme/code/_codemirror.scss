@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "sass:color";
+
 // settings for codemirror token colors, fonts, etc.
 .cm-editor {
   @each $name, $theme in $themes {
@@ -20,6 +23,24 @@
 
   .tok-typeName, .tok-className, .tok-propertyName {
     font-weight: bold;
+  }
+
+  .cm-gutters {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        color: map.get($theme, "muted-label-color");
+        background-color: map.get($theme, "body-background");
+      }
+    }
+  }
+
+  .cm-activeLine, .cm-activeLineGutter {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        background-color: color.mix(map.get($theme, "body-background"),
+          map.get($theme, "body-font-color"), $weight: 90%);
+      }
+    }
   }
 
   .cm-scroller {

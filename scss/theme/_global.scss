@@ -20,10 +20,14 @@ $white: color.scale(map.get(nord.$snow-storm, "lightest"), $lightness: +35%);
 
 // global foundation settings
 $global-font-size: 100%;
-$global-width: 1300px;
+$global-width: 100%;
 $global-lineheight: 1.5;
 
 $body-font-family: #{'Open Sans', sans-serif};
 $font-family-monospace: #{'Source Code Pro', monospace};
+
+$tab-item-padding: 5px;
+$tab-item-font-size: 0.9rem;
+$tab-content-padding: 0;
 
 // vim: set ft=scss:

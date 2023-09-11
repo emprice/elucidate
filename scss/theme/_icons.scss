@@ -107,6 +107,24 @@
     @extend .md;
     content: "\e80c";
   }
+
+  &-load::before {
+    // input
+    @extend .md;
+    content: "\e890";
+  }
+
+  &-check::before {
+    // rule
+    @extend .md;
+    content: "\f1c2";
+  }
+
+  &-close::before {
+    // close
+    @extend .md;
+    content: "\e5cd";
+  }
 }
 
 // vim: set ft=scss:

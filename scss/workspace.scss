@@ -1,0 +1,157 @@
+@use "sass:map";
+@use "sass:color";
+
+:root {
+  --base-font-size: 1rem;
+}
+
+@import 'theme/common';
+@import 'theme/code/codemirror';
+
+#app {
+
+  @include breakpoint(medium up) {
+    #left-panel-input, #right-panel-input {
+      @include xy-cell($size: 6, $vertical: false);
+      @include xy-cell-gutters($gutters: 1rem, $gutter-type: margin,
+        $gutter-position: (top, bottom, left, right));
+    }
+  }
+
+  #left-panel-input, #right-panel-input {
+    border: 1px solid;
+    height: calc(100vh - 1rem);
+
+    // we want tabs to shrink and content to grow to fill the
+    // available space
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+  }
+
+  #left-panel-tabs, #right-panel-tabs {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        @include tabs-container(
+          $background: map.get($theme, "tab-background"),
+          $border-color: map.get($theme, "tab-border-color"),
+        );
+
+        border-width: 0px !important;
+      }
+
+      [data-theme="#{$name}"] & li {
+        @include tabs-title(
+          $color: map.get($theme, "tab-color"),
+          $color-active: map.get($theme, "tab-color-active"),
+          $background-hover: map.get($theme, "tab-background-hover"),
+          $background-active: map.get($theme, "tab-background-active"),
+        );
+      }
+    }
+
+    flex: 0 1 auto;
+
+    li {
+      display: flex;
+      flex-direction: row;
+      @include font-display-nobold;
+
+      padding: 0 0.5rem 0 0.5rem; // some spacing between adjacent tabs
+
+      button {
+        display: inline;
+        padding: 0;
+
+        // circular button
+        border-radius: 50%;
+        width: 1rem;
+        height: 1rem;
+        font-size: 0.75rem;
+        position: relative;
+        margin: auto;
+
+        @each $name, $theme in $themes {
+          [data-theme="#{$name}"] & {
+            color: map.get($theme, "button-color");
+            background-color: map.get($theme, "button-background-secondary");
+          }
+        }
+
+        &::before {
+          // fill entire available space
+          position: absolute;
+          top: 0.1rem;  // slight vertical bump for alignment
+          left: 0;
+          bottom: 0;
+          right: 0;
+
+          // center the content
+          margin: auto;
+          text-align: center;
+          vertical-align: middle;
+        }
+      }
+
+      // color fix: assign background color to entire tab
+      @each $name, $theme in $themes {
+        [data-theme="#{$name}"] &.is-active {
+          background-color: map.get($theme, "tab-background-active") !important;
+        }
+
+        [data-theme="#{$name}"] &:focus-within {
+          background-color: map.get($theme, "tab-background-active") !important;
+        }
+
+        [data-theme="#{$name}"] &:not(.is-active):hover {
+          background-color: map.get($theme, "tab-background-hover") !important;
+        }
+      }
+
+      > a {
+        &:focus, &[aria-selected="true"] {
+          background-color: inherit !important;
+        }
+      }
+    }
+  }
+
+  #left-panel-tabs-content, #right-panel-tabs-content {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        @include tabs-content(
+          $background: map.get($theme, "body-background"),
+          $color: map.get($theme, "body-font-color"),
+          $border-color: map.get($theme, "tab-border-color"),
+        );
+
+        // prevent the fade-in, fade-out effect
+        transition: none !important;
+      }
+    }
+
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  #meta-input, #doc-input, .user-input {
+    @include tabs-panel;
+    height: 100%;
+  }
+
+  // re-style the placeholder box to match the rest of the theme
+  .cm-foldPlaceholder {
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & {
+        background-color: color.mix(map.get($theme, "body-background"),
+          map.get($theme, "body-font-color"), $weight: 90%);
+        border-color: color.mix(map.get($theme, "body-background"),
+          map.get($theme, "body-font-color"), $weight: 50%);
+        color: map.get($theme, "body-font-color");
+      }
+    }
+  }
+}
+
+// vim: set ft=scss:
