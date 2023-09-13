@@ -5,42 +5,13 @@
 }
 
 @import 'theme/common';
+@import 'theme/ux/tooltip';
 
-@include foundation-tooltip;
 @include foundation-dropdown;
 @include foundation-float-classes;
 
 .grayscale {
   filter: #{grayscale(100%)};
-}
-
-.tooltip {
-  @each $name, $theme in $themes {
-    [data-theme="#{$name}"] & {
-      color: map.get($theme, "tooltip-color");
-      background-color: map.get($theme, "tooltip-background");
-    }
-
-    [data-theme="#{$name}"] &.top::before {
-      @include css-triangle($tooltip-pip-width,
-        map.get($theme, "tooltip-background"), bottom);
-    }
-
-    [data-theme="#{$name}"] &.bottom::before {
-      @include css-triangle($tooltip-pip-width,
-        map.get($theme, "tooltip-background"), top);
-    }
-
-    [data-theme="#{$name}"] &.left::before {
-      @include css-triangle($tooltip-pip-width,
-        map.get($theme, "tooltip-background"), right);
-    }
-
-    [data-theme="#{$name}"] &.right::before {
-      @include css-triangle($tooltip-pip-width,
-        map.get($theme, "tooltip-background"), left);
-    }
-  }
 }
 
 #menu {

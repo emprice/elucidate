@@ -120,6 +120,12 @@
     content: "\f1c2";
   }
 
+  &-open::before {
+    // file_open
+    @extend .md;
+    content: "\eaf3";
+  }
+
   &-close::before {
     // close
     @extend .md;

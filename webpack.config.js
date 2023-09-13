@@ -311,8 +311,9 @@ module.exports = {
             return `common-${allChunksNames}`;
           },
           test(module) {
-            return (module.type === 'javascript/auto') ||
-                   (module.type === 'javascript/esm');
+            return module.type === 'javascript/auto' ||
+                   module.type === 'javascript/esm' ||
+                   module.type === 'javascript/dynamic';
           },
           minChunks: 2,
         },

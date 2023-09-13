@@ -6,7 +6,10 @@
 }
 
 @import 'theme/common';
+@import 'theme/code/common';
 @import 'theme/code/codemirror';
+@import 'theme/code/hljs';
+@import 'theme/ux/tooltip';
 
 #app {
 
@@ -28,6 +31,22 @@
     flex-direction: column;
 
     position: relative;
+
+    @each $name, $theme in $themes {
+      [data-theme="#{$name}"] & .cm-panels {
+        color: map.get($theme, "tab-color") !important;
+        background-color: map.get($theme, "tab-background") !important;
+      }
+    }
+
+    .cm-panel {
+      height: 100%;
+      padding: 3px;
+
+      button {
+        height: 100%;
+      }
+    }
   }
 
   #left-panel-tabs, #right-panel-tabs {
@@ -135,7 +154,7 @@
     overflow: hidden;
   }
 
-  #meta-input, #doc-input, .user-input {
+  #meta-input, #doc-input, #doc-preview, #html-ref, .user-input {
     @include tabs-panel;
     height: 100%;
   }
@@ -150,6 +169,70 @@
           map.get($theme, "body-font-color"), $weight: 50%);
         color: map.get($theme, "body-font-color");
       }
+    }
+  }
+
+  #doc-preview {
+    padding: 0.75rem;
+
+    /* these sizes are based on Foundation's default values but are
+     * converted from rem to percent so that they become relative to
+     * the parent container, assuming 1rem = 16px, a reasonable default */
+    h1 {
+      font-size: 300%;
+    }
+
+    h2 {
+      font-size: 250%;
+    }
+
+    h3 {
+      font-size: 193.75%;
+    }
+
+    h4 {
+      font-size: 156.25%;
+    }
+
+    h5 {
+      font-size: 125%;
+    }
+
+    h6 {
+      font-size: 100%;
+    }
+
+    font-size: #{var(--base-font-size)};
+
+    math {
+      &[display="block"] {
+        // make display math somewhat larger
+        font-size: 150%;
+      }
+
+      &:not([display="block"]), &[display=""] {
+        // make inline math a little larger
+        font-size: 110%;
+      }
+    }
+  }
+
+  #html-ref {
+    padding: 0 0.75rem;
+
+    li {
+      margin: 0.5rem 0;
+      font-size: #{var(--base-font-size)};
+    }
+
+    // highlighted inline code
+    p code, p code.hljs, li code, li code.hljs {
+      @include inline-code;
+    }
+
+    // highlighted code block
+    pre code, pre code.hljs {
+      @include code-block($block-margin: 0.5rem);
     }
   }
 }

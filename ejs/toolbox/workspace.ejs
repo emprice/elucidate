@@ -48,6 +48,12 @@
                 <label class="switch-paddle" for="dark-mode-switch"></label>
               </div>
             </li>
+            <li>
+              <button type="button" class="primary button icon-button md-open expanded"
+                id="open-file-button">Open file</button>
+              <input type="file" id="open-file" multiple
+               accept="text/*" style="display: none;"></input>
+            </li>
           </ul>
           <%= htmlWebpackPlugin.options.templateParameters.partials.nav %>
         </div>
@@ -62,11 +68,40 @@
           <ul id="right-panel-tabs" class="tabs" data-tabs tabindex="0">
             <li class="tabs-title is-active"><a href="#meta-input">Metadata</a></li>
             <li class="tabs-title"><a href="#doc-input">Document</a></li>
+            <li class="tabs-title" id="doc-preview-tab-title"><a href="#doc-preview">Preview</a></li>
+            <li class="tabs-title"><a href="#html-ref">Quick ref</a></li>
           </ul>
           <div id="right-panel-tabs-content" class="tabs-content"
            data-tabs-content="right-panel-tabs">
             <div id="meta-input" class="tabs-panel is-active"></div>
             <div id="doc-input" class="tabs-panel"></div>
+            <div id="doc-preview" class="tabs-panel"></div>
+            <div id="html-ref" class="tabs-panel">
+              <ul>
+                <li>Basic document structure:
+                  <pre><code class="language-latex">% in LaTeX
+\section{Section title}
+Some section text...
+
+\subsection{Subsection title}
+Some subsection text...</code></pre>
+                  <pre><code class="language-html">&lt;!-- in HTML --&gt;
+&lt;section&gt;
+  &lt;h2&gt;Section title&lt;/h2&gt;
+  &lt;p&gt;Some section text...&lt;/p&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Subsection title&lt;/h3&gt;
+    &lt;p&gt;Some subsection text...&lt;/p&gt;
+  &lt;/section&gt;
+&lt;/section&gt;</code></pre></li>
+                <li><b>Bold text:</b> <code class="language-latex">\textbf{...}</code> to
+                  <code class="language-html">&lt;strong&gt;...&lt;/strong&gt;</code> or <code class="language-html">&lt;b&gt;...&lt;/b&gt;</code></li>
+                <li><i>Italic text:</i> <code class="language-latex">\textit{...}</code> to
+                  <code class="language-html">&lt;emph&gt;...&lt;/emph&gt;</code> or <code class="language-html">&lt;i&gt;...&lt;/i&gt;</code></li>
+                <li>Su<sub>b</sub>script text: <code class="language-latex">\textsubscript{...}</code> to <code class="language-html">&lt;sub&gt;...&lt;/sub&gt;</code></li>
+                <li>Su<sup>p</sup>erscript text: <code class="language-latex">\textsuperscript{...}</code> to <code class="language-html">&lt;sup&gt;...&lt;/sup&gt;</code></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,125 @@
+.tooltip {
+
+  // copied from Foundation for Sites source
+  position: absolute;
+  top: calc(100% + #{$tooltip-pip-height});
+  z-index: 1200;
+
+  max-width: $tooltip-max-width;
+  padding: $tooltip-padding;
+
+  border-radius: $tooltip-radius;
+  font-size: $tooltip-font-size;
+
+  &::before {
+    position: absolute;
+  }
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "tooltip-color");
+      background-color: map.get($theme, "tooltip-background");
+    }
+
+    [data-theme="#{$name}"] &.top::before {
+      @include css-triangle(
+        $triangle-size: $tooltip-pip-width,
+        $triangle-color: map.get($theme, "tooltip-background"),
+        $triangle-direction: down
+      );
+    }
+
+    [data-theme="#{$name}"] &.bottom::before {
+      @include css-triangle(
+        $triangle-size: $tooltip-pip-width,
+        $triangle-color: map.get($theme, "tooltip-background"),
+        $triangle-direction: up
+      );
+    }
+
+    [data-theme="#{$name}"] &.left::before {
+      @include css-triangle(
+        $triangle-size: $tooltip-pip-width,
+        $triangle-color: map.get($theme, "tooltip-background"),
+        $triangle-direction: right
+      );
+    }
+
+    [data-theme="#{$name}"] &.right::before {
+      @include css-triangle(
+        $triangle-size: $tooltip-pip-width,
+        $triangle-color: map.get($theme, "tooltip-background"),
+        $triangle-direction: left
+      );
+    }
+  }
+
+  // copied from Foundation for Sites source
+  &.bottom {
+    &::before {
+      bottom: 100%;
+    }
+
+    &.align-center::before {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.top {
+    &::before {
+      top: 100%;
+      bottom: auto;
+    }
+
+    &.align-center::before {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.left {
+    &::before {
+      left: 100%;
+    }
+
+    &.align-center::before {
+      bottom: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &.right {
+    &::before {
+      right: 100%;
+      left: auto;
+    }
+
+    &.align-center::before {
+      bottom: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  &.align-top::before {
+    bottom: auto;
+    top: 10%;
+  }
+
+  &.align-bottom::before {
+    bottom: 10%;
+    top: auto;
+  }
+
+  &.align-left::before {
+    left: 10%;
+    right: auto;
+  }
+
+  &.align-right::before {
+    left: auto;
+    right: 10%;
+  }
+}

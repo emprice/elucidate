@@ -22,6 +22,10 @@ button, a.button {
     }
   }
 
+  &.expanded {
+    width: 100%;
+  }
+
   &.icon-button::before {
     padding: 0;
     margin-right: 0.2rem;
