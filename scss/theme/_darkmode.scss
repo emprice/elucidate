@@ -22,6 +22,8 @@ $-palette-note: color.mix(map.get(nord.$frost, "light"), $-body-background, $wei
 $-palette-seealso: color.mix(map.get(nord.$frost, "medium"), $-body-background, $weight: 30%);
 $-palette-tip: color.mix(map.get(nord.$aurora, "green"), $-body-background, $weight: 30%);
 
+$-error-font-color: color.mix(map.get(nord.$aurora, "red"), $-body-font-color, $weight: 70%);
+
 $-muted-label-color: $light-gray;
 
 $-slider-background: $medium-gray;
@@ -79,6 +81,8 @@ $theme: (
   "palette-note": $-palette-note,
   "palette-seealso": $-palette-seealso,
   "palette-tip": $-palette-tip,
+
+  "error-font-color": $-error-font-color,
 
   "body-background": $-body-background,
   "body-font-color": $-body-font-color,

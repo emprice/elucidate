@@ -34,6 +34,8 @@ import { TeX } from 'mjx/input/tex';
 import 'mjx/input/tex/ams/AmsConfiguration';
 import 'mjx/input/tex/boldsymbol/BoldsymbolConfiguration';
 
+import { BibtexParser } from 'bibtex-js-parser';
+
 function renderSingleMml(math, visitor, doc) {
 
   math.typesetRoot = doc.createElement('mjx-container');
@@ -46,17 +48,13 @@ var openDocs = Array();
 
 function getCodemirrorTheme() {
 
-  // simple theme settings for a full-height editor with a caret that matches
-  // the current foreground color
+  // simple theme settings for a full-height editor that scrolls
   return EditorView.theme({
     '&': {
       'height': '100%',
     },
     '.cm-scroller': {
       'overflow': 'scroll',
-    },
-    '.cm-content': {
-      'caret-color': 'var(--foreground-color)',
     },
   });
 }
@@ -155,24 +153,99 @@ function mathButtonClickHandler(e) {
   });
 }
 
+function bibButtonClickHandler(e) {
+
+  // get the current selection, if there is one; otherwise, select
+  // the entire file
+  const sel = e.data.view.state.selection.main;
+  var buffer = e.data.view.state.sliceDoc(sel.from, sel.to);
+  if (buffer.length === 0) buffer = e.data.view.state.sliceDoc();
+
+  try {
+    const json = BibtexParser.parseToJSON(buffer);
+    const parsed = json.reduce((acc, cur) => {
+      const { id, raw, author, ...rest } = cur;
+      const authors = author.split(' and ');
+      return {
+        ...acc,
+        [id]: {
+          ...rest,
+          authors,
+        },
+      };
+    }, {});
+    const jsonstr = JSON.stringify(parsed, null, 2);
+
+    // put all the output json onto the user's clipboard
+    navigator.clipboard.writeText(jsonstr).then(() => {
+      // make sure the button goes back to its unfocused state
+      e.target.blur();
+    });
+
+  } catch (ex) {
+    // problem converting to json -- early exit
+    $( e.target ).foundation('show');
+    return;
+  }
+}
+
 function createControlsPanel(view, data) {
 
-  const mathButton = document.createElement('button');
-  $( mathButton )
-    .addClass(['md-math', 'secondary', 'button', 'icon-button'])
+  const mathButton = $( document.createElement('button') )
+    .addClass(['md-math', 'secondary', 'button', 'icon-button', 'group-latex'])
     .attr('type', 'button')
     .attr('data-tooltip', '')
     .attr('data-position', 'top')
     .attr('data-alignment', 'left')
     .attr('title', 'Copy MathML equivalent of highlighted LaTeX to the clipboard. Be sure to include math delimiters!')
+    .css('display', (data.fileType === 'latex') ? 'inline-block' : 'none')
     .html('To MathML')
     .on('click', { ...data, view }, mathButtonClickHandler)
     .foundation();
 
-  const panel = document.createElement('div');
-  $( panel ).append([mathButton]);
+  const bibButton = $( document.createElement('button') )
+    .addClass(['md-code', 'secondary', 'button', 'icon-button', 'group-bibtex'])
+    .attr('type', 'button')
+    .attr('data-tooltip', '')
+    .attr('data-position', 'top')
+    .attr('data-alignment', 'left')
+    .attr('title', 'Copy JSON equivalent of highlighted BibTeX (or entire file) to the clipboard.')
+    .css('display', (data.fileType === 'bibtex') ? 'inline-block' : 'none')
+    .html('To JSON')
+    .on('click', { view }, bibButtonClickHandler)
+    .foundation();
 
-  return { top: false, dom: panel };
+  const typeSelectControl = $( document.createElement('select') )
+    .attr('id', 'doc-type-select')
+    .append($( document.createElement('option') )
+      .attr('value', 'latex')
+      .prop('selected', data.fileType === 'latex')
+      .html('LaTeX'))
+    .append($( document.createElement('option') )
+      .attr('value', 'bibtex')
+      .prop('selected', data.fileType === 'bibtex')
+      .html('BibTeX'))
+    .append($( document.createElement('option') )
+      .attr('value', 'plaintext')
+      .prop('selected', data.fileType === 'plaintext')
+      .html('Plain text'))
+    .on('change', (e) => {
+      const target = $( e.target );
+      const cls = `group-${target.val()}`;
+      $( `.controls-wrapper button:not(.${cls})` ).css('display', 'none');
+      $( `.controls-wrapper button.${cls}` ).css('display', 'inline-block');
+    });
+
+  const typeSelectLabel = $( document.createElement('label') )
+    .attr('for', $( typeSelectControl ).attr('id'))
+    .html('Use as:');
+
+  const node = document.createElement('div');
+  $( node ).append($( document.createElement('div') )
+      .addClass('controls-wrapper')
+      .append([typeSelectLabel, typeSelectControl, mathButton, bibButton]));
+
+  return { top: false, dom: node };
 }
 
 function controlsPanel(data) {
@@ -208,6 +281,12 @@ async function loadFile(file, data) {
   Foundation.reInit('tabs');
   $( '#left-panel-tabs' ).foundation('selectTab', tabContent, false);
 
+  // try to guess file type
+  var fileType = 'plaintext';
+  const ext = file.name.split('.').pop();
+  if (ext === 'tex') fileType = 'latex';
+  else if (ext === 'bib') fileType = 'bibtex';
+
   const text = await file.text();
   let state = EditorState.create({
     doc: Text.of(text.split('\n')),
@@ -222,7 +301,7 @@ async function loadFile(file, data) {
       highlightActiveLineGutter(),
       codeFolding(),
       foldGutter(),
-      controlsPanel(data),
+      controlsPanel({ ...data, fileType }),
       getCodemirrorTheme(),
     ]
   });
@@ -401,7 +480,58 @@ function initRhsPanels() {
   $( '#doc-preview-tab-title a' ).on('focus', () => {
     const buffer = views.doc.state.sliceDoc();
     const cleanBuffer = sanitize(buffer);
-    $( '#doc-preview' ).html(cleanBuffer);
+
+    const wrapper = $( document.createElement('article') )
+      .html(cleanBuffer);
+
+    const meta = JSON.parse(views.meta.state.sliceDoc());
+
+    // handle parenthetical citations
+    $( wrapper ).find( 'span.citep' ).each((i, elem) => {
+      const refs = $( elem ).attr('data-refs').split(',');
+      const inner = refs.map((ref) => {
+        const reffix = ref.trim();  // remove any spaces
+        if (meta.references && (reffix in meta.references)) {
+          const year = meta.references[reffix].year;
+          const authors = meta.references[reffix].authors;
+          const lasts = authors.map((a) => a.split(', ')[0]);
+
+          const stem = (lasts.length < 3) ?
+            lasts.join(' and ') : (lasts[0] + ' <i>et al.</i>');
+          return stem + (year ? ` ${year}` : '');
+        } else {
+          return `<span class="error">${reffix}</span>`;
+        }
+      });
+
+      const citation = inner.join('; ');
+      $( elem ).html(citation);
+    });
+
+    // handle inline citations
+    $( wrapper ).find( 'span.citet' ).each((i, elem) => {
+      const refs = $( elem ).attr('data-refs').split(',');
+      const inner = refs.map((ref) => {
+        const reffix = ref.trim();  // remove any spaces
+        if (meta.references && (reffix in meta.references)) {
+          const year = meta.references[reffix].year;
+          const authors = meta.references[reffix].authors;
+          const lasts = authors.map((a) => a.split(', ')[0]);
+
+          const stem = (lasts.length < 3) ?
+            lasts.join(' and ') : (lasts[0] + ' <i>et al.</i>');
+          return stem + (year ? ` (${year})` : '');
+        } else {
+          return `<span class="error">${reffix}</span>`;
+        }
+      });
+
+      const citation = (inner.length < 3) ? inner.join(' and ') :
+        (inner.slice(0, -1).join('; ') + '; and ' + inner.slice(-1));
+      $( elem ).html(citation);
+    });
+
+    $( '#doc-preview' ).html(wrapper);
   });
 }
 

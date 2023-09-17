@@ -28,6 +28,7 @@
     "@types/node": "^20.3.3",
     "accessibility-checker": "^3.1.59",
     "babel-loader": "^9.1.2",
+    "bibtex-js-parser": "^1.1.6",
     "buffer": "^6.0.3",
     "css-loader": "^6.8.1",
     "csso": "^5.0.5",

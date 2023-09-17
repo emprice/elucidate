@@ -16,10 +16,10 @@
 }
 
 // display code block
-@mixin code-block($block-margin: 1rem) {
+@mixin code-block($block-margin: 1rem, $block-padding: 1rem) {
   line-height: 1.2;
   margin-bottom: $block-margin;
-  padding: 1rem !important;
+  padding: $block-padding !important;
   display: block;
 
   @each $name, $theme in $themes {
