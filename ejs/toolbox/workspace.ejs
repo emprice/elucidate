@@ -103,6 +103,13 @@ Some subsection text...</code></pre>
                   <code class="language-html">&lt;emph&gt;...&lt;/emph&gt;</code> or <code class="language-html">&lt;i&gt;...&lt;/i&gt;</code></li>
                 <li>Su<sub>b</sub>script text: <code class="language-latex">\textsubscript{...}</code> to <code class="language-html">&lt;sub&gt;...&lt;/sub&gt;</code></li>
                 <li>Su<sup>p</sup>erscript text: <code class="language-latex">\textsuperscript{...}</code> to <code class="language-html">&lt;sup&gt;...&lt;/sup&gt;</code></li>
+                <li>Citations:
+                  <pre><code class="language-latex">% in LaTeX
+\citet{Einstein1914} says something brilliant about general relativity.
+General relativity \citep{Einstein1914} is a fascinating topic.</code></pre>
+                  <pre><code class="language-html">&lt;!-- in HTML, specific to elucidate --&gt;
+&lt;span class="citet" data-refs="Einstein1914"&gt;&lt;/span&gt; says something brillian about general relativity.
+General relativity &lt;span class="citep" data-refs="Einstein1914"&gt; is a fascinating topic.</code></pre></li>
               </ul>
             </div>
           </div>

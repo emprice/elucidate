@@ -392,7 +392,16 @@ function initMetadataInput() {
       "affiliation": "Institute of Bar",
       "orcid": "0000-0000-0000-0000"
     }
-  ]
+  ],
+  "references": {
+    "Einstein1914": {
+      "authors": [
+        "Einstein, A."
+      ],
+      "title": "The Formal Foundation of the General Theory of Relativity",
+      "year": "1914"
+    }
+  }
 }`;
 
   const metaInputElement = document.getElementById('meta-input');
@@ -434,7 +443,7 @@ function initDocumentInput() {
 </section>
 <section>
   <h2>Methods</h2>
-  <p>Starting up another section.</p>
+  <p>Starting up another section. I can mention <span class="citet" data-refs="Einstein1914"></span> inline or in parentheses <span class="citep" data-refs="Einstein1914"></span>.</p>
 </section>`;
 
   const docInputElement = document.getElementById('doc-input');
