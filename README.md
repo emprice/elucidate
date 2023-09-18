@@ -32,7 +32,7 @@ issue or pull request on GitHub, being sure to follow the
 :art: Logo explanation
 ----------------------
 
-The _elucidate_ logo is composed of the same piece of information, Euler's
+The _elucidate_ logo is composed of a single piece of information, Euler's
 identity, a famous and fundamental result of mathematics. The formula is
 presented in the logo via LaTeX typeset math, MathML math markup, and a
 verbal description of the result, written in Braille. The core message is
@@ -43,8 +43,8 @@ Incidentally, Leonhard Euler, who discovered the identity in the logo, was
 almost blind in both eyes, with his eyesight deteriorating over the course
 of his career. Help from scribes allowed him to continue contributing to
 the mathematical literature. Euler is such a fundamental figure of math
-that imagining the field today without his impact is impossible. Visual
+that imagining the field today without his impact is impossible. **Visual
 impairment should never be an obstacle to full participation in any area
-of STEM.
+of STEM.**
 
 <!-- vim: set ft=markdown: -->

@@ -39,17 +39,13 @@ function initCodemirror() {
   const outputElement = document.getElementById("output");
   const renderElement = document.getElementById("render");
 
-  // simple theme settings for a full-height editor with a caret that matches
-  // the current foreground color
+  // simple theme settings for a full-height editor
   const fixedSizeTheme = EditorView.theme({
     '&': {
       'height': '100%',
     },
     '.cm-scroller': {
       'overflow': 'scroll',
-    },
-    '.cm-content': {
-      'caret-color': 'var(--foreground-color)',
     },
   });
 
