@@ -514,7 +514,7 @@ function initRhsPanels() {
       });
 
       const citation = inner.join('; ');
-      $( elem ).html(citation);
+      $( elem ).html(sanitize(citation));
     });
 
     // handle inline citations
@@ -537,7 +537,7 @@ function initRhsPanels() {
 
       const citation = (inner.length < 3) ? inner.join(' and ') :
         (inner.slice(0, -1).join('; ') + '; and ' + inner.slice(-1));
-      $( elem ).html(citation);
+      $( elem ).html(sanitize(citation));
     });
 
     $( '#doc-preview' ).html(wrapper);
