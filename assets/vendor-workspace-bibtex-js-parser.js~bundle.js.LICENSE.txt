@@ -1,0 +1,1 @@
+/*! For license information please see bibtex-js-parser.js.LICENSE.txt */
