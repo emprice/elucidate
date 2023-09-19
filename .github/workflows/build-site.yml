@@ -30,6 +30,7 @@ jobs:
           npm install
           BASE_URL=/ npm run build:bundle
           touch $GITHUB_WORKSPACE/dist/.nojekyll
+          echo "elucidateme.org" > dist/CNAME
 
       # Emit JSON endpoint indicating job success (accessing via API is complicated)
       - name: JSON endpoint on success
