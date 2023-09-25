@@ -98,7 +98,7 @@ const apps = [
     name: (e) => 'tools/workspace',
     title: 'HTML authoring workspace',
     template: './ejs/toolbox/workspace.ejs',
-    script: './js/workspace.js',
+    script: './js/workspace/main.js',
     stylesheets: [
       './scss/workspace.scss',
     ],
