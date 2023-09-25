@@ -37,17 +37,60 @@
       [data-theme="#{$name}"] & .cm-panels {
         color: map.get($theme, "tab-color") !important;
         background-color: map.get($theme, "tab-background") !important;
+        border-color: color.mix(map.get($theme, "body-font-color"),
+          map.get($theme, "body-background"), $weight: 60%) !important;
       }
 
       [data-theme="#{$name}"] & {
         border-color: color.mix(map.get($theme, "body-font-color"),
-          map.get($theme, "body-background"), $weight: 60%);
+          map.get($theme, "body-background"), $weight: 60%) !important;
       }
     }
 
-    .cm-panel {
+    .cm-panels-top {
+      border-top-width: 1px;
+      border-top-style: solid;
+      padding: 0.25rem 0 0.25rem 0;
+    }
+
+    .cm-panel.cm-search {
+      .cm-button {
+        @extend .button;
+        @extend .primary;
+
+        background-image: none !important;
+        border: none !important;
+        font-size: 1rem !important;
+      }
+
+      .cm-textfield {
+        border: none !important;
+        color: black;
+      }
+
+      label {
+        text-transform: capitalize;
+      }
+
+      .cm-button, .cm-textfield, label {
+        margin: 0 0.25rem 0 0 !important;
+      }
+
+      & button[name="close"] {
+        @extend .button;
+        @extend .primary;
+
+        border-radius: 50%;
+        line-height: 1rem;
+        font-size: 1rem;
+        height: 1rem;
+        width: 1rem;
+      }
+    }
+
+    .cm-panel.context-panel {
       $-panel-padding: 3px;
-      $-panel-height: 2.5rem;
+      $-panel-height: 5rem;
       $-panel-inner-height: calc($-panel-height - 2 * $-panel-padding);
 
       height: $-panel-height;
@@ -56,43 +99,62 @@
 
       .controls-wrapper {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
 
         width: 100%;
         height: $-panel-inner-height;
 
-        * + * {
-          // small margin between siblings in the same panel
-          margin-left: 0.25rem;
+        div {
+          display: flex;
+          flex-direction: row;
+
+          * + * {
+            // small margin between siblings in the same panel
+            margin-left: 0.25rem;
+          }
         }
 
-        button {
-          flex: 1 0 auto;
-          height: $-panel-inner-height;
+        div + div {
+          // small margin between adjacent siblings
+          margin-top: $-panel-padding;
         }
 
-        label, select {
-          display: inline-block;
+        .button-wrapper {
+          flex: 1 1 auto;
+
+          button {
+            flex: 0 1 auto;
+          }
         }
 
-        label {
-          flex: 1 0 auto;
-          @include font-display-nobold;
-          font-size: 110%;
-          margin: auto 0;
-        }
+        .select-wrapper {
+          display: flex;
+          flex-direction: row;
+          flex: 1 1 auto;
 
-        select {
-          padding: 0 0.25rem;
-          border: 0;
-          flex: 0 1 auto;
-          line-height: $-panel-inner-height;
+          label, select {
+            display: inline-block;
+          }
 
-          @each $name, $theme in $themes {
-            [data-theme="#{$name}"] & {
-              color: map.get($theme, "body-font-color") !important;
-              background-color: color.mix(map.get($theme, "body-font-color"),
-                map.get($theme, "body-background"), $weight: 30%) !important;
+          label {
+            flex: 1 0 auto;
+            @include font-display-nobold;
+            font-size: 110%;
+            margin: auto 0;
+          }
+
+          select {
+            padding: 0 0.25rem;
+            border: 0;
+            flex: 0 1 auto;
+            line-height: $-panel-inner-height;
+
+            @each $name, $theme in $themes {
+              [data-theme="#{$name}"] & {
+                color: map.get($theme, "body-font-color") !important;
+                background-color: color.mix(map.get($theme, "body-font-color"),
+                  map.get($theme, "body-background"), $weight: 30%) !important;
+              }
             }
           }
         }
@@ -139,7 +201,8 @@
         border-radius: 50%;
         width: 1rem;
         height: 1rem;
-        font-size: 0.75rem;
+        font-size: 1rem;
+        line-height: 1rem;
         position: relative;
         margin: auto;
 
@@ -150,19 +213,8 @@
           }
         }
 
-        &::before {
-          // fill entire available space
-          position: absolute;
-          top: 0.1rem;  // slight vertical bump for alignment
-          left: 0;
-          bottom: 0;
-          right: 0;
-
-          // center the content
-          margin: auto;
-          text-align: center;
-          vertical-align: middle;
-        }
+        @include font-sans-serif;
+        font-variant: normal;
       }
 
       // color fix: assign background color to entire tab
@@ -282,14 +334,17 @@
         // make inline math a little larger
         font-size: 110%;
       }
-    }
 
-    span.citep::before {
-      content: "(";
-    }
+      merror {
+        background-color: transparent !important;
+        border: none;
+      }
 
-    span.citep::after {
-      content: ")";
+      @each $name, $theme in $themes {
+        [data-theme="#{$name}"] & merror {
+          color: map.get($theme, "error-font-color");
+        }
+      }
     }
 
     span.citep .error {

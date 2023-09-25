@@ -131,6 +131,18 @@
     @extend .md;
     content: "\e5cd";
   }
+
+  &-tree::before {
+    // account_tree
+    @extend .md;
+    content: "\e97a";
+  }
+
+  &-magic::before {
+    // auto_awesome
+    @extend .md;
+    content: "\e65f";
+  }
 }
 
 // vim: set ft=scss:
