@@ -26,7 +26,7 @@ export default (function() {
 
     $( '#open-file' ).on('change', (e) => {
       [...e.target.files].forEach(async (file, idx) => {
-        await app.lhs.loadFile(file);
+        await app.lhs.openDocument(file);
       });
     });
 

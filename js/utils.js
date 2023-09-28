@@ -27,7 +27,7 @@ export function initDarkModeToggle() {
       $( 'html' ).attr('data-theme', 'dark');
     } else {
       // user prefers light mode or has no preference set, so set light mode
-      $( '#dark-mode-mwitch' ).prop('checked', false);
+      $( '#dark-mode-switch' ).prop('checked', false);
       $( 'html' ).attr('data-theme', 'light');
     }
   } else {
