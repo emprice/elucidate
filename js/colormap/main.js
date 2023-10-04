@@ -332,7 +332,7 @@ cmap = LinearSegmentedColormap.from_list('custom', clist)`
           }
 
           // return button to inactive appearance
-          e.target.blur();
+          $( e.target ).trigger('blur');
         });
 
       colors.elem.on('click', (e) => {
@@ -348,7 +348,7 @@ cmap = LinearSegmentedColormap.from_list('custom', clist)`
         preview.elem.toggleClass('grayscale');
 
         // return button to inactive appearance
-        e.target.blur();
+        $( e.target ).trigger('blur');
       });
 
       $( window ).on('unload', () => {

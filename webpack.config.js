@@ -203,7 +203,11 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|svg)$/,
+        test: /svg\/.+?\.svg$/,
+        type: 'asset/source',
+      },
+      {
+        test: /static\/.+?\.(png|svg)$/,
         type: 'asset/resource',
         generator: {
           filename: 'assets/images-[name][ext]',
@@ -349,10 +353,15 @@ module.exports = {
       // disable them completely here
       fs: false,
       path: false,
+
+      stream: require.resolve('stream-browserify'),
     },
   },
   plugins: [
     new webpack.ProgressPlugin(),
+    new webpack.ProvidePlugin({
+      process: 'process/browser.js',
+    }),
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
     }),
@@ -362,7 +371,13 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: (pathData) => {
-      return `assets/${pathData.chunk.name.split('/')[0]}.bundle.js`;
+      return `assets/app-${pathData.chunk.name.split('/')[0]}.bundle.js`;
+    },
+    chunkFilename: (pathData) => {
+      const runtime = pathData.chunk.runtime;
+      const runtimes = (typeof runtime === 'string') ?
+        runtime : [...runtime.keys()].join('~');
+      return `assets/dynamic-${runtimes}-${pathData.chunk.name}.js`;
     },
     clean: true,
   }

@@ -1,12 +1,3 @@
-import { EditorState, Text } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, highlightActiveLine,
-         highlightActiveLineGutter, showPanel } from '@codemirror/view';
-import { defaultKeymap, historyKeymap, history } from '@codemirror/commands';
-import { searchKeymap, search } from '@codemirror/search';
-
-import { classHighlighter } from '@lezer/highlight';
-import { syntaxHighlighting, codeFolding, foldGutter } from '@codemirror/language';
-
 import { LatexMathProcessor } from './mathml';
 import { LatexStructureProcessor } from './structure';
 import { BibtexEntryProcessor, BibtexCitationProcessor } from './bibtex';
@@ -24,18 +15,23 @@ export class LhsPanel {
 
   constructor() {
 
-    // set up drag-and-drop handlers
-    this.#setupInputHandlers();
+    // async constructor hack
+    return (async () => {
+      // set up drag-and-drop handlers
+      this.#setupInputHandlers();
 
-    this.#counter = 0;
-    this.#docs = new Array();
+      this.#counter = 0;
+      this.#docs = [];
 
-    this.#processors = {
-      mathml: new LatexMathProcessor(),
-      structure: new LatexStructureProcessor(),
-      bibcite: new BibtexCitationProcessor(),
-      bibentry: new BibtexEntryProcessor(),
-    };
+      this.#processors = {
+        mathml: await new LatexMathProcessor(),
+        structure: new LatexStructureProcessor(),
+        bibcite: new BibtexCitationProcessor(),
+        bibentry: new BibtexEntryProcessor(),
+      };
+
+      return this;
+    })();
   }
 
   #setupInputHandlers() {
@@ -74,6 +70,16 @@ export class LhsPanel {
   }
 
   async openDocument(file) {
+
+    const { EditorState, Text } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/state');
+    const { EditorView, keymap, lineNumbers, highlightActiveLine,
+            highlightActiveLineGutter, showPanel } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/view');
+    const { defaultKeymap, historyKeymap, history } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/commands');
+    const { searchKeymap, search } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/search');
 
     // unique id for the new tab
     const newTabId = `user-tab-${this.#counter++}`;
@@ -118,7 +124,6 @@ export class LhsPanel {
     let state = EditorState.create({
       doc: Text.of(text.split('\n')),
       extensions: [
-        syntaxHighlighting(classHighlighter),
         history(),            // support for undo
         keymap.of([
           ...defaultKeymap,   // basic default keymap
@@ -130,8 +135,6 @@ export class LhsPanel {
         lineNumbers(),                // number lines
         highlightActiveLine(),        // highlight active line + its gutter
         highlightActiveLineGutter(),
-        codeFolding(),                // add fold controls to gutter
-        foldGutter(),
         search({
           top: true
         }),
@@ -146,6 +149,7 @@ export class LhsPanel {
     // save persistent document data
     const newdoc = {
       id: newTabId,
+      name: file.name,
       title: tabTitle,
       content: tabContent,
       view: new EditorView({
@@ -160,6 +164,30 @@ export class LhsPanel {
     // attach close button handler
     button.on('click', { inst: this, id: newTabId },
       LhsPanel.#closeButtonClickHandler);
+  }
+
+  closeAllDocuments() {
+
+    this.#docs.forEach((doc) => {
+      doc.title.remove();
+      doc.content.remove();
+    });
+    this.#docs = [];
+
+    Foundation.reInit('tabs');  // re-initialize tabs
+  }
+
+  async getAllBuffers() {
+
+    const { Buffer } =
+      await import(/* webpackChunkName: "buffer" */ 'buffer');
+
+    return this.#docs.map((doc) => {
+      return {
+        name: doc.name,
+        contents: Buffer.from(doc.view.state.sliceDoc(), 'utf8'),
+      };
+    });
   }
 
   static #closeButtonClickHandler(e) {
@@ -211,7 +239,7 @@ export class LhsPanel {
       // put all the output onto the user's clipboard
       navigator.clipboard.writeText(html).then(() => {
         // make sure the button goes back to its unfocused state
-        e.target.blur();
+        $( e.target ).trigger('blur');
       });
 
     } catch (ex) {
@@ -239,21 +267,22 @@ export class LhsPanel {
 
       // do the actual conversion operation; this will *always*
       // return a dom element
-      const elem = proc.mathml.run(buffer);
+      proc.mathml.run(buffer).then((elem) => {
 
-      // make a nice string of all the math, compacted
-      const html = $( elem ).find('math').map((i, e) => {
-        return e.html().replaceAll(/\n\s*/g, '');
-      }).get().join('\n');
+        // make a nice string of all the math, compacted
+        const html = $( elem ).find('math').map((i, e) => {
+          return e.html().replaceAll(/\n\s*/g, '');
+        }).get().join('\n');
 
-      if (html.length == 0) {
-        throw new Error('no math found in buffer');
-      }
+        if (html.length == 0) {
+          throw new Error('no math found in buffer');
+        }
 
-      // put all the output mathml onto the user's clipboard
-      navigator.clipboard.writeText(html).then(() => {
-        // make sure the button goes back to its unfocused state
-        e.target.blur();
+        // put all the output mathml onto the user's clipboard
+        navigator.clipboard.writeText(html).then(() => {
+          // make sure the button goes back to its unfocused state
+          $( e.target ).trigger('blur');
+        });
       });
 
     } catch (ex) {
@@ -263,7 +292,7 @@ export class LhsPanel {
     }
   }
 
-  static #magicButtonClickHandler(e) {
+  static #magicLatexButtonClickHandler(e) {
 
     const state = e.data.view.state;
     const proc = e.data.inst.#processors;
@@ -281,28 +310,28 @@ export class LhsPanel {
       //  2) convert inline and display math
       // this will *always* return a dom element
       var elem = proc.structure.run(buffer);
-      elem = proc.mathml.run(elem);
+      proc.mathml.run(elem).then((elem) => {
 
-      const html = $( elem ).find('math')
-        .unwrap('mjx-container').unwrap('span')
-        .each((i, e) => {
-          const prev = $( e ).html();
-          $( e ).html(prev.replaceAll(/\n\s*/g, ''));
-        }).end().html().replaceAll(/\n{3,}/g, '\n\n');
+        const html = $( elem ).find('math')
+          .unwrap('mjx-container').unwrap('span')
+          .each((i, e) => {
+            const prev = $( e ).html();
+            $( e ).html(prev.replaceAll(/\n\s*/g, ''));
+          }).end().html().replaceAll(/\n{3,}/g, '\n\n');
 
-      if (html.length == 0) {
-        throw new Error('no convertible elements found in buffer');
-      }
+        if (html.length == 0) {
+          throw new Error('no convertible elements found in buffer');
+        }
 
-      // send the data to listeners
-      $( '#doc-input' ).trigger({
-        type: 'elucidate#magic',
-        html,
+        // send the data to listeners
+        $( '#doc-input' ).trigger({
+          type: 'elucidate.latex.magic',
+          content: html,
+        });
+
+        // make sure the button goes back to its unfocused state
+        $( e.target ).trigger('blur');
       });
-
-      // make sure the button goes back to its unfocused state
-      e.target.blur();
-
     } catch (ex) {
       // problem converting -- early exit and show tooltip help
       $( e.target ).foundation('show');
@@ -331,8 +360,36 @@ export class LhsPanel {
       // put all the output json onto the user's clipboard
       navigator.clipboard.writeText(jsonbibstr).then(() => {
         // make sure the button goes back to its unfocused state
-        e.target.blur();
+        $( e.target ).trigger('blur');
       });
+
+    } catch (ex) {
+      // problem converting to json -- early exit and show tooltip help
+      $( e.target ).foundation('show');
+      return;
+    }
+  }
+
+  static #magicBibtexButtonClickHandler(e) {
+
+    const state = e.data.view.state;
+    const proc = e.data.inst.#processors;
+
+    // get the entire active file contents
+    var buffer = state.sliceDoc();
+
+    try {
+      // parse to json
+      const jsonbib = proc.bibentry.run(buffer);
+
+      // send the data to listeners
+      $( '#meta-input' ).trigger({
+        type: 'elucidate.bibtex.magic',
+        content: jsonbib,
+      });
+
+      // make sure the button goes back to its unfocused state
+      $( e.target ).trigger('blur');
 
     } catch (ex) {
       // problem converting to json -- early exit and show tooltip help
@@ -343,7 +400,7 @@ export class LhsPanel {
 
   static #createControlsPanel(view, data) {
 
-    const magicButton = $( document.createElement('button') )
+    const magicLatexButton = $( document.createElement('button') )
       .addClass(['md-magic', 'secondary', 'button', 'icon-button'])
       .attr({
         'type': 'button',
@@ -354,7 +411,7 @@ export class LhsPanel {
           'HTML version of the entire file.',
       })
       .html('Auto-process')
-      .on('click', { ...data, view }, LhsPanel.#magicButtonClickHandler)
+      .on('click', { ...data, view }, LhsPanel.#magicLatexButtonClickHandler)
       .foundation();
 
     const structureButton = $( document.createElement('button') )
@@ -383,6 +440,20 @@ export class LhsPanel {
       })
       .html('To MathML')
       .on('click', { ...data, view }, LhsPanel.#mathButtonClickHandler)
+      .foundation();
+
+    const magicBibtexButton = $( document.createElement('button') )
+      .addClass(['md-magic', 'secondary', 'button', 'icon-button'])
+      .attr({
+        'type': 'button',
+        'data-tooltip': '',
+        'data-position': 'top',
+        'data-alignment': 'left',
+        'title': '(Experimental) Convert entire bibliography to JSON and ' +
+          'replace in the existing metadata.',
+      })
+      .html('Auto-process')
+      .on('click', { ...data, view }, LhsPanel.#magicBibtexButtonClickHandler)
       .foundation();
 
     const bibButton = $( document.createElement('button') )
@@ -434,11 +505,11 @@ export class LhsPanel {
           $( document.createElement('div') )
             .addClass(['button-wrapper', 'group-latex'])
             .css('display', (data.fileType === 'latex') ? '' : 'none')
-            .append([magicButton, structureButton, mathButton]),
+            .append([magicLatexButton, structureButton, mathButton]),
           $( document.createElement('div') )
             .addClass(['button-wrapper', 'group-bibtex'])
             .css('display', (data.fileType === 'bibtex') ? '' : 'none')
-            .append([bibButton]),
+            .append([magicBibtexButton, bibButton]),
         ]))
       .addClass('context-panel');
 

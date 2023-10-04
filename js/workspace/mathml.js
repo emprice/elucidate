@@ -1,14 +1,3 @@
-import { mathjax } from 'mjx/mathjax';
-import { SerializedMmlVisitor } from 'mjx/core/MmlTree/SerializedMmlVisitor';
-import { HTMLAdaptor } from 'mjx/adaptors/HTMLAdaptor';
-import { RegisterHTMLHandler } from 'mjx/handlers/html';
-import { TeX } from 'mjx/input/tex';
-
-// any mathjax extensions get loaded here; also see "packages" option in
-// the input jax constructor
-import 'mjx/input/tex/ams/AmsConfiguration';
-import 'mjx/input/tex/boldsymbol/BoldsymbolConfiguration';
-
 import * as $ from 'jquery';
 
 export class LatexMathProcessor {
@@ -18,27 +7,47 @@ export class LatexMathProcessor {
 
   constructor() {
 
-    // mathjax one-time setup for tex input to mathml output
-    const adaptor = new HTMLAdaptor(window);
-    RegisterHTMLHandler(adaptor);
+    // async constructor hack
+    return (async () => {
 
-    this.visitor = new SerializedMmlVisitor();
-    this.inputJax = new TeX({
-      packages: {
-        '[+]': ['ams', 'boldsymbol'],
-      },
-      inlineMath: [
-        ['$', '$'],
-        ['\\(', '\\)'],
-      ],
-      displayMath: [
-        ['$$', '$$'],
-        ['\\[', '\\]'],
-      ],
-      processEscapes: false,
-      processEnvironments: true,
-      processRefs: false,
-    });
+      const { SerializedMmlVisitor } =
+        await import(/* webpackChunkName: "mathjax" */ 'mjx/core/MmlTree/SerializedMmlVisitor');
+      const { HTMLAdaptor } =
+        await import(/* webpackChunkName: "mathjax" */ 'mjx/adaptors/HTMLAdaptor');
+      const { RegisterHTMLHandler } =
+        await import(/* webpackChunkName: "mathjax" */ 'mjx/handlers/html');
+      const { TeX } =
+        await import(/* webpackChunkName: "mathjax" */ 'mjx/input/tex');
+
+      // any mathjax extensions get loaded here; also see "packages" option in
+      // the input jax constructor
+      await import(/* webpackChunkName: "mathjax" */ 'mjx/input/tex/ams/AmsConfiguration');
+      await import(/* webpackChunkName: "mathjax" */ 'mjx/input/tex/boldsymbol/BoldsymbolConfiguration');
+
+      // mathjax one-time setup for tex input to mathml output
+      const adaptor = new HTMLAdaptor(window);
+      RegisterHTMLHandler(adaptor);
+
+      this.visitor = new SerializedMmlVisitor();
+      this.inputJax = new TeX({
+        packages: {
+          '[+]': ['ams', 'boldsymbol'],
+        },
+        inlineMath: [
+          ['$', '$'],
+          ['\\(', '\\)'],
+        ],
+        displayMath: [
+          ['$$', '$$'],
+          ['\\[', '\\]'],
+        ],
+        processEscapes: false,
+        processEnvironments: true,
+        processRefs: false,
+      });
+
+      return this;
+    })();
   }
 
   static #renderSingleMml(math, visitor, doc) {
@@ -48,7 +57,10 @@ export class LatexMathProcessor {
     math.display && math.typesetRoot.setAttribute('display', 'block');
   }
 
-  #buildDocument(elem) {
+  async #buildDocument(elem) {
+
+    const { mathjax } =
+      await import(/* webpackChunkName: "mathjax" */ 'mjx/mathjax');
 
     // fix for duplicate labels
     this.inputJax.reset();
@@ -87,13 +99,13 @@ export class LatexMathProcessor {
     return input;
   }
 
-  run(input) {
+  async run(input) {
 
     // pre-process to dom element
     const elem = this.#toElement(input);
 
     // build the document object
-    const mjxdoc = this.#buildDocument(elem);
+    const mjxdoc = await this.#buildDocument(elem);
 
     // convert to mathml inplace
     mjxdoc.render();

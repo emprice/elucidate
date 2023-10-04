@@ -11,15 +11,6 @@ import * as $ from 'jquery';
 import { Slider, OffCanvas, Drilldown } from 'fdn/js/foundation';
 import { initDarkModeToggle, initFontSizeSlider } from './utils';
 
-import { mathjax } from 'mjx/mathjax';
-import { SerializedMmlVisitor } from 'mjx/core/MmlTree/SerializedMmlVisitor';
-import { HTMLAdaptor } from 'mjx/adaptors/HTMLAdaptor';
-import { RegisterHTMLHandler } from 'mjx/handlers/html';
-import { TeX } from 'mjx/input/tex';
-
-import 'mjx/input/tex/ams/AmsConfiguration';
-import 'mjx/input/tex/boldsymbol/BoldsymbolConfiguration';
-
 function renderSingleMml(math, visitor, doc) {
 
   math.typesetRoot = doc.createElement('mjx-container');
@@ -100,7 +91,21 @@ function initCodemirror() {
   };
 }
 
-function initMathJax() {
+async function initMathJax() {
+
+  const { SerializedMmlVisitor } =
+    await import(/* webpackChunkName: "mathjax" */ 'mjx/core/MmlTree/SerializedMmlVisitor');
+  const { HTMLAdaptor } =
+    await import(/* webpackChunkName: "mathjax" */ 'mjx/adaptors/HTMLAdaptor');
+  const { RegisterHTMLHandler } =
+    await import(/* webpackChunkName: "mathjax" */ 'mjx/handlers/html');
+  const { TeX } =
+    await import(/* webpackChunkName: "mathjax" */ 'mjx/input/tex');
+
+  // any mathjax extensions get loaded here; also see "packages" option in
+  // the input jax constructor
+  await import(/* webpackChunkName: "mathjax" */ 'mjx/input/tex/ams/AmsConfiguration');
+  await import(/* webpackChunkName: "mathjax" */ 'mjx/input/tex/boldsymbol/BoldsymbolConfiguration');
 
   // mathjax one-time setup for tex input to mathml output
   const adaptor = new HTMLAdaptor(window);
@@ -130,7 +135,10 @@ function initMathJax() {
   };
 }
 
-function addRenderListener(cm, mjx) {
+async function addRenderListener(cm, mjx) {
+
+  const { mathjax } =
+    await import(/* webpackChunkName: "mathjax" */ 'mjx/mathjax');
 
   $( '#render-button' ).on('click', (e) => {
 
@@ -142,7 +150,7 @@ function addRenderListener(cm, mjx) {
     var buffer = cm.views.input.state.sliceDoc();
     if (buffer.length == 0) {
       // no contents in buffer -- early exit
-      e.target.blur();
+      $( e.target ).trigger('blur');
       return;
     } else if (buffer.search(mathRegex) == -1) {
       // no math found -- add delimiters around the content
@@ -197,7 +205,7 @@ function addRenderListener(cm, mjx) {
 
     // make sure the button goes back to its unfocused state,
     // indicating the render is complete
-    e.target.blur();
+    $( e.target ).trigger('blur');
   });
 }
 
@@ -208,20 +216,20 @@ function addCopyListener(cm) {
     // put all the output text onto the user's clipboard
     const buffer = cm.views.output.state.sliceDoc();
     navigator.clipboard.writeText(buffer).then(() => {
-      e.target.blur();
+      $( e.target ).trigger('blur');
     });
   });
 }
 
 export default (function() {
 
-  $( document ).ready(() => {
+  $( document ).ready(async () => {
 
     // run only when document is fully loaded
     initControls();
     const cm = initCodemirror();
-    const mjx = initMathJax();
-    addRenderListener(cm, mjx);
+    const mjx = await initMathJax();
+    await addRenderListener(cm, mjx);
     addCopyListener(cm);
 
     // putting this last may help with the "fouc" problem

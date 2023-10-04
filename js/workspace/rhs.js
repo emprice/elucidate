@@ -1,13 +1,4 @@
-import { EditorState, StateField, Text } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, highlightActiveLine,
-         highlightActiveLineGutter, showPanel } from '@codemirror/view';
-import { defaultKeymap, historyKeymap, history } from '@codemirror/commands';
-import { searchKeymap, search } from '@codemirror/search';
-
-import { html } from '@codemirror/lang-html';
-import { json } from '@codemirror/lang-json';
-import { classHighlighter } from '@lezer/highlight';
-import { syntaxHighlighting, codeFolding, foldGutter } from '@codemirror/language';
+import loadingIndicator from '../../svg/loading.svg';
 
 import hljs from 'highlight.js/lib/core';
 import xml from 'highlight.js/lib/languages/xml';
@@ -32,14 +23,66 @@ export class RhsPanel {
 
   constructor() {
 
-    this.#meta = this.#createMetadataTab();
-    this.#doc = this.#createDocumentTab();
+    // async constructor hack
+    return (async () => {
+      this.#meta = await this.#createMetadataTab();
+      this.#doc = await this.#createDocumentTab();
 
-    this.#setupPreviewTab();
-    this.#setupReferenceTab();
+      this.#setupPreviewTab();
+      this.#setupReferenceTab();
+
+      return this;
+    })();
   }
 
-  #createMetadataTab() {
+  async getAllBuffers() {
+
+    const { Buffer } =
+      await import(/* webpackChunkName: "buffer" */ 'buffer');
+
+    return [
+      {
+        name: 'metadata.json',
+        contents: Buffer.from(this.#meta.state.sliceDoc(), 'utf8'),
+      },
+      {
+        name: 'document.html',
+        contents: Buffer.from(this.#doc.state.sliceDoc(), 'utf8'),
+      },
+    ];
+  }
+
+  setMetadataContent(str) {
+    this.#meta.dispatch({
+      changes: [
+        {
+          from: 0,
+          to: this.#meta.state.doc.length,
+        },
+        {
+          from: 0,
+          insert: str,
+        },
+      ],
+    });
+  }
+
+  setDocumentContent(str) {
+    this.#doc.dispatch({
+      changes: [
+        {
+          from: 0,
+          to: this.#doc.state.doc.length,
+        },
+        {
+          from: 0,
+          insert: str,
+        },
+      ],
+    });
+  }
+
+  async #createMetadataTab() {
 
     // example input for the metadata editor
     const metaExample =
@@ -64,6 +107,25 @@ export class RhsPanel {
 }`;
 
     const metaInputElement = document.getElementById('meta-input');
+    $( metaInputElement ).html(loadingIndicator);
+
+    const { json } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/lang-json');
+    const { EditorState, StateField, Text } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/state');
+    const { EditorView, keymap, lineNumbers, highlightActiveLine,
+             highlightActiveLineGutter, showPanel } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/view');
+    const { defaultKeymap, historyKeymap, history } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/commands');
+    const { searchKeymap, search } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/search');
+    const { classHighlighter } =
+      await import(/* webpackChunkName: "codemirror" */ '@lezer/highlight');
+    const { syntaxHighlighting, codeFolding, foldGutter } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/language');
+
+    $( metaInputElement ).empty();
 
     let metaInputState = EditorState.create({
       doc: metaExample,
@@ -95,10 +157,38 @@ export class RhsPanel {
       parent: metaInputElement,
     });
 
+    $( metaInputElement ).on('elucidate.bibtex.magic', (e) => {
+
+      // get the current content and replace references
+      var buffer = metaInputView.state.sliceDoc();
+      var jsonmeta = JSON.parse(buffer);
+      jsonmeta.references = e.content;
+
+      // pretty-print json with 2-space tab length
+      const jsonmetastr = JSON.stringify(jsonmeta, null, 2);
+
+      // insert the new html on the document page
+      metaInputView.dispatch({
+        changes: [
+          {
+            from: 0,
+            to: metaInputView.state.doc.length,
+          },
+          {
+            from: 0,
+            insert: jsonmetastr,
+          },
+        ],
+      });
+
+      // make visible to the user
+      $( '#meta-input-tab-title a' ).trigger('click');
+    });
+
     return metaInputView;
   }
 
-  #createDocumentTab() {
+  async #createDocumentTab() {
 
     // example input for the document editor
     const docExample =
@@ -113,6 +203,25 @@ export class RhsPanel {
 </section>`;
 
     const docInputElement = document.getElementById('doc-input');
+    $( docInputElement ).html(loadingIndicator);
+
+    const { html } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/lang-html');
+    const { EditorState, StateField, Text } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/state');
+    const { EditorView, keymap, lineNumbers, highlightActiveLine,
+             highlightActiveLineGutter, showPanel } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/view');
+    const { defaultKeymap, historyKeymap, history } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/commands');
+    const { searchKeymap, search } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/search');
+    const { classHighlighter } =
+      await import(/* webpackChunkName: "codemirror" */ '@lezer/highlight');
+    const { syntaxHighlighting, codeFolding, foldGutter } =
+      await import(/* webpackChunkName: "codemirror" */ '@codemirror/language');
+
+    $( docInputElement ).empty();
 
     let docInputState = EditorState.create({
       doc: docExample,
@@ -144,7 +253,7 @@ export class RhsPanel {
       parent: docInputElement,
     });
 
-    $( docInputElement ).on('elucidate#magic', (e) => {
+    $( docInputElement ).on('elucidate.latex.magic', (e) => {
 
       // insert the new html on the document page
       docInputView.dispatch({
@@ -155,7 +264,7 @@ export class RhsPanel {
           },
           {
             from: 0,
-            insert: e.html,
+            insert: e.content,
           },
         ],
       });

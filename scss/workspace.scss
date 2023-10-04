@@ -11,6 +11,20 @@
 @import 'theme/code/hljs';
 @import 'theme/ux/tooltip';
 
+#file-controls {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  li:first-of-type {
+    margin-top: 0;
+  }
+
+  li:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
 #app {
 
   @include breakpoint(medium up) {
@@ -104,9 +118,10 @@
         width: 100%;
         height: $-panel-inner-height;
 
-        div {
+        & > div {
           display: flex;
           flex-direction: row;
+          height: calc(0.5 * $-panel-inner-height);
 
           * + * {
             // small margin between siblings in the same panel
@@ -114,7 +129,7 @@
           }
         }
 
-        div + div {
+        & > div + div {
           // small margin between adjacent siblings
           margin-top: $-panel-padding;
         }
@@ -141,13 +156,14 @@
             @include font-display-nobold;
             font-size: 110%;
             margin: auto 0;
+            line-height: calc(0.5 * $-panel-inner-height);
           }
 
           select {
             padding: 0 0.25rem;
             border: 0;
             flex: 0 1 auto;
-            line-height: $-panel-inner-height;
+            line-height: calc(0.5 * $-panel-inner-height);
 
             @each $name, $theme in $themes {
               [data-theme="#{$name}"] & {
@@ -367,7 +383,7 @@
   }
 
   #html-ref {
-    padding: 0 0.75rem;
+    padding: 0 0.75rem 0 0;
 
     li {
       margin: 0.5rem 0;
@@ -383,6 +399,14 @@
     pre code, pre code.hljs {
       @include code-block($block-margin: 0.5rem, $block-padding: 0.5rem);
     }
+  }
+
+  .loading-indicator {
+    fill: currentColor;
+    fill-opacity: 50%;
+    width: 90%;
+    height: 100%;
+    margin: auto 5%;
   }
 }
 

@@ -64,7 +64,19 @@ export class BibtexEntryProcessor {
       }
 
       item.kind = type;
-      item.author = item.author.split(' and ');
+      item.author = item.author.split(' and ').map((name) => {
+        // author names frequently use "~" between initials; get rid of those now
+        name = name.replaceAll(/~/g, ' ');
+
+        // attempt to extract a first and last name from a name that wasn't
+        // already split by a comma
+        const lastfirst = /^((?:[a-zA-Z\u00c0-\u017f.]+ )+?)((?:(?:[a-z\u00df-\u00ff.]\w+) )*(?:[A-Z\u00c0-\u00de.]\w+))/;
+        if ((!name.includes(',')) && ((match = lastfirst.exec(name)) !== null)) {
+          return match[2].trim() + ', ' + match[1].trim();
+        } else {
+          return name;
+        }
+      });
       items[id] = item;
     }
 
