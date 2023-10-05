@@ -222,10 +222,9 @@ async function addRenderListener(cm, mjx) {
 
 function addCopyListener(cm) {
 
-  $( '#copy-button' ).on('click', (e) => {
-
+  $( '#copy-button' ).on('click', { cm }, (e) => {
     // put all the output text onto the user's clipboard
-    const buffer = cm.views.output.state.sliceDoc();
+    const buffer = e.data.cm.views.output.state.sliceDoc();
     navigator.clipboard.writeText(buffer).then(() => {
       $( e.target ).trigger('blur');
     });

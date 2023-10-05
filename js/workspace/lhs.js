@@ -240,6 +240,10 @@ export class LhsPanel {
       navigator.clipboard.writeText(html).then(() => {
         // make sure the button goes back to its unfocused state
         $( e.target ).trigger('blur');
+      }).catch(() => {
+        // clipboard copy issue -- early exit and show tooltip help
+        $( e.target ).foundation('show');
+        return;
       });
 
     } catch (ex) {
@@ -282,6 +286,10 @@ export class LhsPanel {
         navigator.clipboard.writeText(html).then(() => {
           // make sure the button goes back to its unfocused state
           $( e.target ).trigger('blur');
+        }).catch(() => {
+          // clipboard copy issue -- early exit and show tooltip help
+          $( e.target ).foundation('show');
+          return;
         });
       });
 
@@ -339,7 +347,7 @@ export class LhsPanel {
     }
   }
 
-  static #bibButtonClickHandler(e) {
+  static #bibJsonButtonClickHandler(e) {
 
     const state = e.data.view.state;
     const proc = e.data.inst.#processors;
@@ -361,6 +369,10 @@ export class LhsPanel {
       navigator.clipboard.writeText(jsonbibstr).then(() => {
         // make sure the button goes back to its unfocused state
         $( e.target ).trigger('blur');
+      }).catch(() => {
+        // clipboard copy issue -- early exit and show tooltip help
+        $( e.target ).foundation('show');
+        return;
       });
 
     } catch (ex) {
@@ -456,7 +468,7 @@ export class LhsPanel {
       .on('click', { ...data, view }, LhsPanel.#magicBibtexButtonClickHandler)
       .foundation();
 
-    const bibButton = $( document.createElement('button') )
+    const bibJsonButton = $( document.createElement('button') )
       .addClass(['md-code', 'secondary', 'button', 'icon-button'])
       .attr({
         'type': 'button',
@@ -467,7 +479,7 @@ export class LhsPanel {
           'to the clipboard.',
       })
       .html('To JSON')
-      .on('click', { ...data, view }, LhsPanel.#bibButtonClickHandler)
+      .on('click', { ...data, view }, LhsPanel.#bibJsonButtonClickHandler)
       .foundation();
 
     const typeSelectControl = $( document.createElement('select') )
@@ -483,13 +495,7 @@ export class LhsPanel {
       .append($( document.createElement('option') )
         .attr('value', 'plaintext')
         .prop('selected', data.fileType === 'plaintext')
-        .html('Plain text'))
-      .on('change', (e) => {
-        const target = $( e.target );
-        const cls = `group-${target.val()}`;
-        $( `.controls-wrapper .button-wrapper:not(.${cls})` ).css('display', 'none');
-        $( `.controls-wrapper .button-wrapper.${cls}` ).css('display', '');
-      });
+        .html('Plain text'));
 
     const typeSelectLabel = $( document.createElement('label') )
       .attr('for', $( typeSelectControl ).attr('id'))
@@ -509,9 +515,18 @@ export class LhsPanel {
           $( document.createElement('div') )
             .addClass(['button-wrapper', 'group-bibtex'])
             .css('display', (data.fileType === 'bibtex') ? '' : 'none')
-            .append([magicBibtexButton, bibButton]),
+            .append([magicBibtexButton, bibJsonButton]),
         ]))
       .addClass('context-panel');
+
+    typeSelectControl.on('change', { node }, (e) => {
+      const node = e.data.node;
+      const target = $( e.target );
+      const cls = `group-${target.val()}`;
+
+      $( node ).find(`.controls-wrapper .button-wrapper:not(.${cls})`).css('display', 'none');
+      $( node ).find(`.controls-wrapper .button-wrapper.${cls}`).css('display', '');
+    });
 
     return { top: false, dom: node };
   }
