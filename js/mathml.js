@@ -1,11 +1,3 @@
-import { EditorState } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
-import { defaultKeymap, historyKeymap, history } from '@codemirror/commands';
-
-import { html } from '@codemirror/lang-html';
-import { classHighlighter } from '@lezer/highlight';
-import { syntaxHighlighting } from '@codemirror/language';
-
 import * as $ from 'jquery';
 
 import { Slider, OffCanvas, Drilldown } from 'fdn/js/foundation';
@@ -24,7 +16,20 @@ function initControls() {
   initDarkModeToggle();
 }
 
-function initCodemirror() {
+async function initCodemirror() {
+
+  const { EditorState } =
+    await import(/* webpackChunkName: "codemirror" */ '@codemirror/state');
+  const { EditorView, keymap } =
+    await import(/* webpackChunkName: "codemirror" */ '@codemirror/view');
+  const { defaultKeymap, historyKeymap, history } =
+    await import(/* webpackChunkName: "codemirror" */ '@codemirror/commands');
+  const { html } =
+    await import(/* webpackChunkName: "codemirror" */ '@codemirror/lang-html');
+  const { classHighlighter } =
+    await import(/* webpackChunkName: "codemirror" */ '@lezer/highlight');
+  const { syntaxHighlighting } =
+    await import(/* webpackChunkName: "codemirror" */ '@codemirror/language');
 
   const inputElement  = document.getElementById("editor");
   const outputElement = document.getElementById("output");
@@ -195,13 +200,19 @@ async function addRenderListener(cm, mjx) {
       cm.elements.render.appendChild(math.typesetRoot);
     }
 
-    let outputState = EditorState.create({
-      doc: allmath,
-      extensions: cm.htmlExtensions,
-    });
-
     // update the output window with the new content
-    cm.views.output.setState(outputState);
+    cm.views.output.dispatch({
+      changes: [
+        {
+          from: 0,
+          to: cm.views.output.state.doc.length,
+        },
+        {
+          from: 0,
+          insert: allmath,
+        },
+      ],
+    });
 
     // make sure the button goes back to its unfocused state,
     // indicating the render is complete
@@ -227,7 +238,7 @@ export default (function() {
 
     // run only when document is fully loaded
     initControls();
-    const cm = initCodemirror();
+    const cm = await initCodemirror();
     const mjx = await initMathJax();
     await addRenderListener(cm, mjx);
     addCopyListener(cm);

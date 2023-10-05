@@ -1,14 +1,19 @@
 @use "sass:map";
 @use "sass:color";
 
-:root {
-  --base-font-size: 1rem;
-}
+@import 'theme/global';
+@import 'fdn/scss/util/util';
+@import 'fdn/scss/xy-grid/xy-grid';
 
-@import 'theme/common';
+@import 'theme/modes';
+@import 'theme/fonts';
+
 @import 'theme/code/common';
 @import 'theme/code/codemirror';
 @import 'theme/code/hljs';
+
+@import 'theme/ux/button';
+@import 'theme/ux/tabs';
 @import 'theme/ux/tooltip';
 
 #file-controls {
@@ -179,33 +184,17 @@
   }
 
   #left-panel-tabs, #right-panel-tabs {
-    @each $name, $theme in $themes {
-      [data-theme="#{$name}"] & {
-        @include tabs-container(
-          $background: map.get($theme, "tab-background"),
-          $border-color: map.get($theme, "tab-border-color"),
-        );
-
-        border-width: 0px !important;
-      }
-
-      [data-theme="#{$name}"] & li {
-        @include tabs-title(
-          $color: map.get($theme, "tab-color"),
-          $color-active: map.get($theme, "tab-color-active"),
-          $background-hover: map.get($theme, "tab-background-hover"),
-          $background-active: map.get($theme, "tab-background-active"),
-        );
-      }
-    }
+    @include tabs-container;
 
     flex: 0 1 auto;
     z-index: 1;
 
     li {
+      @include tabs-title;
+      @include font-display-nobold;
+
       display: flex;
       flex-direction: row;
-      @include font-display-nobold;
 
       padding: 0 0.5rem 0 0.5rem; // some spacing between adjacent tabs
 
@@ -232,43 +221,11 @@
         @include font-sans-serif;
         font-variant: normal;
       }
-
-      // color fix: assign background color to entire tab
-      @each $name, $theme in $themes {
-        [data-theme="#{$name}"] &.is-active {
-          background-color: map.get($theme, "tab-background-active") !important;
-        }
-
-        [data-theme="#{$name}"] &:focus-within {
-          background-color: map.get($theme, "tab-background-active") !important;
-        }
-
-        [data-theme="#{$name}"] &:not(.is-active):hover {
-          background-color: map.get($theme, "tab-background-hover") !important;
-        }
-      }
-
-      > a {
-        &:focus, &[aria-selected="true"] {
-          background-color: inherit !important;
-        }
-      }
     }
   }
 
   #left-panel-tabs-content, #right-panel-tabs-content {
-    @each $name, $theme in $themes {
-      [data-theme="#{$name}"] & {
-        @include tabs-content(
-          $background: map.get($theme, "body-background"),
-          $color: map.get($theme, "body-font-color"),
-          $border-color: map.get($theme, "tab-border-color"),
-        );
-
-        // prevent the fade-in, fade-out effect
-        transition: none !important;
-      }
-    }
+    @include tabs-content;
 
     flex: 1 1 auto;
     overflow: hidden;

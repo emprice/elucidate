@@ -13,6 +13,7 @@ const apps = [
     template: './ejs/main.ejs',
     script: './js/simple.js',
     stylesheets: [
+      './scss/theme/common.scss',
       './scss/main.scss',
     ],
     otherImports: [
@@ -43,6 +44,7 @@ const apps = [
     template: './ejs/toolbox/index.ejs',
     script: './js/simple.js',
     stylesheets: [
+      './scss/theme/common.scss',
       './scss/toolbox.scss',
     ],
     otherImports: [
@@ -63,6 +65,7 @@ const apps = [
     title: 'LaTeX to MathML tool',
     template: './ejs/toolbox/mathml.ejs',
     stylesheets: [
+      './scss/theme/common.scss',
       './scss/mathml.scss',
     ],
     partials: [
@@ -80,6 +83,7 @@ const apps = [
     template: './ejs/toolbox/colormap.ejs',
     script: './js/colormap/main.js',
     stylesheets: [
+      './scss/theme/common.scss',
       './scss/colormap.scss',
     ],
     otherImports: [
@@ -100,6 +104,7 @@ const apps = [
     template: './ejs/toolbox/workspace.ejs',
     script: './js/workspace/main.js',
     stylesheets: [
+      './scss/theme/common.scss',
       './scss/workspace.scss',
     ],
     partials: [
@@ -117,6 +122,7 @@ const apps = [
     template: './ejs/tutorial/page.ejs',
     script: './js/tutorial.js',
     stylesheets: [
+      './scss/theme/common.scss',
       './scss/tutorial.scss',
     ],
     pages: [
@@ -371,7 +377,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: (pathData) => {
-      return `assets/app-${pathData.chunk.name.split('/')[0]}.bundle.js`;
+      return `assets/${pathData.chunk.name.split('/')[0]}.bundle.js`;
     },
     chunkFilename: (pathData) => {
       const runtime = pathData.chunk.runtime;

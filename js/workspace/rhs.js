@@ -4,8 +4,6 @@ import hljs from 'highlight.js/lib/core';
 import xml from 'highlight.js/lib/languages/xml';
 import latex from 'highlight.js/lib/languages/latex';
 
-import 'highlight.js/styles/nord.css';
-
 hljs.registerLanguage('html', xml);
 hljs.registerLanguage('latex', latex);
 

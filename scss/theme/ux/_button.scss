@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "sass:color";
+
 button, a.button {
   @include font-display-nobold;
 
@@ -10,15 +13,33 @@ button, a.button {
 
   @each $name, $theme in $themes {
     [data-theme="#{$name}"] &.primary {
-      @include button-fill-style($fill: solid,
-        $background: map.get($theme, "button-background-primary"),
-        $background-hover: auto, $color: map.get($theme, "button-color"));
+      &,
+      &.disabled, &[disabled],
+      &.disabled:hover, &[disabled]:hover,
+      &.disabled:focus, &[disabled]:focus {
+        background: map.get($theme, "button-background-primary");
+        color: map.get($theme, "button-color");
+      }
+
+      &:hover, &:focus {
+        background: color.mix(map.get($theme, "button-background-primary"),
+          map.get($theme, "body-background"), $weight: 90%);
+      }
     }
 
     [data-theme="#{$name}"] &.secondary {
-      @include button-fill-style($fill: solid,
-        $background: map.get($theme, "button-background-secondary"),
-        $background-hover: auto, $color: map.get($theme, "button-color"));
+      &,
+      &.disabled, &[disabled],
+      &.disabled:hover, &[disabled]:hover,
+      &.disabled:focus, &[disabled]:focus {
+        background: map.get($theme, "button-background-secondary");
+        color: map.get($theme, "button-color");
+      }
+
+      &:hover, &:focus {
+        background: color.mix(map.get($theme, "button-background-secondary"),
+          map.get($theme, "body-background"), $weight: 90%);
+      }
     }
   }
 
@@ -39,8 +60,12 @@ button, a.button {
   }
 }
 
-button.icon-button::before, a.button.icon-button::before {
+button.icon-button::before {
   vertical-align: bottom;
+}
+
+a.icon-button::before {
+  vertical-align: middle;
 }
 
 // vim: set ft=scss:

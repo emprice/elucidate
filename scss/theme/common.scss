@@ -1,16 +1,12 @@
 @use "sass:map";
 @use "sass:color";
 
-@use "nordtheme" as nord;
-@use "lightmode" as light;
-@use "darkmode" as dark;
-
 @import 'global';
+@import 'modes';
 
-$themes: (
-  "light": light.$theme,
-  "dark": dark.$theme,
-);
+:root {
+  --base-font-size: 1.1rem;
+}
 
 $titlebar-inner-height: 4rem;
 $titlebar-padding: 0.5rem;
@@ -24,14 +20,11 @@ $titlebar-padding: 0.5rem;
 @include foundation-title-bar;
 @include foundation-off-canvas;
 @include foundation-drilldown-menu;
+@include foundation-table;
 
 @import 'ux/button';
 @import 'ux/switch';
 @import 'ux/slider';
-
-body {
-  @include font-sans-serif;
-}
 
 // see https://w3c.github.io/mathml-core/#the-top-level-math-element
 // these values are standard for a user-agent stylesheet, and we want to
@@ -62,10 +55,15 @@ math {
   }
 }
 
-@each $name, $theme in $themes {
-  [data-theme="#{$name}"] body {
-    color: map.get($theme, "body-font-color");
-    background-color: map.get($theme, "body-background");
+
+body {
+  @include font-sans-serif;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "body-font-color");
+      background-color: map.get($theme, "body-background");
+    }
   }
 }
 
@@ -142,12 +140,12 @@ math {
 #menu-wrapper {
   @include breakpoint(medium up) {
     @include in-canvas;
-    @include xy-cell($size: 2);
-
-    margin: 0;
+    @include xy-cell($size: 2, $gutter-type: margin, $gutters: 0);
   }
 
   @include breakpoint(small only) {
+    @include off-canvas-basics;
+
     @each $name, $theme in $themes {
       [data-theme="#{$name}"] & {
         @include off-canvas-base($fixed: false,
@@ -155,8 +153,6 @@ math {
       }
     }
 
-    @include off-canvas-basics;
-    @include off-canvas-base;
     @include off-canvas-position($position: left);
   }
 
@@ -236,13 +232,19 @@ math {
   }
 }
 
+@each $name, $theme in $themes {
+  [data-theme="#{$name}"] tbody {
+    border-color: color.mix(map.get($theme, "body-background"),
+      map.get($theme, "body-font-color"), $weight: 80%);
+  }
+}
+
 #app {
   @include breakpoint(medium up) {
-    @include xy-cell($size: 10, $vertical: false);
+    @include xy-cell($size: 10, $gutters: 0, $gutter-type: margin, $vertical: false);
     @include xy-cell-base($size: grow);
     @include xy-grid($direction: horizontal, $wrap: true);
 
-    margin: 0;
     height: 100vh;
   }
 
@@ -253,14 +255,11 @@ math {
     padding: 0 0.5rem;
     height: calc(100vh - $titlebar-inner-height);
   }
-
-  font-size: var(--base-font-size);
 }
 
 #body {
   @include breakpoint(medium up) {
-    @include xy-cell($size: 10, $vertical: false);
-    @include xy-cell-base($size: auto);
+    @include xy-cell($size: auto, $vertical: false);
     margin: 1rem;
   }
 
@@ -268,7 +267,9 @@ math {
     @include off-canvas-content;
     padding: 1rem;
   }
+}
 
+#app, #body {
   font-size: var(--base-font-size);
 }
 
@@ -304,12 +305,6 @@ h5, .h5 {
 h6, .h6 {
   @include font-sans-serif;
   font-size: 100%;
-}
-
-@each $name, $theme in $themes {
-  [data-theme="#{$name}"] .has-tip {
-    border-bottom: dotted 1px map.get($theme, "muted-label-color");
-  }
 }
 
 @each $name, $theme in $themes {

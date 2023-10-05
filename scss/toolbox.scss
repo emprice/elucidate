@@ -1,15 +1,12 @@
 @use "sass:map";
 @use "sass:color";
 
-:root {
-  --base-font-size: 1.1rem;
-}
+@import 'theme/global';
+@import 'fdn/scss/util/util';
 
-@import 'theme/common';
+@import 'theme/modes';
+@import 'theme/fonts';
 @import 'theme/ux/callout';
-
-@include foundation-sticky;
-@include foundation-flex-classes;
 
 $block-margin: 1rem;
 

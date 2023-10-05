@@ -1,0 +1,9 @@
+@use "lightmode" as light;
+@use "darkmode" as dark;
+
+$themes: (
+  "light": light.$theme,
+  "dark": dark.$theme,
+);
+
+// vim: set ft=scss:

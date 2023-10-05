@@ -15,9 +15,17 @@ $admonitions: (
 );
 
 .callout {
-  @include callout-base;
-
   padding: 1rem;
+  border: 1px solid;
+
+  // copied from original Foundation for Sites source
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
 
   // paragraphs inside callouts
   p {
@@ -39,7 +47,9 @@ $admonitions: (
     [data-theme="#{$name}"] & {
       color: map.get($theme, "body-font-color");
       background-color: color.mix(map.get($theme, "palette-primary"),
-        map.get($theme, "body-background"), 20%);
+        map.get($theme, "body-background"), $weight: 20%);
+      border-color: color.mix(map.get($theme, "palette-primary"),
+        map.get($theme, "body-background"), $weight: 25%);
     }
   }
 
@@ -47,26 +57,36 @@ $admonitions: (
     @each $admonition in $admonitions {
       [data-theme="#{$name}"] &.#{$admonition} {
         background-color: map.get($theme, "palette-#{$admonition}");
+        border-color: color.mix(map.get($theme, "palette-#{$admonition}"),
+          map.get($theme, "body-background"), $weight: 25%);
 
         // inline code nested inside admonitions get slightly different styling
         p code, p code.hljs {
           background-color: color.mix(map.get($theme, "palette-#{$admonition}"),
             map.get($theme, "body-background"), $weight: 10%);
-          border: 1px solid color.mix(map.get($theme, "palette-#{$admonition}"),
+          border-color: color.mix(map.get($theme, "palette-#{$admonition}"),
             map.get($theme, "body-background"), $weight: 60%);
         }
 
         a {
           color: color.mix(map.get($theme, "palette-#{$admonition}"),
             map.get($theme, "body-font-color"), $weight: 20%);
-          text-decoration: underline dotted;
-        }
 
-        a:hover, a:active {
-          color: color.mix(map.get($theme, "palette-#{$admonition}"),
-            map.get($theme, "body-font-color"), $weight: 10%);
-          text-decoration: underline solid;
+          &:hover, &:active {
+            color: color.mix(map.get($theme, "palette-#{$admonition}"),
+              map.get($theme, "body-font-color"), $weight: 10%);
+          }
         }
+      }
+    }
+  }
+
+  @each $admonition in $admonitions {
+    &.#{$admonition} a {
+      text-decoration: underline dotted;
+
+      &:hover, &:active {
+        text-decoration: underline solid;
       }
     }
   }

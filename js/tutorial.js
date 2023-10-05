@@ -3,8 +3,6 @@ import xml from 'highlight.js/lib/languages/xml';
 import latex from 'highlight.js/lib/languages/latex';
 import plaintext from 'highlight.js/lib/languages/plaintext';
 
-import 'highlight.js/styles/nord.css';
-
 hljs.registerLanguage('html', xml);
 hljs.registerLanguage('latex', latex);
 hljs.registerLanguage('plaintext', plaintext);

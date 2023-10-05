@@ -1,0 +1,86 @@
+@import 'fdn/scss/util/util';
+
+$global-flexbox: true;
+$tab-margin: 0;
+$tab-background: #00000000;
+$tab-item-padding: 5px;
+$tab-item-font-size: 0.9rem;
+$tab-content-padding: 0;
+
+// modified from original Foundation for Sites source
+@mixin tabs-container (
+  $margin: $tab-margin,
+) {
+  @include clearfix;
+
+  margin: $margin;
+  list-style-type: none;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      background: map.get($theme, "tab-background"),
+    }
+  }
+}
+
+// modified from original Foundation for Sites source
+@mixin tabs-title (
+  $padding: $tab-item-padding,
+  $font-size: $tab-item-font-size,
+) {
+  float: left;
+
+  > a {
+    display: block;
+    padding: $padding;
+    font-size: $font-size;
+    line-height: 1;
+    color: inherit;
+  }
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "tab-color");
+
+      &:hover {
+        background: map.get($theme, "tab-background-hover");
+      }
+
+      &:focus,
+      &:focus-within,
+      &.is-active,
+      &[aria-selected="true"] {
+        background: map.get($theme, "tab-background-active");
+        color: map.get($theme, "tab-color-active");
+      }
+    }
+  }
+}
+
+// modified from original Foundation for Sites source
+@mixin tabs-content {
+  border: 1px solid;
+  border-top: 0;
+
+  @each $name, $theme in $themes {
+    [data-theme="#{$name}"] & {
+      color: map.get($theme, "body-font-color");
+      background: map.get($theme, "body-background-color");
+      border-color: map.get($theme, "tab-border-color");
+    }
+  }
+}
+
+// copied from Foundation for Sites source
+@mixin tabs-panel (
+  $padding: $tab-content-padding
+) {
+  display: none;
+  padding: $padding;
+
+  &.is-active {
+    display: block;
+  }
+}
+
+// vim ft=scss:

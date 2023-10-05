@@ -1,3 +1,18 @@
+$tooltip-padding: 0.75rem;
+$tooltip-max-width: 10rem;
+$tooltip-font-size: 80%;
+$tooltip-pip-width: 0.75rem;
+$tooltip-pip-height: $tooltip-pip-width * 0.866;
+$tooltip-radius: 0;
+
+@import 'fdn/scss/util/mixins';
+
+@each $name, $theme in $themes {
+  [data-theme="#{$name}"] .has-tip {
+    border-bottom: dotted 1px map.get($theme, "muted-label-color");
+  }
+}
+
 .tooltip {
 
   // copied from Foundation for Sites source
