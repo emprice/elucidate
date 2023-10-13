@@ -274,8 +274,8 @@ export class LhsPanel {
       proc.mathml.run(buffer).then((elem) => {
 
         // make a nice string of all the math, compacted
-        const html = $( elem ).find('math').map((i, e) => {
-          return e.html().replaceAll(/\n\s*/g, '');
+        const html = $( elem ).find('math').map((i, el) => {
+          return $( el ).html().replaceAll(/\n\s*/g, '');
         }).get().join('\n');
 
         if (html.length == 0) {
@@ -322,9 +322,9 @@ export class LhsPanel {
 
         const html = $( elem ).find('math')
           .unwrap('mjx-container').unwrap('span')
-          .each((i, e) => {
-            const prev = $( e ).html();
-            $( e ).html(prev.replaceAll(/\n\s*/g, ''));
+          .each((i, el) => {
+            const prev = $( el ).html();
+            $( el ).html(prev.replaceAll(/\n\s*/g, ''));
           }).end().html().replaceAll(/\n{3,}/g, '\n\n');
 
         if (html.length == 0) {
