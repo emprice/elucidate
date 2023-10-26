@@ -1,0 +1,167 @@
+<section>
+  <h1>Making accessible research materials in STEM fields</h1>
+  <aside class="notes">
+    For the second half of my talk today, I'll be focusing on issues of visual accessibility in STEM. I'm happy to take any questions that might come up during this part of the talk as we go.
+  </aside>
+</section>
+<section>
+  <section>
+    <h2 class="h1">Motivation</h2>
+    <aside class="notes">
+      This isn't a problem that affects me personally, and it wasn't something I had really thought about until it was brought to my attention earlier this year, when I attended the arXiv Accessibility Forum. But, having heard from people who are affected by this, and some of the recommendations made at the forum for improving the current state of academic publishing, I realized I might be in a position to do something meaningful here.
+    </aside>
+  </section>
+  <section>
+    <h3 class="h2">Where are we now?</h3>
+    <ul>
+      <li class="fragment fade-in-then-semi-out">General lack of alt-text</li>
+      <li class="fragment fade-in-then-semi-out">Limitations of LaTeX itself</li>
+      <li class="fragment fade-in-then-semi-out">&ldquo;Culture of PDF&rdquo;</li>
+      <li class="fragment fade-in-then-semi-out">Little awareness of the problem</li>
+    </ul>
+    <aside class="notes">
+      I'll argue that the current state of publishing in STEM has unintentionally overlooked the struggles of people who need assistive technology to consume visual content. What do I mean by that? [CLICK] Well, I've never submitted a paper to a journal and been asked to provide any sort of alt-text or image description for my figures; I don't know of any major journals with requirements for that, and some authors think it's unfair to ask them to include them (but, in my humble opinion, it's not unfair in the slightest). [CLICK] Next, beyond journal requirements, there are challenges and limitations baked into LaTeX, the markup most of us use to submit journal articles. PDF does have some support for accessibility features, but LaTeX can't yet take full advantage of them. (Stay tuned, though, as there is a project in the works to develop a LaTeX-to-HTML compiler.) [CLICK] Speaking of PDF, it's a format built around the idea of printing onto physical paper, but really when was the last time you printed an article on actual paper to read it? Journals consider PDF to be the official version of an article, with any HTML version at a distinctly lower quality; and yet, based on the way people actually consume digital articles today, this seems backwards. [CLICK] Finally, and perhaps most importantly, this just isn't an issue many people are aware of, because blind and low-vision STEM majors can get pushed out of their fields early on as it becomes harder and harder to find accessible content. What might that look like?
+    </aside>
+  </section>
+  <section>
+    <h3 class="h2">What's the harm?</h3>
+    <aside>(based on real experiences of others)</aside>
+    <ul>
+      <li class="fragment fade-in">If my screen reader doesn't understand LaTeX, I can't read back my own equations as I write them.</li>
+      <li class="fragment fade-in">I want to be a peer reviewer, but I can't review figures without asking a sighted colleague to describe them to me.</li>
+      <li class="fragment fade-in">Having written materials processed by disability services takes so long that I can't read the latest papers in my field.</li>
+      <li class="fragment fade-in">I spent so long scanning textbooks that I finally changed majors.</li>
+    </ul>
+    <aside class="notes">
+      These are just a few examples of problems some of the Accessibility Forum speakers recalled having, or still have, trying to navigate STEM. [STEP THROUGH]
+    </aside>
+  </section>
+  <section>
+    <h3 class="h2">Where do we go?</h3>
+    <ul>
+      <li class="fragment fade-in-then-semi-out">Normalize adding alt-text, even to images that &ldquo;don't matter&rdquo; (figures in homework assignments, etc.)</li>
+      <li class="fragment fade-in-then-semi-out">Advocate for journals to require alt-text and have authors sign off on HTML versions of articles</li>
+      <li class="fragment fade-in">
+        <span class="fragment custom highlight">Consider transitioning from LaTeX to HTML/EPUB</span>
+      </li>
+    </ul>
+    <aside class="notes">
+      I hope I've convinced you that this is a worthwhile issue to be addressing; plus, you attended this talk, so I'm assuming you already thought that to some degree. So let's move on to what steps can be taken now to improve things for future STEM students, researchers, and academics. [CLICK] First of all, and a suggestion I really liked that was made at the forum, we need to normalize putting alt-text on everything so that it becomes as second-nature as labeling your plot axes. Writing good alt-text is a skill, but it's one worth learning; even sighted people can benefit from more verbose or descriptive captions on figures in papers. [CLICK] Second, I'd argue that part of making HTML versions of articles better is having authors sign off on them first. I've noticed in particular that math in HTML articles tends to be poor-quality, but there's just no good reason for that, as we'll see in a few minutes. [CLICK] Finally, we need to consider if LaTeX and PDF need to continue to be the main vehicle for disseminating academic research. As you've probably guessed from my title, that's what I'm going to focus on today.
+    </aside>
+  </section>
+</section>
+<section>
+  <section>
+    <h2 class="h1">Benefits of HTML</h2>
+  </section>
+  <section data-auto-animate data-transition="fade-out">
+    <h3 class="h2" data-id="header">Form <i>vs.</i> function</h3>
+    <pre class="fragment fade-in"><code class="language-html" data-trim>
+&lt;p&gt;The HTML "p" tag indicates that this text is a paragraph. It says nothing about what that paragraph should look like, just that the intent is to present a paragraph.&lt;/p&gt;
+    </code></pre>
+    <pre class="fragment fade-in"><code class="language-latex" data-trim>
+\noindent We can all think of times we add ``tweaks'' to our \LaTeX\ source inline to make it look a certain way. \thisisabadidea{because the content now contains styling}, which can make equations difficult to parse --- think about manual spacing tweaks: \; \! \,
+    </code></pre>
+  </section>
+  <section data-auto-animate data-transition="fade-in">
+    <h3 class="h2" data-id="header">Form <i>vs.</i> function</h3>
+    <pre class="fragment fade-in"><code class="language-html" data-trim>
+&lt;p class="no-indent"&gt;HTML encourages separating purely stylistic elements into external stylesheets. Rendering HTML without styling affects presentation, not substance.&lt;/p&gt;
+    </code></pre>
+  </section>
+  <section data-auto-animate data-auto-animate-restart>
+    <h3 class="h2">LaTeX <i>vs.</i> MathML</h3>
+    <ul>
+      <li class="fragment fade-in">Screen readers were not designed to interpret LaTeX math on-the-fly.</li>
+      <li class="fragment fade-in">MathML is an XML-conforming markup that is more descriptive of math content, at the price of being much more verbose.</li>
+    </ul>
+    <pre data-id="quadratic-mathml" style="font-size: 50%;" class="fragment fade-in"><code class="language-html" data-trim>
+&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block"&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mo&gt;±&lt;/mo&gt;&lt;msqrt&gt;&lt;msup&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msup&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;4&lt;/mn&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/msqrt&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/math&gt;
+    </code></pre>
+  </section>
+  <section data-auto-animate data-transition="fade-in">
+    <h3 class="h2">LaTeX <i>vs.</i> MathML</h3>
+    <pre data-id="quadratic-mathml" style="font-size: 50%;"><code class="language-html" data-trim>
+&lt;math xmlns="http://www.w3.org/1998/Math/MathML" display="block"&gt;&lt;mi&gt;x&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mo&gt;±&lt;/mo&gt;&lt;msqrt&gt;&lt;msup&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msup&gt;&lt;mo&gt;−&lt;/mo&gt;&lt;mn&gt;4&lt;/mn&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;c&lt;/mi&gt;&lt;/msqrt&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/math&gt;
+    </code></pre>
+    <math class="fragment fade-in" xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>x</mi><mo>=</mo><mfrac><mrow><mo>−</mo><mi>b</mi><mo>±</mo><msqrt><msup><mi>b</mi><mn>2</mn></msup><mo>−</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math>
+    <p class="fragment fade-in" style="width: 60%; margin: auto; padding: 2em 0;">MathML can be just as aesthetically pleasing as LaTeX math, and much more accessible!</p>
+  </section>
+  <section data-transition="fade-out">
+    <h3 class="h2">Hands-on with NVDA: LaTeX</h3>
+    <div>
+      <video controls style="width: 75%; display: inline-block; padding-right: 1em; box-sizing: border-box;" src="/assets/videos-nvda-demo-latex.mp4"></video>
+      <div style="width: 25%; display: inline-block; box-sizing: border-box; vertical-align: top;"><p>What did you notice?</p>
+        <ul>
+          <li>Greek letters replaced by Latin?</li>
+          <li>Superscripts missing entirely?</li>
+          <li>Long subscripts merged to variable name?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+  <section data-transition="fade-in">
+    <h3 class="h2">Hands-on with NVDA: MathML</h3>
+    <div>
+      <video controls style="width: 75%; display: inline-block; padding-right: 1em; box-sizing: border-box;" src="/assets/videos-nvda-demo-mathml.mp4"></video>
+      <div style="width: 25%; display: inline-block; box-sizing: border-box; vertical-align: top;"><p>What went better?</p>
+        <ul>
+          <li>Greek letters read correctly</li>
+          <li>Superscripts, superscripts, and punctuation made clear</li>
+          <li>Inline equations read correctly</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</section>
+<section>
+  <section>
+    <h2 class="h1">Available tools</h2>
+  </section>
+  <section data-preload data-background-iframe="/tools/colormap.html" data-background-opacity="0.3" data-transition="fade-out">
+    <h3 class="h2">Making accessible colormaps</h3>
+  </section>
+  <section data-preload data-background-iframe="/tools/colormap.html" data-background-interactive data-transition="none-in">
+  </section>
+  <section data-preload data-background-iframe="/tools/mathml.html" data-background-opacity="0.3" data-transition="fade-out">
+    <h3 class="h2">Converting LaTeX math to MathML</h3>
+  </section>
+  <section data-preload data-background-iframe="/tools/mathml.html" data-background-interactive data-transition="none-in">
+  </section>
+  <section data-preload data-background-iframe="/tools/workspace.html" data-background-opacity="0.3" data-transition="fade-out">
+    <h3 class="h2">Converting LaTeX articles to HTML</h3>
+  </section>
+  <section data-preload data-background-iframe="/tools/workspace.html" data-background-interactive data-transition="none-in">
+  </section>
+</section>
+<section>
+  <section>
+    <h2 class="h1">Call to action</h2>
+  </section>
+  <section>
+    <h3 class="h2">What can you do today?</h3>
+    <ul>
+      <li class="fragment fade-in-then-semi-out">Stop tweaking your LaTeX math; this only makes it harder to parse!</li>
+      <li class="fragment fade-in-then-semi-out">Provide static Jupyter notebooks; the dynamic ones are virtually unusable with a screen reader</li>
+      <li class="fragment fade-in">Use automated accessibility checkers to find solutions to common problems in your content
+        <ul>
+          <li class="fragment fade-in">Microsoft Office accessibility checker for Word, etc.</li>
+          <li class="fragment fade-in">Firefox and Chrome accessibility checker for webpages</li>
+          <li class="fragment fade-in">IBM accessibility checker for web apps</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <section>
+    <h3 class="h2">What's left to do?</h3>
+    <aside>(spoiler alert: plenty!)</aside>
+    <ul>
+      <li class="fragment fade-in-then-semi-out">Standardizing best practices for figure descriptions, including those for interactive, dynamic, and video figures</li>
+      <li class="fragment fade-in-then-semi-out">Developing more advanced tooling for authors to migrate existing content</li>
+      <li class="fragment fade-in-then-semi-out">Better awareness of blind and low-vision colleagues' struggles and recommendations for improving</li>
+      <li class="fragment fade-in">
+        <span class="fragment custom highlight">Talk to people!</span>
+      </li>
+    </ul>
+  </section>
+</section>

@@ -145,6 +145,30 @@ const apps = [
       },
     ],
   },
+  {
+    entry: 'presentations',
+    name: (e) => `presentations/${e}`,
+    template: './ejs/presentations/deck.ejs',
+    script: './js/presentation.js',
+    stylesheets: [
+      '/node_modules/reveal.js/dist/reveal.css',
+      './scss/presentation.scss',
+    ],
+    otherImports: [
+      './static/nvda-demo-latex.mp4',
+      './static/nvda-demo-mathml.mp4',
+    ],
+    pages: [
+      'dda2023',
+    ],
+    partials: [
+      {
+        name: 'body',
+        filename: (e) =>
+          path.resolve(__dirname, './ejs/presentations/partials', `${e}.html`),
+      },
+    ],
+  },
 ];
 
 const entryPoints = apps.reduce((acc, cur) => {
@@ -217,6 +241,13 @@ module.exports = {
         type: 'asset/resource',
         generator: {
           filename: 'assets/images-[name][ext]',
+        },
+      },
+      {
+        test: /static\/.+?\.mp4$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/videos-[name][ext]',
         },
       },
       {
